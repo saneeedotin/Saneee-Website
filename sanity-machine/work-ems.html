@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>saneee.in</title>
+<meta name="description" content="Em's Burgers: burger brand website by saneee.in.">
+<link rel="icon" type="image/png" sizes="64x64" href="img/favicon-light.png" media="(prefers-color-scheme: light)">
+<link rel="icon" type="image/png" sizes="64x64" href="img/favicon.png" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,100..900&family=Caveat:wght@600&family=Instrument+Sans:wght@400;500&family=Instrument+Serif:ital@0;1&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root { --ink:#0A0A0A; --paper:#F6F5F0; --green:#C4F135; --muted:#A9A9A1; --line:rgba(246,245,240,.2); --ease:cubic-bezier(.22,1,.36,1); color-scheme:dark; cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='29' viewBox='0 0 113 151'%3E%3Cpath d='M0 0 113 108H45L0 151Z' fill='%23C4F135' stroke='%230A0A0A' stroke-width='8'/%3E%3C/svg%3E") 0 0, auto; }
+  * { box-sizing:border-box; }
+  html { background:var(--ink); overflow-x:clip; }
+  body { margin:0; background:var(--ink); color:var(--paper); font:400 17px/1.6 "Instrument Sans",sans-serif; -webkit-font-smoothing:antialiased; overflow-x:clip; }
+  a { color:inherit; text-decoration:none; cursor:inherit; }
+  h1,h2,h3,p { margin:0; }
+  :focus-visible { outline:3px solid var(--green); outline-offset:3px; box-shadow:0 0 0 6px var(--ink); }
+  .mono { font:400 12px/1.5 "Space Mono",monospace; letter-spacing:.12em; text-transform:uppercase; }
+  .pad { padding-inline:clamp(16px,3vw,48px); }
+  .voice { font:italic 400 clamp(22px,2.4vw,34px)/1.1 "Instrument Serif",serif; }
+
+  .top { position:fixed; z-index:50; inset:0 0 auto; display:flex; align-items:center; justify-content:space-between; gap:16px; padding:14px clamp(16px,3vw,48px); pointer-events:none; }
+  .top > * { pointer-events:auto; }
+  .top img { display:block; width:clamp(116px,12vw,170px); height:auto; }
+  .logo-chip { display:flex; align-items:center; min-height:44px; padding:0 16px; border-radius:9999px; background:var(--ink); border:1.5px solid rgba(246,245,240,.3); }
+  .top nav { display:flex; gap:4px; padding:0 6px; border-radius:9999px; background:var(--ink); border:1.5px solid rgba(246,245,240,.3); }
+  .top nav a { display:flex; align-items:center; min-height:42px; padding:0 12px; }
+  .top nav a:hover, .top nav a[aria-current] { color:var(--green); }
+
+  .curtain { position:fixed; z-index:100; inset:0; display:flex; flex-direction:column; background:repeating-linear-gradient(#7C7C83 0 6px,#5A5A61 6px 9px,#3C3C42 9px 11px); box-shadow:0 18px 50px rgba(0,0,0,.7); transform:translateY(-101%); pointer-events:none; }
+  .curtain b { display:flex; align-items:center; justify-content:center; min-height:clamp(70px,12vh,120px); padding:8px 16px; background:var(--csign,#111); color:var(--cfg,#fff); font-family:var(--cfont,Anybody,sans-serif); font-weight:var(--cweight,900); font-style:var(--cstyle,normal); font-size:clamp(24px,4vw,56px); line-height:1; text-align:center; }
+  .curtain.up { animation:curtainup .95s var(--ease) .12s both; }
+  .curtain.down { transform:translateY(0); transition:transform .42s cubic-bezier(.6,0,.9,.4); }
+  .curtain.drop { transform:translateY(-101%); }
+  @keyframes curtainup { from { transform:translateY(0); } to { transform:translateY(-101%); } }
+
+  .foot { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px 32px; margin-top:clamp(50px,7vw,100px); padding-block:18px; border-top:1.5px solid var(--line); }
+  .foot img { display:block; width:clamp(120px,12vw,170px); height:auto; }
+  .foot a:not(:first-child) { display:inline-flex; align-items:center; min-height:44px; }
+  .send { display:inline-flex; align-items:center; gap:12px; min-height:60px; padding:0 26px; border-radius:9999px; background:var(--green); color:var(--ink); font:900 clamp(15px,1.5vw,20px)/1 Anybody,sans-serif; letter-spacing:.02em; text-transform:uppercase; font-variation-settings:"wdth" 110; transition:transform .25s var(--ease); }
+  .send:hover { transform:translateY(-3px) rotate(-1deg); }
+  .ghost { display:inline-flex; align-items:center; gap:10px; min-height:60px; padding:0 26px; border-radius:9999px; border:1.5px solid var(--paper); font:700 13px/1 "Space Mono",monospace; letter-spacing:.08em; text-transform:uppercase; transition:background .2s,color .2s; }
+  .ghost:hover { background:var(--paper); color:var(--ink); }
+
+  /* The Work page */
+  .w-head { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:end; gap:20px 32px; padding-block:clamp(120px,15vw,210px) clamp(28px,4vw,56px); }
+  .w-head h1 { font:900 clamp(56px,14.5vw,250px)/.84 Anybody,sans-serif; letter-spacing:-.02em; text-transform:uppercase; font-variation-settings:"wdth" 70; }
+  .w-head h1 em { display:block; margin-bottom:.1em; color:var(--muted); font:italic 400 .36em/1 "Instrument Serif",serif; text-transform:none; letter-spacing:-.01em; font-variation-settings:normal; }
+  .w-head h1 span { color:var(--green); }
+  .w-rows { border-bottom:1.5px solid var(--line); }
+  .w-row { position:relative; display:grid; grid-template-columns:clamp(34px,4vw,70px) minmax(0,1fr) auto; align-items:center; gap:0 clamp(8px,1.5vw,24px); padding:clamp(14px,2vw,28px) clamp(16px,3vw,48px); overflow:hidden; border-top:1.5px solid var(--line); isolation:isolate; transition:color .2s; }
+  .w-row::before { content:""; position:absolute; z-index:-1; inset:0; background:var(--sign); transform:scaleY(0); transform-origin:bottom; transition:transform .45s var(--ease); }
+  .w-row:hover, .w-row:focus-visible { color:var(--fg); }
+  .w-row:hover::before, .w-row:focus-visible::before { transform:scaleY(1); }
+  .w-name { display:block; font:900 clamp(40px,10.4vw,178px)/.92 Anybody,sans-serif; text-transform:uppercase; letter-spacing:-.015em; white-space:nowrap; }
+  .w-name i { display:inline-block; font-style:normal; font-variation-settings:"wdth" var(--w,62); will-change:font-variation-settings; }
+  .w-side { display:grid; justify-items:end; gap:6px; text-align:right; }
+  .w-side .mono { transition:opacity .2s; }
+  .w-row:hover .w-side .mono { opacity:0; }
+  .w-go { font:900 clamp(26px,3.4vw,54px)/1 Anybody,sans-serif; transition:transform .35s var(--ease); }
+  .w-row:hover .w-go { transform:translateX(8px); }
+  .w-thumb { display:none; }
+  #peek { position:fixed; z-index:40; left:0; top:0; width:min(34vw,480px); aspect-ratio:8/5; overflow:hidden; border-radius:16px; border:1.5px solid rgba(246,245,240,.4); box-shadow:0 30px 70px rgba(0,0,0,.55); opacity:0; pointer-events:none; transition:opacity .2s; will-change:transform; }
+  #peek.on { opacity:1; }
+  #peek img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top; opacity:0; transition:opacity .2s; }
+  #peek img.on { opacity:1; }
+  .empty-shop { display:grid; grid-template-rows:auto minmax(clamp(240px,34vw,460px),1fr); margin:clamp(40px,6vw,90px) clamp(16px,3vw,48px) 0; overflow:hidden; border:clamp(6px,.8vw,10px) solid #26262B; border-radius:14px; }
+  .empty-shop b { display:flex; align-items:center; justify-content:center; min-height:clamp(60px,7vw,92px); padding:8px 16px; background:var(--green); color:var(--ink); font:900 clamp(24px,3.4vw,50px)/1 Anybody,sans-serif; text-transform:uppercase; font-variation-settings:"wdth" 80; text-align:center; }
+  .empty-door { position:relative; display:grid; place-items:center; padding:24px; background:repeating-linear-gradient(#7C7C83 0 6px,#5A5A61 6px 9px,#3C3C42 9px 11px); transition:background-position .6s var(--ease); }
+  .empty-shop:hover .empty-door { background-position:0 -44px; }
+  .empty-door span { color:var(--green); font:600 clamp(36px,6.4vw,104px)/.95 Caveat,cursive; text-align:center; transform:rotate(-4deg); text-shadow:0 2px 0 rgba(0,0,0,.5); }
+
+  /* A project page */
+  .p-hero { display:flex; flex-direction:column; justify-content:flex-end; min-height:100svh; padding-block:clamp(110px,14vw,170px) clamp(22px,3vw,44px); background:var(--sign); color:var(--fg); }
+  .p-hero h1 { font-family:var(--font); font-weight:var(--weight); font-style:var(--fstyle); font-size:clamp(66px,16.5vw,300px); line-height:.86; letter-spacing:-.03em; }
+  .p-sub { display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:12px 32px; margin-top:clamp(18px,3vw,40px); }
+  .p-sub a { display:inline-flex; align-items:center; min-height:44px; text-decoration:underline; text-underline-offset:4px; }
+  .p-open { position:relative; height:230vh; background:#07080D; }
+  .p-pin { position:sticky; top:0; display:grid; align-content:center; gap:12px; height:100svh; padding:clamp(70px,9vh,90px) clamp(16px,3vw,48px) 20px; overflow:hidden; }
+  .p-bay { position:relative; width:min(100%,calc((100svh - 150px) * 1.6)); aspect-ratio:8/5; margin-inline:auto; overflow:hidden; background:#050507; border:clamp(5px,.7vw,10px) solid #26262B; border-top-width:clamp(10px,1.2vw,16px); box-shadow:0 0 90px color-mix(in srgb,var(--sign) calc(var(--o,0) * 55%),transparent); }
+  .p-bay img { display:block; width:100%; height:100%; object-fit:cover; object-position:top; filter:brightness(calc(.15 + var(--o,0) * .85)); }
+  .p-shut { position:absolute; inset:0; background:repeating-linear-gradient(#7C7C83 0 6px,#5A5A61 6px 9px,#3C3C42 9px 11px); transform:translateY(calc(var(--o,0) * -101%)); will-change:transform; }
+  .p-shut span { position:absolute; left:8%; right:8%; top:30%; color:var(--paint); font:600 clamp(40px,8vw,130px)/.95 Caveat,cursive; transform:rotate(-5deg); }
+  .p-hint { color:var(--muted); text-align:center; transition:opacity .3s; }
+  .p-open.opened .p-hint { opacity:0; }
+  .p-story { padding-block:clamp(60px,9vw,130px) 0; }
+  .p-basics { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr)); gap:0 clamp(14px,2vw,28px); margin-bottom:clamp(44px,6vw,90px); }
+  .p-basics div { padding-block:12px; border-top:1.5px solid var(--line); }
+  .p-basics dt { color:var(--muted); }
+  .p-basics dd { margin:6px 0 0; font-size:clamp(20px,2.2vw,30px); line-height:1.2; }
+  .p-basics dd a { text-decoration:underline; text-underline-offset:4px; }
+  .p-note { display:inline-block; margin-bottom:clamp(20px,3vw,36px); padding:8px 14px; border-radius:9999px; background:var(--green); color:var(--ink); font-weight:700; }
+  .p-ch { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.1fr); gap:14px clamp(20px,4vw,70px); padding-block:clamp(22px,3vw,44px); border-top:1.5px solid var(--line); }
+  .p-ch h2 { font:900 clamp(36px,6.4vw,104px)/.9 Anybody,sans-serif; text-transform:uppercase; letter-spacing:-.015em; font-variation-settings:"wdth" 72; }
+  .p-ch h2 small { display:block; margin-bottom:8px; color:var(--muted); font:400 12px/1.5 "Space Mono",monospace; letter-spacing:.12em; font-variation-settings:normal; }
+  .p-todo { align-self:start; padding:clamp(16px,2vw,26px); border:1.5px dashed rgba(246,245,240,.4); border-radius:16px; color:var(--muted); font-size:clamp(18px,1.7vw,23px); line-height:1.35; }
+  .p-cta { display:flex; flex-wrap:wrap; gap:10px; margin-top:clamp(36px,5vw,70px); }
+  .p-next { display:block; margin-top:clamp(50px,7vw,100px); padding:clamp(26px,4vw,60px) clamp(16px,3vw,48px); background:var(--sign); color:var(--fg); transition:padding .45s var(--ease); }
+  .p-next:hover { padding-block:clamp(40px,6vw,90px); }
+  .p-next b { display:block; margin-top:8px; font-family:var(--font); font-weight:var(--weight); font-style:var(--fstyle); font-size:clamp(46px,10.5vw,190px); line-height:.9; letter-spacing:-.025em; }
+
+  @media (max-width:760px) {
+    .top nav a:first-child { display:none; }
+    .top nav a { white-space:nowrap; }
+    .w-head { grid-template-columns:minmax(0,1fr); }
+    .w-row { grid-template-columns:minmax(0,1fr) auto; }
+    .w-row > .mono:first-child { grid-column:1 / -1; margin-bottom:8px; }
+    .w-name { white-space:normal; font-size:clamp(42px,14.5vw,110px); }
+    .w-name i { font-variation-settings:"wdth" 62; }
+    .w-side { grid-column:1 / -1; grid-row:3; display:flex; justify-content:space-between; align-items:center; width:100%; margin-top:10px; text-align:left; }
+    .w-thumb { display:block; grid-column:1 / -1; margin-top:12px; aspect-ratio:8/5; overflow:hidden; border-radius:12px; }
+    .w-thumb img { display:block; width:100%; height:100%; object-fit:cover; object-position:top; }
+    .p-ch { grid-template-columns:minmax(0,1fr); }
+    .p-open { height:190vh; }
+    .p-bay { aspect-ratio:4/5; width:100%; max-height:calc(100svh - 130px); }
+    .foot { justify-content:flex-start; }
+    .foot a:first-child { flex-basis:100%; }
+    .send, .ghost { width:100%; justify-content:center; }
+  }
+  @media (hover:none) { #peek { display:none; } .w-name i { font-variation-settings:"wdth" 62; } }
+  @media (prefers-reduced-motion:reduce) { .curtain { display:none; } .p-open { height:auto; } .p-pin { position:static; height:auto; } .p-shut, .p-hint { display:none; } .p-bay img { filter:none; } }
+</style>
+</head>
+<body>
+<div class="curtain" id="curtain" aria-hidden="true" style="--csign:#E8421F;--cfg:#FFF4E0;--cfont:Anybody,sans-serif;--cweight:900;--cstyle:normal"><b>Em's Burgers</b></div>
+<header class="top">
+  <a class="logo-chip" href="index.html"><img src="img/logo.png" alt="saneee.in home"></a>
+  <nav class="mono" aria-label="Main"><a href="index.html">Home</a><a href="work.html" aria-current="page">Work</a><a href="index.html#talk">Talk to us</a></nav>
+</header>
+<main style="--sign:#E8421F;--fg:#FFF4E0;--font:Anybody,sans-serif;--weight:900;--fstyle:normal;--paint:#FFD84D">
+  <section class="p-hero pad">
+    <p class="mono">Project 01 of 03</p>
+    <h1>Em's Burgers</h1>
+    <div class="p-sub mono"><span>Burger brand, Chembur</span><span>Scroll down. The shutter lifts.</span></div>
+  </section>
+  <section class="p-open" id="p-open" aria-label="Em's Burgers website">
+    <div class="p-pin">
+      <div class="p-bay" id="p-bay">
+        <img src="img/work-ems.webp" alt="Em's Burgers website">
+        <div class="p-shut" aria-hidden="true"><span>Keep going.</span></div>
+      </div>
+      <p class="p-hint mono">Keep scrolling</p>
+    </div>
+  </section>
+  <section class="p-story pad">
+    <dl class="p-basics mono-dt">
+      <div><dt class="mono">Business</dt><dd>Burger brand</dd></div>
+      <div><dt class="mono">Where</dt><dd>Chembur</dd></div>
+      <div><dt class="mono">Website</dt><dd><a href="https://emsburger.in" target="_blank" rel="noopener">emsburger.in ↗</a></dd></div>
+    </dl>
+    <p class="p-note mono">Draft: the boxes below are waiting for the real details</p>
+    <article class="p-ch"><h2><small>01</small>The problem</h2><p class="p-todo">To add: what Em's Burgers needed, and what wasn’t working before.</p></article>
+    <article class="p-ch"><h2><small>02</small>What we built</h2><p class="p-todo">To add: what saneee.in designed and built, with more screenshots.</p></article>
+    <article class="p-ch"><h2><small>03</small>What changed</h2><p class="p-todo">To add: real results, if Em's Burgers is happy to share them.</p></article>
+    <div class="p-cta">
+      <a class="send" href="https://emsburger.in" target="_blank" rel="noopener">Visit emsburger.in <span aria-hidden="true">↗</span></a>
+      <a class="ghost" href="index.html#talk">Fix my business next <span aria-hidden="true">→</span></a>
+      <a class="ghost" href="work.html">All the work</a>
+    </div>
+  </section>
+  <a class="p-next" href="work-vidhya.html" style="--sign:#1F3F86;--fg:#FFFFFF;--font:'Instrument Sans',sans-serif;--weight:500;--fstyle:normal" data-shop="Vidhya Tutorials" data-sign="#1F3F86" data-fg="#FFFFFF" data-font="&quot;Instrument Sans&quot;,sans-serif" data-weight="500" data-fstyle="normal"><span class="mono">Next shop on the street</span><b>Vidhya Tutorials →</b></a>
+</main>
+<footer class="foot pad mono">
+  <a href="index.html"><img src="img/logo.png" alt="saneee.in, back to home"></a>
+  <a href="work.html">All the work</a>
+  <a href="index.html#talk">Talk to us</a>
+  <a href="mailto:saneeedotin@gmail.com">saneeedotin@gmail.com</a>
+</footer>
+<script>
+const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const curtain = document.getElementById('curtain');
+function raise() { curtain.classList.remove('down', 'drop'); void curtain.offsetWidth; curtain.classList.add('up'); }
+if (!REDUCE) raise();
+// Going to a project: the shutter comes down first, in that shop's colours
+document.querySelectorAll('a[data-shop]').forEach((a) => a.addEventListener('click', (e) => {
+  if (REDUCE || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
+  e.preventDefault();
+  const s = a.dataset;
+  curtain.firstElementChild.textContent = s.shop;
+  ['--csign:' + s.sign, '--cfg:' + s.fg, '--cfont:' + s.font, '--cweight:' + s.weight, '--cstyle:' + s.fstyle].forEach((p) => { const i = p.indexOf(':'); curtain.style.setProperty(p.slice(0, i), p.slice(i + 1)); });
+  curtain.classList.remove('up');
+  curtain.classList.add('drop');
+  void curtain.offsetWidth;
+  curtain.classList.add('down');
+  curtain.classList.remove('drop');
+  setTimeout(() => { location.href = a.href; }, 440);
+}));
+// Coming back with the browser's back button
+addEventListener('pageshow', (e) => { if (e.persisted && !REDUCE) raise(); });
+
+const open = document.getElementById('p-open'), bay = document.getElementById('p-bay');
+if (REDUCE) { bay.style.setProperty('--o', 1); } else {
+  const update = () => {
+    const r = open.getBoundingClientRect(), span = r.height - innerHeight;
+    const p = Math.max(0, Math.min(1, (-r.top + innerHeight * .1) / Math.max(1, span * .85)));
+    bay.style.setProperty('--o', p.toFixed(3));
+    open.classList.toggle('opened', p > .9);
+  };
+  addEventListener('scroll', update, { passive: true });
+  addEventListener('resize', update);
+  update();
+}
+</script>
+</body>
+</html>

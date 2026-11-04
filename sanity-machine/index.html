@@ -212,93 +212,123 @@
   @media (hover:none) { .detail-art { display:block; } #svc-peek { width:min(46vw,300px); } }
   .addon {padding-top:18px; color:var(--muted); }
 
-  /* Your website in 10 seconds */
-  .build-form { display:grid; gap:18px; padding-block:clamp(20px,3vw,36px); border-top:1.5px solid var(--line); border-bottom:1.5px solid var(--line); }
-  .build-form fieldset { min-width:0; margin:0; padding:0; border:0; }
-  .build-form legend { padding:0; margin-bottom:8px; }
-  #build-name { display:block; width:100%; min-height:clamp(64px,8vw,104px); margin-top:8px; padding:0 clamp(14px,2vw,26px); background:transparent; color:var(--fg); border:1.5px solid var(--fg); border-radius:20px; font:800 clamp(24px,4vw,56px)/1 Anybody,sans-serif; font-variation-settings:"wdth" 72; }
-  #build-name::placeholder { color:var(--muted); opacity:.55; }
-  .build-types { display:flex; flex-wrap:wrap; gap:8px; }
-  .build-types label { position:relative; display:inline-flex; }
-  .build-types input { position:absolute; inset:0; opacity:0; margin:0; }
-  .build-types span { display:inline-flex; align-items:center; min-height:44px; padding:0 18px; border:1.5px solid var(--fg); border-radius:9999px; font:700 13px/1 "Space Mono",monospace; letter-spacing:.08em; text-transform:uppercase; transition:background .2s,color .2s; }
-  .build-types input:checked + span { background:var(--fg); color:var(--bg); }
-  .build-types input:focus-visible + span { outline:3px solid var(--green); outline-offset:3px; }
-  .build-form .send { justify-self:start; margin-top:0; }
-  #build-out { margin-top:clamp(24px,3vw,40px); }
-  .bframe { overflow:hidden; border-radius:clamp(14px,1.6vw,22px); background:#161616; border:1.5px solid rgba(246,245,240,.25); box-shadow:0 30px 80px rgba(0,0,0,.45); will-change:transform; }
-  .bframe-top { display:flex; align-items:center; gap:7px; min-height:40px; padding:0 14px; background:#1F1F1F; color:#C9C9C2; }
-  .bframe-top i { width:10px; height:10px; border-radius:50%; background:#4A4A46; }
-  .bframe-top span { margin-left:10px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; font-size:11px; letter-spacing:.08em; }
-  .bstage { position:relative; }
-  .bwork { display:grid; align-content:center; justify-items:center; gap:18px; min-height:clamp(380px,48vw,680px); padding:24px; color:var(--paper); text-align:center; }
-  .wire { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; width:min(100%,520px); }
-  .wire i { display:block; height:clamp(24px,4vw,48px); border-radius:8px; background:rgba(246,245,240,.1); opacity:.15; transition:opacity .4s,background .4s; }
-  .wire i:nth-child(1) { grid-column:span 3; height:clamp(14px,1.8vw,22px); }
-  .wire i:nth-child(2) { grid-column:span 2; height:clamp(50px,8vw,100px); }
-  .wire i:nth-child(3) { height:clamp(50px,8vw,100px); }
-  .wire i.on { opacity:1; }
-  .wire i.on:nth-child(2) { background:var(--green); }
-  .bbar { width:min(100%,520px); height:6px; overflow:hidden; border-radius:9999px; background:rgba(246,245,240,.14); }
-  .bbar i { display:block; width:100%; height:100%; transform:scaleX(0); transform-origin:left; background:var(--green); }
-  #bwork .skip { color:#A9A9A1; margin-top:0; }
-  .bresult { margin-top:18px; }
-  .blooks { display:flex; flex-wrap:wrap; gap:8px; }
-  .blooks button { min-height:44px; padding:0 18px; border:1.5px solid var(--fg); border-radius:9999px; font:700 13px/1 "Space Mono",monospace; letter-spacing:.08em; text-transform:uppercase; transition:background .2s,color .2s; }
-  .blooks button[aria-pressed=true] { background:var(--fg); color:var(--bg); }
+  /* The Before & After */
+  .ba-stage { position:relative; overflow:hidden; aspect-ratio:16/10; border-radius:clamp(14px,1.6vw,22px); border:1.5px solid rgba(246,245,240,.25); box-shadow:0 30px 80px rgba(0,0,0,.45); container-type:inline-size; user-select:none; -webkit-user-select:none; touch-action:pan-y; cursor:grab; will-change:transform; --p:6%; }
+  .ba-stage.dragging { cursor:grabbing; }
+  .ba-site { position:absolute; inset:0; overflow:hidden; }
+  .ba-new { clip-path:inset(0 calc(100% - var(--p)) 0 0); }
+  .ba-tag { position:absolute; z-index:4; bottom:7.4cqw; padding:.8cqw 1.6cqw; border-radius:9999px; background:var(--ink); color:var(--paper); font:700 clamp(10px,1.1cqw,14px)/1 "Space Mono",monospace; letter-spacing:.1em; text-transform:uppercase; pointer-events:none; transition:opacity .2s; }
+  .ba-tag.old { right:2cqw; }
+  .ba-tag.new { left:2cqw; background:var(--green); color:var(--ink); }
+  .ba-stage.tag-no-new .ba-tag.new, .ba-stage.tag-no-old .ba-tag.old, .ba-stage.done .ba-tag.new { opacity:0; }
+  .ba-handle { position:absolute; z-index:5; top:0; bottom:0; left:var(--p); width:3px; margin-left:-1.5px; background:var(--green); box-shadow:0 0 24px rgba(196,241,53,.8); pointer-events:none; }
+  .ba-grip { position:absolute; top:50%; left:50%; display:grid; place-items:center; width:clamp(48px,6cqw,76px); aspect-ratio:1; margin:calc(clamp(48px,6cqw,76px) / -2) 0 0 calc(clamp(48px,6cqw,76px) / -2); border-radius:50%; background:var(--green); color:var(--ink); box-shadow:0 8px 28px rgba(0,0,0,.45); font:900 clamp(16px,2cqw,26px)/1 Anybody,sans-serif; }
+  .ba-grip { transform:translateX(var(--gs,0px)); }
+  .ba-stage.dragging .ba-grip { transform:translateX(var(--gs,0px)) scale(.9); }
+  .ba-range { position:absolute; left:50%; bottom:0; width:1px; height:1px; margin:0; opacity:0; pointer-events:none; }
+  .ba-range:focus-visible ~ .ba-handle .ba-grip { outline:3px solid var(--paper); outline-offset:3px; }
+  .ba-stamp { position:absolute; z-index:4; bottom:6.6cqw; right:4cqw; padding:1.2cqw 2.2cqw; border:.5cqw solid #1E6B3C; border-radius:1.4cqw; color:#1E6B3C; font:900 3.4cqw/1 Anybody,sans-serif; text-transform:uppercase; font-variation-settings:"wdth" 80; transform:rotate(-9deg) scale(1.6); opacity:0; pointer-events:none; transition:opacity .12s, transform .3s cubic-bezier(.3,1.8,.5,1); }
+  .ba-stage.done .ba-stamp { opacity:1; transform:rotate(-9deg) scale(1); }
 
-  /* The generated concept: every size is relative to its own width */
-  .csite { --pad:4.4cqw; container-type:inline-size; background:var(--a); color:var(--b); overflow:hidden; }
-  .csite-in { display:flex; flex-direction:column; min-height:62cqw; }
-  .cs-nav { display:flex; align-items:center; justify-content:space-between; gap:3cqw; padding:2.6cqw var(--pad); font-size:1.5cqw; }
-  .cs-nav b { min-width:0; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; font-size:1.9cqw; }
-  .cs-links { display:flex; gap:2.6cqw; white-space:nowrap; }
-  .cs-btn { display:inline-block; padding:1cqw 2cqw; border-radius:9999px; background:var(--c); color:var(--a); font-size:1.5cqw; font-weight:800; white-space:nowrap; }
-  .cs-hero { position:relative; flex:1; display:grid; grid-template-columns:minmax(0,1.7fr) minmax(0,1fr); align-items:center; gap:3cqw; padding:1cqw var(--pad) 3cqw; }
-  .cs-kicker { margin:0 0 1.2cqw; font-size:1.5cqw; letter-spacing:.14em; text-transform:uppercase; }
-  .cs-name { margin:0; font-size:var(--nm); line-height:.98; overflow-wrap:anywhere; }
-  .cs-line { margin:1.8cqw 0 2.4cqw; max-width:30em; font-size:2.3cqw; line-height:1.3; }
-  .cs-hero .cs-btn { padding:1.4cqw 2.8cqw; font-size:1.9cqw; }
-  .cs-art { color:var(--c); }
-  .cs-art svg { display:block; width:100%; height:auto; overflow:visible; }
-  .cs-items { display:grid; grid-template-columns:repeat(3,1fr); margin:0 var(--pad) 3cqw; border-top:.2cqw solid currentColor; }
-  .cs-items span { padding:1.8cqw 0 0; font-size:2.2cqw; font-weight:700; }
-  .csite[data-look=bold] { font-family:"Bricolage Grotesque",Anybody,sans-serif; }
-  .csite[data-look=bold] .cs-name { font-weight:800; text-transform:uppercase; letter-spacing:-.03em; }
-  .csite[data-look=bold] .cs-art { transform:scale(1.1); }
-  .csite[data-look=elegant] { font-family:Fraunces,"Instrument Serif",serif; }
-  .csite[data-look=elegant] .cs-hero { grid-template-columns:minmax(0,1fr); justify-items:center; text-align:center; }
-  .csite[data-look=elegant] .cs-art { order:-1; width:12cqw; }
-  .csite[data-look=elegant] .cs-name { font-style:italic; font-weight:400; }
-  .csite[data-look=elegant] .cs-line { margin-inline:auto; }
-  .csite[data-look=elegant] .cs-btn { background:transparent; color:var(--b); border:.15cqw solid currentColor; font-weight:400; }
-  .csite[data-look=elegant] .cs-items { text-align:center; }
-  .csite[data-look=elegant] .cs-items span { font-weight:400; font-style:italic; }
-  .csite[data-look=play] { font-family:"Baloo 2","Instrument Sans",sans-serif; }
-  .csite[data-look=play] .cs-name { font-weight:800; }
-  .csite[data-look=play] .cs-art { padding:3cqw; border-radius:48% 52% 44% 56%; background:color-mix(in srgb,var(--c) 22%,transparent); transform:rotate(6deg); }
-  .csite[data-look=play] .cs-items { gap:1.6cqw; border:0; }
-  .csite[data-look=play] .cs-items span { padding:1.4cqw 2cqw; border-radius:2cqw; background:var(--c); color:var(--a); text-align:center; }
-  .csite[data-look=play] .cs-items span:nth-child(1) { transform:rotate(-2deg); }
-  .csite[data-look=play] .cs-items span:nth-child(3) { transform:rotate(2deg); }
-  @container (max-width:560px) {
-    .csite-in { min-height:0; }
-    .cs-nav { padding:4cqw; font-size:3.6cqw; }
-    .cs-nav b { font-size:4.4cqw; }
-    .cs-links { display:none; }
-    .cs-nav .cs-btn { padding:2cqw 3.4cqw; font-size:3.4cqw; }
-    .cs-hero, .csite[data-look=elegant] .cs-hero { grid-template-columns:minmax(0,1fr); padding:3cqw 5cqw 6cqw; gap:6cqw; }
-    .cs-kicker { font-size:3.2cqw; margin-bottom:2.6cqw; }
-    .cs-name { font-size:var(--nm-s); }
-    .cs-line { margin:3.6cqw 0 5cqw; font-size:5cqw; }
-    .cs-hero .cs-btn { padding:3cqw 6cqw; font-size:4.2cqw; }
-    .cs-art { width:44cqw; }
-    .csite[data-look=elegant] .cs-art { width:26cqw; }
-    .csite[data-look=bold] .cs-art { transform:none; margin-left:auto; }
-    .cs-items { grid-template-columns:1fr; margin:0 5cqw 6cqw; }
-    .cs-items span { padding:3cqw 0; font-size:4.6cqw; }
-    .csite[data-look=play] .cs-items { gap:3cqw; }
-    .csite[data-look=play] .cs-items span { padding:3cqw; border-radius:4cqw; }
+  /* The old website */
+  .ba-old { --w:"Comic Sans MS","Comic Neue","Chalkboard SE",cursive; background:#FFF200 repeating-conic-gradient(#FF9DE2 0 25%,#FFF200 0 50%) 0 0 / 3.2cqw 3.2cqw; color:#000; font-family:var(--w); }
+  .ba-marq { overflow:hidden; background:#000080; color:#FFFF00; font:700 1.5cqw/2.6cqw "Times New Roman",Times,serif; white-space:nowrap; }
+  .ba-marq span { display:inline-block; animation:bamarq 14s linear infinite; }
+  @keyframes bamarq { from { transform:translateX(0); } to { transform:translateX(-50%); } }
+  .ba-title { margin:1.4cqw 0 .6cqw; text-align:center; font:700 5.6cqw/1 var(--w); background:linear-gradient(90deg,#F00,#F80,#0A0,#00F,#A0F); -webkit-background-clip:text; background-clip:text; color:transparent; -webkit-text-stroke:.05cqw #000; transform:rotate(-1.4deg); }
+  .ba-est { margin:0 0 1cqw; text-align:center; font:700 1.5cqw/1.2 "Times New Roman",Times,serif; color:#D00; }
+  .ba-cols { display:grid; grid-template-columns:17cqw minmax(0,1fr) 20cqw; gap:1cqw; padding:0 1.4cqw; }
+  .ba-nav { align-self:start; padding:1cqw; border:.45cqw ridge #888; background:#C0C0C0; font:1.9cqw/2.1 "Times New Roman",Times,serif; }
+  .ba-nav u { display:block; color:#00E; }
+  .ba-nav b { color:#F00; animation:bablink 1.2s steps(2) infinite; }
+  @keyframes bablink { 50% { opacity:0; } }
+  .ba-body { padding:1cqw; background:#fff; border:.3cqw dashed #F00; font:1.42cqw/1.42 "Times New Roman",Times,serif; text-align:justify; }
+  .ba-body strong { display:block; margin-bottom:.5cqw; color:#00A; font:700 1.9cqw/1.1 var(--w); text-align:center; }
+  .ba-broken { display:flex; align-items:center; gap:.7cqw; width:60%; margin:1cqw auto; padding:4.4cqw 1cqw; border:.12cqw solid #888; color:#555; font:1.1cqw/1 Arial,sans-serif; }
+  .ba-broken i { flex:none; display:grid; place-items:center; width:1.8cqw; height:1.8cqw; border:.12cqw solid #888; color:#F00; font:700 1.3cqw/1 Arial,sans-serif; font-style:normal; }
+  .ba-side { display:grid; gap:1cqw; align-content:start; text-align:center; }
+  .ba-work { padding:1.5cqw .6cqw; background:repeating-linear-gradient(-45deg,#000 0 1.2cqw,#FC0 0 2.4cqw); }
+  .ba-work span { display:block; padding:.6cqw; background:#FC0; font:700 1.5cqw/1.1 var(--w); }
+  .ba-count { padding:.7cqw; border:.3cqw inset #999; background:#000; color:#0F0; font:700 1.5cqw/1.3 "Courier New",monospace; }
+  .ba-best { font:1.05cqw/1.25 "Times New Roman",Times,serif; background:#fff; padding:.5cqw; }
+  .ba-pop { position:absolute; left:34cqw; top:39cqw; width:31cqw; border:.3cqw outset #ccc; background:#C0C0C0; box-shadow:.7cqw .7cqw 0 rgba(0,0,0,.55); transform:rotate(3deg); font:1.3cqw/1.25 Arial,sans-serif; }
+  .ba-pop b { display:flex; justify-content:space-between; padding:.4cqw .7cqw; background:#000080; color:#fff; }
+  .ba-pop p { margin:0; padding:1cqw; text-align:center; font-family:var(--w); font-weight:700; font-size:1.8cqw; color:#D00; }
+  .ba-pho { position:absolute; left:1.4cqw; right:1.4cqw; bottom:.7cqw; text-align:center; font:.95cqw/1.2 "Times New Roman",Times,serif; color:#333; background:#fff; }
+
+  /* The new website */
+  .ba-new { display:flex; flex-direction:column; background:#FBF3E4; color:#2A1409; font-family:"Instrument Sans",sans-serif; }
+  .ba-new-nav { display:flex; align-items:center; gap:3cqw; padding:2.2cqw 4cqw; font-size:1.5cqw; font-weight:600; }
+  .ba-new-nav b { margin-right:auto; font:italic 400 3.1cqw/1 "Instrument Serif",serif; }
+  .ba-call { padding:1cqw 1.9cqw; border-radius:9999px; background:#C8421C; color:#FFF6E8; font-weight:700; white-space:nowrap; }
+  .ba-hero { flex:1; display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); gap:3cqw; padding:1cqw 4cqw 2.4cqw; min-height:0; }
+  .ba-hero-text { display:flex; flex-direction:column; justify-content:center; }
+  .ba-kick { margin:0 0 1.2cqw; font:700 1.25cqw/1 "Space Mono",monospace; letter-spacing:.14em; text-transform:uppercase; color:#C8421C; }
+  .ba-hl { margin:0; font:400 10cqw/.88 "Instrument Serif",serif; letter-spacing:-.025em; }
+  .ba-hl i { color:#C8421C; }
+  .ba-sub { margin:1.8cqw 0 2.2cqw; max-width:30em; font-size:1.8cqw; line-height:1.35; }
+  .ba-btns { display:flex; flex-wrap:wrap; gap:1cqw; }
+  .ba-btns span { padding:1.3cqw 2.4cqw; border-radius:9999px; background:#2A1409; color:#FBF3E4; font-size:1.6cqw; font-weight:700; }
+  .ba-btns span + span { background:transparent; color:#2A1409; box-shadow:inset 0 0 0 .15cqw #2A1409; }
+  .ba-menu { align-self:center; padding:2.2cqw; border-radius:2.2cqw; background:#C8421C; color:#FFF6E8; }
+  .ba-menu p { margin:0 0 1cqw; font:700 1.15cqw/1 "Space Mono",monospace; letter-spacing:.12em; text-transform:uppercase; }
+  .ba-menu li { display:block; padding:1cqw 0; border-top:.1cqw solid rgba(255,246,232,.4); font:400 2.5cqw/1 "Instrument Serif",serif; }
+  .ba-menu ul { margin:0; padding:0; list-style:none; }
+  .ba-strip { display:grid; grid-template-columns:repeat(3,auto); justify-content:space-between; gap:2cqw; padding:1.5cqw 4cqw; padding-right:14cqw; background:#2A1409; color:#FBF3E4; font-size:1.45cqw; font-weight:600; }
+  .ba-strip b { color:#FFC24B; font-weight:700; }
+
+  /* Fix notes */
+  .ba-notes { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:0 clamp(14px,2vw,28px); margin:clamp(18px,2.4vw,32px) 0 0; padding:0; list-style:none; }
+  .ba-note { display:grid; align-content:start; gap:10px; padding-top:12px; border-top:1.5px solid var(--line); transition:border-color .25s; }
+  .ba-note small { color:var(--muted); }
+  .ba-texts { display:grid; font-size:clamp(16px,1.5vw,21px); line-height:1.3; }
+  .ba-texts span { grid-area:1 / 1; transition:opacity .25s, transform .35s var(--ease); }
+  .ba-texts .was { color:var(--muted); text-decoration:line-through; text-decoration-thickness:1px; }
+  .ba-texts .now { opacity:0; transform:translateY(10px); font-weight:600; }
+  .ba-note.on { border-top-color:var(--accent); }
+  .ba-note.on small { color:var(--accent); }
+  .ba-note.on .was { opacity:0; transform:translateY(-10px); }
+  .ba-note.on .now { opacity:1; transform:none; }
+  .ba-foot { display:flex; flex-wrap:wrap; align-items:center; gap:12px 20px; margin-top:clamp(18px,2.4vw,32px); }
+  .ba-foot .send { margin-top:0; }
+  .ba-foot .mono { color:var(--muted); }
+  @media (prefers-reduced-motion:reduce) { .ba-marq span, .ba-nav b { animation:none; } }
+  @media (max-width:760px) {
+    .ba-stage { aspect-ratio:4/6.4; }
+    .ba-hero-text { justify-content:flex-start; }
+    .ba-notes { grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px 14px; }
+    .ba-old { background-size:7cqw 7cqw; }
+    .ba-marq { font-size:3.4cqw; line-height:6.4cqw; }
+    .ba-title { margin:3cqw 0 1cqw; font-size:11cqw; }
+    .ba-est { margin-bottom:3cqw; font-size:3cqw; }
+    .ba-cols { grid-template-columns:27cqw minmax(0,1fr); gap:2cqw; padding:0 2cqw; }
+    .ba-nav { padding:1.4cqw; font-size:3cqw; }
+    .ba-body { padding:1.6cqw; font-size:2.5cqw; }
+    .ba-body strong { font-size:3.4cqw; }
+    .ba-broken { width:90%; padding:7cqw 1.5cqw; font-size:2.2cqw; gap:1.4cqw; }
+    .ba-broken i { width:4cqw; height:4cqw; font-size:2.8cqw; }
+    .ba-side { grid-column:1 / -1; grid-template-columns:1fr 1fr; gap:2cqw; }
+    .ba-work span { font-size:3cqw; }
+    .ba-work { padding:2cqw 1.2cqw; }
+    .ba-count { align-self:center; font-size:3cqw; }
+    .ba-best { font-size:2.2cqw; padding:1cqw; }
+    .ba-pop { left:17cqw; top:92cqw; width:66cqw; font-size:2.8cqw; }
+    .ba-pop p { padding:2cqw; font-size:3.8cqw; }
+    .ba-pho { bottom:10cqw; font-size:2.1cqw; }
+    .ba-new-nav { padding:4cqw 5cqw; font-size:3.4cqw; }
+    .ba-new-nav b { font-size:7cqw; }
+    .ba-new-nav > span:not(.ba-call) { display:none; }
+    .ba-call { padding:2.2cqw 4cqw; }
+    .ba-hero { grid-template-columns:minmax(0,1fr); gap:4cqw; padding:1cqw 5cqw 4cqw; }
+    .ba-kick { margin-bottom:3cqw; font-size:2.8cqw; }
+    .ba-hl { font-size:20cqw; }
+    .ba-sub { margin:3.4cqw 0 4cqw; font-size:4.2cqw; }
+    .ba-btns { gap:2cqw; }
+    .ba-btns span { padding:3cqw 5cqw; font-size:3.8cqw; }
+    .ba-menu { display:none; }
+    .ba-strip { grid-template-columns:minmax(0,1fr); gap:1.4cqw; padding:3.4cqw 5cqw; padding-right:5cqw; font-size:3.5cqw; }
+    .ba-tag { bottom:28cqw; padding:1.6cqw 3cqw; }
+    .ba-stamp { bottom:29cqw; right:6cqw; padding:2cqw 3.4cqw; border-width:.9cqw; border-radius:2.4cqw; font-size:7cqw; }
   }
 
   /* The Shutter Street */
@@ -328,7 +358,10 @@
   .spray { position:absolute; left:8%; top:24%; right:8%; color:var(--paint,#C4F135); font:600 clamp(26px,3.4vw,52px)/.95 Caveat,cursive; text-align:left; transform:rotate(-6deg); opacity:.9; pointer-events:none; }
   .pull { position:absolute; left:50%; bottom:0; width:clamp(92px,12vw,150px); height:clamp(34px,7%,48px); min-height:34px; transform:translateX(-50%); display:grid; place-items:center; border-radius:10px 10px 0 0; background:#1A1A1E; color:var(--green); font:700 11px/1 "Space Mono",monospace; letter-spacing:.14em; text-transform:uppercase; touch-action:none; box-shadow:0 -2px 0 #4A4A50; }
   .shop-meta { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 2px clamp(18px,2.4vw,30px); color:#C9C9C2; }
-  .shop-meta:has(+ .shop-live) { padding-bottom:4px; }
+  .shop-meta { padding-bottom:4px; }
+  .shop-more { display:flex; align-items:center; gap:8px; min-height:44px; padding-inline:2px; color:var(--paper); text-decoration:underline; text-underline-offset:4px; }
+  .shop-more:last-child { margin-bottom:clamp(6px,1vw,14px); }
+  .work-all { margin-top:clamp(18px,2.4vw,32px); }
   .shop-live { display:inline-flex; align-items:center; min-height:44px; margin-bottom:clamp(6px,1vw,14px); padding-inline:2px; color:var(--green); text-decoration:underline; text-underline-offset:4px; }
   .dialog-actions { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:8px; }
   .pave { position:relative; z-index:1; height:clamp(38px,4vw,54px); margin-inline:calc(clamp(14px,3vw,44px) * -1); background:repeating-linear-gradient(90deg,#2A2A2F 0 118px,#1D1D21 118px 120px); border-top:3px solid #3F3F45; }
@@ -428,7 +461,7 @@
   <div class="hero-ui">
     <nav class="nav mono" aria-label="Main">
       <a class="wm" href="#top"><img src="img/logo.png" alt="saneee.in"></a>
-      <div class="links"><a href="#machine">The test</a><a href="#offers">Services</a><a href="#build">Your website</a><a href="#work">Work</a><a href="#people">People</a><a href="#talk">Talk to us</a></div>
+      <div class="links"><a href="#offers">Services</a><a href="#fix">Before &amp; after</a><a href="#work">Work</a><a href="#people">People</a><a href="#machine">The test</a><a href="#talk">Talk to us</a></div>
     </nav>
     <h1 class="voice">Designed to be distinguished.</h1>
     <p class="sub">Websites, custom software and AI automation that bring your business back to its senses. Mumbai.</p>
@@ -445,6 +478,95 @@
 </label>
 
 <main>
+  <div class="tape" aria-hidden="true"><div id="tape"></div></div>
+
+  <section id="vortex" aria-label="All the paperwork of a business coming together into one system">
+    <div class="vortex-pin">
+      <canvas id="tiles" aria-hidden="true"></canvas>
+      <p class="vortex-hint mono">Keep scrolling. Move your cursor through it.</p>
+      <p class="beat voice">Calls. Bills. Diaries. Spreadsheets.</p>
+      <p class="beat voice">All of it.</p>
+      <p class="beat voice">One system.</p>
+    </div>
+  </section>
+
+  <section id="offers" class="pad">
+    <div class="head"><h2 class="big"><em>What the machine</em><span class="wild" style="--r:2deg">actually <span class="g">makes.</span></span></h2><p class="mono">Run your cursor across the words.<br>Open any of them.</p></div>
+    <div id="offers-list"></div>
+  </section>
+
+  <section id="fix" class="pad">
+    <div class="head">
+      <h2 class="big"><em>Same business.</em><span class="wild" style="--r:-2deg">Now <span class="g">sane.</span></span></h2>
+      <p class="mono" id="ba-hint">Drag the handle across.<br>A made-up shop. A very real problem.</p>
+    </div>
+    <p class="vh">The same made-up sweet shop as a messy old website and as a clean new one. Move the slider to wipe from one to the other.</p>
+    <div class="ba-stage" id="ba-stage">
+      <div class="ba-site ba-old" aria-hidden="true">
+        <div class="ba-marq"><span>*** WELCOME TO THE OFFICIAL WEB SITE OF JOSHI SWEET MART *** BEST QUALITY *** BEST SERVICE *** NEW PAGE COMING SOON *** WELCOME TO THE OFFICIAL WEB SITE OF JOSHI SWEET MART *** BEST QUALITY *** BEST SERVICE *** NEW PAGE COMING SOON ***&nbsp;</span></div>
+        <p class="ba-title">JOSHI SWEET MART</p>
+        <p class="ba-est">!!! A Name Of Trust And Quality Since Long Time !!!</p>
+        <div class="ba-cols">
+          <div class="ba-nav"><u>Home</u><u>About Us</u><u>Our Vision</u><u>Gallery</u><u>Downloads</u><u>Contact Us</u><b>NEW!!</b></div>
+          <div class="ba-body">
+            <strong>~ Welcome Dear Visitors ~</strong>
+            We are pleased to inform that our esteemed organisation is a leading manufacturer, supplier and trader of all kinds of quality products as per the requirement of valued customers. Our dedicated team believes in total customer satisfaction through excellence in every field of activity and our vision is to be the best in the industry.
+            <span class="ba-broken"><i>x</i>photo1_final_new.jpg</span>
+            For more information kindly go to the Contact Us page and fill the enquiry form and our executive will revert in due course of time. Thanking you for your visit.
+          </div>
+          <div class="ba-side">
+            <div class="ba-work"><span>PAGE UNDER CONSTRUCTION</span></div>
+            <div class="ba-count">Visitors: 0004817</div>
+            <div class="ba-best">Best viewed in Internet Explorer at 800 x 600</div>
+            <div class="ba-work"><span>SIGN OUR GUESTBOOK</span></div>
+            <div class="ba-best">Hot Links: Weather &bull; Railway Time Table &bull; Free Screensavers</div>
+          </div>
+        </div>
+        <div class="ba-pop"><b><span>Message</span><span>X</span></b><p>SUBSCRIBE TO OUR NEWSLETTER NOW!!!</p></div>
+        <div class="ba-pho">For phone number kindly see Contact Us page &bull; Copyright all rights reserved</div>
+      </div>
+      <div class="ba-site ba-new" aria-hidden="true">
+        <div class="ba-new-nav"><b>Joshi’s</b><span>Menu</span><span>Order</span><span>Visit</span><span class="ba-call">Call the shop</span></div>
+        <div class="ba-hero">
+          <div class="ba-hero-text">
+            <p class="ba-kick">Mithai &amp; namkeen</p>
+            <p class="ba-hl">Fresh <i>every</i><br>morning.</p>
+            <p class="ba-sub">Sweets made in our own kitchen. Order by noon and collect them the same evening.</p>
+            <div class="ba-btns"><span>Order on WhatsApp</span><span>Today’s menu</span></div>
+          </div>
+          <div class="ba-menu"><p>Made today</p><ul><li>Kaju katli</li><li>Motichoor ladoo</li><li>Khaman dhokla</li><li>Fresh jalebi</li></ul></div>
+        </div>
+        <div class="ba-strip"><span><b>Open today</b> till 10 PM</span><span>Two minutes from the station</span><span>Free parking</span></div>
+      </div>
+      <span class="ba-tag old" aria-hidden="true">Before</span>
+      <span class="ba-tag new" aria-hidden="true">After</span>
+      <span class="ba-stamp" aria-hidden="true">Back to its senses</span>
+      <input class="ba-range" id="ba-range" type="range" min="0" max="100" value="6" aria-label="Wipe from the old website to the new one">
+      <div class="ba-handle" aria-hidden="true"><span class="ba-grip">⇆</span></div>
+    </div>
+    <ul class="ba-notes" id="ba-notes"></ul>
+    <div class="ba-foot">
+      <button class="send" id="ba-want" type="button">Do this to my website <span aria-hidden="true">→</span></button>
+      <p class="mono">Joshi’s is made up. Your website doesn’t have to be this bad to need it.</p>
+    </div>
+  </section>
+
+  <section id="work" class="pad">
+    <div class="head"><h2 class="big"><em>Businesses that</em><span class="wild" style="--r:-2deg">came out sane.</span></h2><p class="mono" id="street-hint">Grab a shutter.<br>Pull it up.</p></div>
+    <div class="street" id="street">
+      <span class="lamp l1" aria-hidden="true"></span><span class="lamp l2" aria-hidden="true"></span>
+      <div class="shops" id="shops"></div>
+      <div class="pave" aria-hidden="true"></div>
+    </div>
+    <a class="send work-all" href="work.html">Walk the whole street <span aria-hidden="true">→</span></a>
+  </section>
+
+  <section id="people" class="pad">
+    <div class="head"><h2 class="big"><em>The four people</em><span class="wild" style="--r:3deg">holding it together.</span></h2><p class="mono" id="team-hint">Hover over someone to meet them.</p></div>
+    <div class="people" id="team"></div>
+    <p class="voice team-line">Sanely built. Insanely good.</p>
+  </section>
+
   <section id="machine" class="pad">
     <div class="head">
       <h2 class="big"><em>Four questions. No judgement.</em><span class="wild" style="--r:-3deg">How sane is your<br><span class="g">business?</span></span></h2>
@@ -477,82 +599,6 @@
     </div>
     <p class="caption mono">An illustration of everyday chaos, not real client data.</p>
     </div>
-  </section>
-
-  <div class="tape" aria-hidden="true"><div id="tape"></div></div>
-
-  <section id="vortex" aria-label="All the paperwork of a business coming together into one system">
-    <div class="vortex-pin">
-      <canvas id="tiles" aria-hidden="true"></canvas>
-      <p class="vortex-hint mono">Keep scrolling. Move your cursor through it.</p>
-      <p class="beat voice">Calls. Bills. Diaries. Spreadsheets.</p>
-      <p class="beat voice">All of it.</p>
-      <p class="beat voice">One system.</p>
-    </div>
-  </section>
-
-  <section id="offers" class="pad">
-    <div class="head"><h2 class="big"><em>What the machine</em><span class="wild" style="--r:2deg">actually <span class="g">makes.</span></span></h2><p class="mono">Run your cursor across the words.<br>Open any of them.</p></div>
-    <div id="offers-list"></div>
-  </section>
-
-  <section id="build" class="pad">
-    <div class="head">
-      <h2 class="big"><em>Give the machine your name.</em><span class="wild" style="--r:2deg">Your website<br>in <span class="g">10 seconds.</span></span></h2>
-      <p class="mono">Try it with your business.<br>Nothing is saved or sent.</p>
-    </div>
-    <form id="build-form" class="build-form">
-      <div>
-        <label for="build-name" class="mono">Your business name</label>
-        <input id="build-name" type="text" maxlength="32" autocomplete="organization" placeholder="Amar Fast Food" required>
-      </div>
-      <fieldset>
-        <legend class="mono">What kind of business?</legend>
-        <div class="build-types" id="build-types"></div>
-      </fieldset>
-      <button class="send" id="build-go" type="submit">Build it <span aria-hidden="true">→</span></button>
-    </form>
-    <div id="build-out" hidden>
-      <div class="bframe" id="bframe">
-        <div class="bframe-top" aria-hidden="true"><i></i><i></i><i></i><span class="mono" id="bframe-title"></span></div>
-        <div class="bstage" id="bstage">
-          <div class="bwork" id="bwork">
-            <div class="wire" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
-            <p class="mono" id="blog" role="status"></p>
-            <div class="bbar" aria-hidden="true"><i id="bbar"></i></div>
-            <button class="skip mono" id="bskip" type="button">Skip the wait</button>
-          </div>
-          <div id="bsite" hidden></div>
-        </div>
-      </div>
-      <div class="bresult" id="bresult" hidden>
-        <div class="blooks" role="group" aria-label="Choose a style">
-          <button type="button" data-look="bold" aria-pressed="true">Bold</button>
-          <button type="button" data-look="elegant" aria-pressed="false">Elegant</button>
-          <button type="button" data-look="play" aria-pressed="false">Playful</button>
-        </div>
-        <div class="result-actions">
-          <button class="send" id="build-want" type="button">I want this <span aria-hidden="true">→</span></button>
-          <button class="copy" id="build-again" type="button">Try another name</button>
-        </div>
-        <p class="mono test-note">A quick concept with sample wording, not a finished site. The real one gets designed around your business.</p>
-      </div>
-    </div>
-  </section>
-
-  <section id="work" class="pad">
-    <div class="head"><h2 class="big"><em>Businesses that</em><span class="wild" style="--r:-2deg">came out sane.</span></h2><p class="mono" id="street-hint">Grab a shutter.<br>Pull it up.</p></div>
-    <div class="street" id="street">
-      <span class="lamp l1" aria-hidden="true"></span><span class="lamp l2" aria-hidden="true"></span>
-      <div class="shops" id="shops"></div>
-      <div class="pave" aria-hidden="true"></div>
-    </div>
-  </section>
-
-  <section id="people" class="pad">
-    <div class="head"><h2 class="big"><em>The four people</em><span class="wild" style="--r:3deg">holding it together.</span></h2><p class="mono" id="team-hint">Hover over someone to meet them.</p></div>
-    <div class="people" id="team"></div>
-    <p class="voice team-line">Sanely built. Insanely good.</p>
   </section>
 
   <section id="talk" class="pad">
@@ -1377,163 +1423,98 @@ if (!REDUCE) {
   });
 }
 
-/* ---------- Your website in 10 seconds ---------- */
-const ART = {
-  plate: '<circle cx="100" cy="100" r="78" fill="none" stroke="currentColor" stroke-width="9"/><circle cx="100" cy="100" r="46" fill="currentColor"/><path d="M14 40v42M26 40v42M38 40v42M26 82v92M186 34c-16 16-18 46-4 62v78" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/>',
-  ring: '<circle cx="100" cy="124" r="62" fill="none" stroke="currentColor" stroke-width="14"/><path d="M100 62 66 34l14-22h40l14 22Z" fill="currentColor"/>',
-  plus: '<circle cx="100" cy="100" r="90" fill="none" stroke="currentColor" stroke-width="8"/><path d="M78 40h44v38h38v44h-38v38H78v-38H40V78h38Z" fill="currentColor"/>',
-  book: '<path d="M100 48C78 28 44 26 14 34v126c30-8 64-6 86 14 22-20 56-22 86-14V34c-30-8-64-6-86 14Z" fill="none" stroke="currentColor" stroke-width="9" stroke-linejoin="round"/><path d="M100 48v126" stroke="currentColor" stroke-width="9"/><path d="M34 66c16-2 32 0 46 8M34 96c16-2 32 0 46 8M120 74c14-8 30-10 46-8M120 104c14-8 30-10 46-8" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/>',
-  scissors: '<circle cx="48" cy="150" r="30" fill="none" stroke="currentColor" stroke-width="10"/><circle cx="152" cy="150" r="30" fill="none" stroke="currentColor" stroke-width="10"/><path d="M64 124 142 14M136 124 58 14" fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="round"/>',
-  door: '<path d="M46 186V30c0-10 8-18 18-18h72c10 0 18 8 18 18v156" fill="none" stroke="currentColor" stroke-width="10"/><path d="M14 186h172" stroke="currentColor" stroke-width="10" stroke-linecap="round"/><path d="M78 100 148 30v156H78Z" fill="currentColor"/>',
-};
-const BUILD_TYPES = {
-  restaurant: { label: 'Restaurant', art: 'plate', line: 'Good food. Easy to find. Easier to order.', cta: 'See the menu', links: ['Menu', 'Reserve', 'Find us'], items: ['Today’s menu', 'Reserve a table', 'Order online'], pal: { bold: ['#E8421F', '#FFF4E0', '#FFC93C'], elegant: ['#F7F1E6', '#2B1D14', '#A4552A'], play: ['#FFE3C2', '#3A1C0E', '#E2502A'] } },
-  jeweller: { label: 'Jeweller', art: 'ring', line: 'Made to be kept. Chosen with care.', cta: 'See the collection', links: ['Collection', 'Bridal', 'Visit'], items: ['Bridal', 'Everyday wear', 'Visit the shop'], pal: { bold: ['#1B2A4A', '#F7EBD2', '#E3B04B'], elegant: ['#FBF6EE', '#3B1F2B', '#8F6C24'], play: ['#FFD6E4', '#7A1E48', '#C2185B'] } },
-  clinic: { label: 'Clinic', art: 'plus', line: 'Care close to home, without the long wait.', cta: 'Book a visit', links: ['Doctors', 'Treatments', 'Timings'], items: ['Meet the doctors', 'Treatments', 'Book a visit'], pal: { bold: ['#0B6E6E', '#F2FBF9', '#9BE8D8'], elegant: ['#F3F8F7', '#123B3B', '#1F7A6F'], play: ['#D9F4EE', '#0E4F4F', '#D9532F'] } },
-  coaching: { label: 'Coaching class', art: 'book', line: 'The right class. The right teachers. Real progress.', cta: 'Join a batch', links: ['Courses', 'Batches', 'Admissions'], items: ['Courses', 'New batches', 'Admissions open'], pal: { bold: ['#2337C6', '#FFFFFF', '#FFD23F'], elegant: ['#F5F4EF', '#1C2340', '#B5533C'], play: ['#E3E6FF', '#20246B', '#D9472A'] } },
-  salon: { label: 'Salon', art: 'scissors', line: 'Walk in tired. Walk out new.', cta: 'Book a slot', links: ['Hair', 'Skin', 'Bridal'], items: ['Hair', 'Skin', 'Bridal'], pal: { bold: ['#111111', '#FDF1EA', '#FF4F79'], elegant: ['#F8F0EA', '#3A2A2A', '#A65562'], play: ['#FCE1E4', '#6B2737', '#7B2CBF'] } },
-  other: { label: 'Something else', art: 'door', line: 'Good work, easy to find, simple to get started.', cta: 'Get in touch', links: ['What we do', 'About', 'Contact'], items: ['What we do', 'Our work', 'Get in touch'], pal: { bold: ['#14532D', '#F4F9E9', '#C4F135'], elegant: ['#F4F2EC', '#20241F', '#4F6B42'], play: ['#FFF1B8', '#3D3200', '#C65300'] } },
-};
-const buildForm = $('#build-form'), buildOut = $('#build-out'), bframe = $('#bframe'), bwork = $('#bwork'), bsite = $('#bsite'), bresult = $('#bresult'), blog = $('#blog'), bbar = $('#bbar');
-const buildName = $('#build-name');
-const escapeHtml = (s) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const LOOK_NAMES = { bold: 'Bold', elegant: 'Elegant', play: 'Playful' };
-let buildState = null, buildRun = 0, buildFontsAsked = false;
+/* ---------- The Before & After ---------- */
+const baStage = $('#ba-stage'), baRange = $('#ba-range');
+const BA_NOTES = [
+  { at: 22, was: 'Phone number hidden on another page.', now: 'Customers can now find your phone number.' },
+  { at: 44, was: 'Tiny text you have to pinch to read.', now: 'Reads properly on any phone.' },
+  { at: 66, was: 'Nobody can tell what you actually sell.', now: 'People see what you sell straight away.' },
+  { at: 88, was: 'Looks closed, even when you are open.', now: 'Looks like a business worth paying.' },
+];
+$('#ba-notes').innerHTML = BA_NOTES.map((n, i) => `<li class="ba-note"><small class="mono">Fix ${i + 1}</small><p class="ba-texts" style="margin:0"><span class="was">${n.was}</span><span class="now">${n.now}</span></p></li>`).join('');
+const baNoteEls = $$('.ba-note');
+const baPos = { p: 6 };
+let baTouched = false;
 
-$('#build-types').innerHTML = Object.entries(BUILD_TYPES).map(([k, t], i) => `<label><input type="radio" name="build-type" value="${k}" ${i ? '' : 'checked'}><span>${t.label}</span></label>`).join('');
-
-function loadBuildFonts() {
-  if (buildFontsAsked) return;
-  buildFontsAsked = true;
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = 'https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;800&family=Bricolage+Grotesque:wght@500;800&family=Fraunces:ital,wght@0,400;1,400&display=swap';
-  document.head.appendChild(link);
+function setBa(p) {
+  baPos.p = gsap.utils.clamp(0, 100, p);
+  baStage.style.setProperty('--p', baPos.p + '%');
+  baRange.value = Math.round(baPos.p);
+  baRange.setAttribute('aria-valuetext', `${Math.round(baPos.p)}% of the new website showing`);
+  baNoteEls.forEach((el, i) => el.classList.toggle('on', baPos.p >= BA_NOTES[i].at));
+  baStage.classList.toggle('done', baPos.p >= 96);
+  baStage.classList.toggle('tag-no-new', baPos.p < 16);
+  baStage.classList.toggle('tag-no-old', baPos.p > 84);
+  const w = baStage.clientWidth, x = baPos.p / 100 * w, half = $('.ba-grip').offsetWidth / 2 + 6;
+  baStage.style.setProperty('--gs', Math.max(half - x, 0) - Math.max(x + half - w, 0) + 'px');
 }
-buildName.addEventListener('focus', loadBuildFonts, { once: true });
-
-function renderConcept(animate) {
-  const { name, type, look } = buildState;
-  const t = BUILD_TYPES[type], [a, b, c] = t.pal[look], safe = escapeHtml(name);
-  const longest = Math.max(...name.split(/\s+/).map((w) => [...w].length), 1);
-  const wide = look === 'bold' ? .68 : .56;
-  const room = look === 'elegant' ? 80 : 54;
-  const nm = Math.min(room / (longest * wide), look === 'elegant' ? 10 : 11);
-  const nmS = Math.min(88 / (longest * wide), 20);
-  bsite.innerHTML = `<div class="csite" data-look="${look}" role="img" aria-label="${LOOK_NAMES[look]} homepage concept for ${safe}" style="--a:${a};--b:${b};--c:${c};--nm:${nm.toFixed(2)}cqw;--nm-s:${nmS.toFixed(2)}cqw">
-    <div class="csite-in" aria-hidden="true">
-      <div class="cs-nav"><b>${safe}</b><span class="cs-links">${t.links.map((l) => `<span>${l}</span>`).join('')}</span><span class="cs-btn">${t.cta}</span></div>
-      <div class="cs-hero">
-        <div class="cs-text"><p class="cs-kicker">${t.label === 'Something else' ? 'Welcome' : t.label}</p><p class="cs-name">${safe}</p><p class="cs-line">${t.line}</p><span class="cs-btn">${t.cta} →</span></div>
-        <div class="cs-art"><svg viewBox="0 0 200 200" aria-hidden="true">${ART[t.art]}</svg></div>
-      </div>
-      <div class="cs-items">${t.items.map((i) => `<span>${i}</span>`).join('')}</div>
-    </div>
-  </div>`;
-  if (REDUCE || !animate) return;
-  const root = $('.csite', bsite);
-  gsap.timeline()
-    .from($('.cs-nav', root), { y: -24, opacity: 0, duration: .5, ease: 'expo.out', clearProps: 'all' })
-    .from($$('.cs-text > *', root), { y: 34, opacity: 0, duration: .65, stagger: .08, ease: 'expo.out', clearProps: 'transform,opacity' }, .08)
-    .from($('.cs-art svg', root), { scale: .5, rotation: -30, opacity: 0, duration: .9, ease: 'back.out(1.8)', clearProps: 'all' }, .15)
-    .from($$('.cs-items span', root), { y: 26, opacity: 0, duration: .5, stagger: .07, ease: 'expo.out', clearProps: 'opacity' }, .35);
+function touchBa() {
+  if (baTouched) return;
+  baTouched = true;
+  gsap.killTweensOf(baPos);
 }
+const baAt = (e) => { const r = baStage.getBoundingClientRect(); return (e.clientX - r.left) / r.width * 100; };
 
-function finishBuild(run) {
-  if (run !== buildRun) return;
-  buildRun++;
-  bwork.hidden = true;
-  bsite.hidden = false;
-  bresult.hidden = false;
-  $('#bframe-title').textContent = `Concept for ${buildState.name}`;
-  renderConcept(true);
-  if (!REDUCE) gsap.fromTo(bframe, { rotationX: 14, y: 30, transformPerspective: 1200 }, { rotationX: 0, y: 0, duration: 1, ease: 'expo.out' });
-  setTimeout(() => ScrollTrigger.refresh(), 200);
-}
-
-buildForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  if (!buildForm.reportValidity()) return;
-  const name = buildName.value.trim();
-  if (!name) { buildName.value = ''; buildForm.reportValidity(); return; }
-  loadBuildFonts();
-  const type = new FormData(buildForm).get('build-type');
-  buildState = { name, type, look: 'bold' };
-  $$('.blooks button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.look === 'bold'));
-  const run = ++buildRun;
-  buildOut.hidden = false;
-  bwork.hidden = false;
-  bsite.hidden = true;
-  bresult.hidden = true;
-  $('#bframe-title').textContent = 'Machine running';
-  ScrollTrigger.refresh();
-  lenis ? lenis.scrollTo(buildOut, { offset: -40 }) : buildOut.scrollIntoView();
-  const wires = $$('.wire i');
-  wires.forEach((w) => w.classList.remove('on'));
-  if (REDUCE) { finishBuild(run); return; }
-  const steps = [`Reading “${name}”`, `Thinking like a ${BUILD_TYPES[type].label.toLowerCase()}`.replace('a something else', 'your business'), 'Choosing the type', 'Mixing the colours', 'Laying out the page', 'Polishing'];
-  gsap.fromTo(bbar, { scaleX: 0 }, { scaleX: 1, duration: steps.length * .95, ease: 'none' });
-  for (let i = 0; i < steps.length; i++) {
-    if (run !== buildRun) return;
-    blog.textContent = steps[i] + '...';
-    if (wires[i]) wires[i].classList.add('on');
-    await new Promise((r) => setTimeout(r, 950));
-  }
-  try { await Promise.race([Promise.all([document.fonts.load('800 40px "Bricolage Grotesque"'), document.fonts.load('italic 40px Fraunces'), document.fonts.load('800 40px "Baloo 2"')]), new Promise((r) => setTimeout(r, 1200))]); } catch { /* fallback fonts still look fine */ }
-  finishBuild(run);
+let baPointer = null, baLastX = 0;
+const baTilt = REDUCE ? null : gsap.quickTo(baStage, 'rotationY', { duration: .6, ease: 'expo.out' });
+gsap.set(baStage, { transformPerspective: 1400 });
+baStage.addEventListener('pointerdown', (e) => {
+  touchBa();
+  baPointer = e.pointerId;
+  baLastX = e.clientX;
+  baStage.setPointerCapture(e.pointerId);
+  baStage.classList.add('dragging');
+  // A finger may be starting a scroll, so only a mouse jumps straight to the spot
+  if (e.pointerType !== 'touch') setBa(baAt(e));
 });
+baStage.addEventListener('pointermove', (e) => {
+  if (e.pointerId !== baPointer) return;
+  setBa(baAt(e));
+  if (baTilt) baTilt(gsap.utils.clamp(-6, 6, (e.clientX - baLastX) * .5));
+  baLastX = e.clientX;
+});
+const baRelease = (e) => {
+  if (e.pointerId !== baPointer) return;
+  baPointer = null;
+  baStage.classList.remove('dragging');
+  if (baTilt) baTilt(0);
+};
+baStage.addEventListener('pointerup', baRelease);
+baStage.addEventListener('pointercancel', baRelease);
+baRange.addEventListener('input', () => { touchBa(); setBa(+baRange.value); });
+baStage.addEventListener('click', () => baRange.focus({ preventScroll: true }));
+setBa(6);
 
-$('#bskip').addEventListener('click', () => { gsap.killTweensOf(bbar); finishBuild(buildRun); });
+// Show once that it moves, then leave it to the visitor
+if (!REDUCE) {
+  ScrollTrigger.create({
+    trigger: baStage, start: 'top 65%', once: true,
+    onEnter: () => {
+      if (baTouched) return;
+      gsap.timeline({ onUpdate: () => setBa(baPos.p) })
+        .to(baPos, { p: 34, duration: .9, ease: 'power2.inOut' })
+        .to(baPos, { p: 14, duration: .8, ease: 'power2.inOut' });
+    },
+  });
+}
 
-$$('.blooks button').forEach((b) => b.addEventListener('click', () => {
-  if (!buildState) return;
-  buildState.look = b.dataset.look;
-  $$('.blooks button').forEach((x) => x.setAttribute('aria-pressed', x === b));
-  renderConcept(true);
-  setTimeout(() => ScrollTrigger.refresh(), 200);
-}));
-
-$('#build-want').addEventListener('click', () => {
-  const { name, type, look } = buildState;
-  const kind = type === 'other' ? 'my business' : `my ${BUILD_TYPES[type].label.toLowerCase()}`;
+$('#ba-want').addEventListener('click', () => {
   $('#form-done').hidden = true;
   $('#talk-form').hidden = false;
   const msg = $('#confess');
-  msg.value = `I tried the 10-second website for ${kind}, ${name}, and liked the ${LOOK_NAMES[look]} style. I’d like to talk about a real one.`;
-  msg.dispatchEvent(new Event('input'));
-  $('#f-business').value = name;
+  if (!msg.value.trim()) {
+    msg.value = 'I tried the Before & After on your site. I’d like the same for my website.';
+    msg.dispatchEvent(new Event('input'));
+  }
   lenis ? lenis.scrollTo('#talk') : $('#talk').scrollIntoView();
   $('#f-name').focus({ preventScroll: true });
 });
 
-$('#build-again').addEventListener('click', () => {
-  buildRun++;
-  buildOut.hidden = true;
-  buildState = null;
-  ScrollTrigger.refresh();
-  lenis ? lenis.scrollTo(buildForm, { offset: -40 }) : buildForm.scrollIntoView();
-  buildName.focus({ preventScroll: true });
-  buildName.select();
-});
-
-if (!COARSE && !REDUCE) {
-  const tx = gsap.quickTo(bframe, 'rotationX', { duration: .8, ease: 'expo.out' });
-  const ty = gsap.quickTo(bframe, 'rotationY', { duration: .8, ease: 'expo.out' });
-  bframe.addEventListener('pointermove', (e) => {
-    if (bsite.hidden) return;
-    const r = bframe.getBoundingClientRect();
-    gsap.set(bframe, { transformPerspective: 1400 });
-    ty(((e.clientX - r.left) / r.width - .5) * 5);
-    tx(-((e.clientY - r.top) / r.height - .5) * 4);
-  });
-  bframe.addEventListener('pointerleave', () => { tx(0); ty(0); });
-}
-
 /* ---------- The Shutter Street ---------- */
 const JOBS = [
-  { name: "Em's Burgers", kind: 'Burger brand, Chembur', img: 'img/work-ems.webp', live: 'https://emsburger.in', liveLabel: 'emsburger.in', sign: '#E8421F', fg: '#FFF4E0', font: 'Anybody,sans-serif', paint: '#FFD84D', spray: 'Pull me.' },
-  { name: 'Vidhya Tutorials', kind: 'Coaching institute', img: 'img/work-vidya.webp', sign: '#1F3F86', fg: '#FFFFFF', font: '"Instrument Sans",sans-serif', weight: 500, paint: '#BFD8FF', spray: 'Class is inside.' },
-  { name: 'Studio Memento', kind: 'Permanent jewellery, Dombivli', img: 'img/work-studiomemento.webp', live: 'https://studiomemento.co.in', liveLabel: 'studiomemento.co.in', sign: '#FF9DB0', fg: '#174A97', font: '"Instrument Serif",serif', weight: 400, style: 'italic', paint: '#FFB8E0', spray: 'Something shiny?' },
+  { name: "Em's Burgers", page: 'work-ems.html', kind: 'Burger brand, Chembur', img: 'img/work-ems.webp', live: 'https://emsburger.in', liveLabel: 'emsburger.in', sign: '#E8421F', fg: '#FFF4E0', font: 'Anybody,sans-serif', paint: '#FFD84D', spray: 'Pull me.' },
+  { name: 'Vidhya Tutorials', page: 'work-vidhya.html', kind: 'Coaching institute', img: 'img/work-vidya.webp', sign: '#1F3F86', fg: '#FFFFFF', font: '"Instrument Sans",sans-serif', weight: 500, paint: '#BFD8FF', spray: 'Class is inside.' },
+  { name: 'Studio Memento', page: 'work-memento.html', kind: 'Permanent jewellery, Dombivli', img: 'img/work-studiomemento.webp', live: 'https://studiomemento.co.in', liveLabel: 'studiomemento.co.in', sign: '#FF9DB0', fg: '#174A97', font: '"Instrument Serif",serif', weight: 400, style: 'italic', paint: '#FFB8E0', spray: 'Something shiny?' },
 ];
 $('#shops').innerHTML = JOBS.map((j, i) => `
   <article class="shop" data-i="${i}" style="--sign:${j.sign};--signfg:${j.fg};--signfont:${j.font.replace(/"/g, "'")};--signweight:${j.weight || 900};--signstyle:${j.style || 'normal'};--paint:${j.paint};--o:0">
@@ -1549,6 +1530,7 @@ $('#shops').innerHTML = JOBS.map((j, i) => `
     </div>
     <div class="shop-glow" aria-hidden="true"></div>
     <p class="shop-meta mono"><span>${j.kind}</span></p>
+    <a class="shop-more mono" href="${j.page}">See the full project <span aria-hidden="true">→</span></a>
     ${j.live ? `<a class="shop-live mono" href="${j.live}" target="_blank" rel="noopener">Visit ${j.liveLabel} <span aria-hidden="true">↗</span></a>` : ''}
   </article>`).join('');
 
@@ -2085,7 +2067,7 @@ function build3D() {
 
 /* ---------- Phone menu and folded slider ---------- */
 const siteMenu = $('#site-menu'), menuBtn = $('#menu-btn');
-[['#machine', 'The test'], ['#offers', 'Services'], ['#build', 'Your website'], ['#work', 'Work'], ['#people', 'People'], ['#talk', 'Talk to us']].forEach(([to, label]) => {
+[['#offers', 'Services'], ['#fix', 'Before & after'], ['#work', 'Work'], ['#people', 'People'], ['#machine', 'The test'], ['#talk', 'Talk to us']].forEach(([to, label]) => {
   const a = document.createElement('a');
   a.href = to;
   a.textContent = label;
@@ -2132,6 +2114,9 @@ fonts.then(() => {
   renderQuestion(0);
   setChaos(+dial.value);
   ScrollTrigger.refresh();
+  // Arriving from the Work pages with a section in the link
+  const arrive = location.hash && document.getElementById(location.hash.slice(1));
+  if (arrive) lenis ? lenis.scrollTo(arrive, { immediate: true, force: true }) : arrive.scrollIntoView();
 });
 let rt;
 addEventListener('resize', () => {
