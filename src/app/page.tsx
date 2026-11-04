@@ -1,50 +1,52 @@
-import FloatingHeader from "@/components/FloatingHeader";
-import HeroWordmark from "@/components/HeroWordmark";
-import HeroMediaPanel from "@/components/HeroMediaPanel";
-import ScrollManifesto from "@/components/ScrollManifesto";
-import HomeWorks from "@/components/HomeWorks";
-import HomeAbout from "@/components/HomeAbout";
-import HomeWhyUs from "@/components/HomeWhyUs";
-import Marquee from "@/components/Marquee";
-import CraftDetails from "@/components/CraftDetails";
-import Footer from "@/components/Footer";
-import FlimCommandDock from "@/components/FlimCommandDock";
+import Link from "next/link";
+import WorldSwitch from "@/components/WorldSwitch";
 
-export default function Home() {
+const SERVICES = [
+  ["Websites", "Business websites, landing pages, portfolios and online stores. Fast on every phone, and looked after once live."],
+  ["Custom software", "Web and mobile apps, customer portals, internal tools and dashboards, with the right access for each person."],
+  ["Business systems", "CRM and ERP-style systems, inventory, booking, billing and simple reports, so paper and spreadsheets stop running your day."],
+  ["AI & automation", "Assistants, automatic reminders and workflows, and help with documents and data, so your people get time back."],
+  ["UI/UX & product design", "Research, user flows, wireframes, visual design and design systems for websites, dashboards and products."],
+  ["Branding & creative", "Brand identity, logos, graphic design and marketing material that all feel like one business."],
+  ["Digital marketing", "Social media, Meta ads, creative content and a plan for how customers find you online."],
+];
+
+export default function SaneHome() {
   return (
-    <main className="min-h-screen bg-[#F6F5F0] text-[#0A0A0A] relative selection:bg-[#C4F135] selection:text-[#0A0A0A]">
-      {/* 9.1 Floating Pill Header */}
-      <FloatingHeader />
+    <main className="sane">
+      <section id="hero" data-chapter="hero" className="hero">
+        <nav className="nav" aria-label="Main">
+          <Link href="/"><img src="/img/logo.png" alt="saneee.in, home" /></Link>
+          <div className="links">
+            <a href="#services">Services</a>
+            <a href="#contact">Talk to us</a>
+            <WorldSwitch />
+          </div>
+        </nav>
+        <p className="lede">Designed to be distinguished.</p>
+        <p className="hint">Move your cursor. Press and hold to cross.</p>
+        <h1 className="word" style={{ "--ratio": 4.977 } as React.CSSProperties}>SANEEE</h1>
+      </section>
 
-      {/* 9.2 Hero Section (Studio Card + 9-Cell Service Workbench) */}
-      <HeroWordmark />
+      <section id="services" data-chapter="services" className="section">
+        <p className="label">01 / Services</p>
+        <h2 className="h2-serif">What the studio makes.</h2>
+        <ul className="rows">
+          {SERVICES.map(([name, text]) => (
+            <li key={name}>
+              <h3>{name}</h3>
+              <p>{text}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
 
-      {/* 9.3 Hero Media Panel (3D Specular Chrome Orb + Credo Ticker) */}
-      <HeroMediaPanel />
-
-      {/* Scroll-Driven Typographic Manifesto (Inspired by Onlines) */}
-      <ScrollManifesto />
-
-      {/* 9.4 Selected Works (Pinned Stacking Panels + 4 Case Studies) */}
-      <HomeWorks />
-
-      {/* 9.5 About — Senior Collective Human Orbit (3 Concentric Rings) */}
-      <HomeAbout />
-
-      {/* 9.6 Why Us — Bento Grid (3 Architectural Pillars) */}
-      <HomeWhyUs />
-
-      {/* 9.7 Infinite Marquee */}
-      <Marquee />
-
-      {/* Craft & Inseparable Disciplines (Design + Engineering Unity) */}
-      <CraftDetails />
-
-      {/* 9.9 Footer (4 Live LCD Clocks, Dual-Theme, Contacts & Sitemap) */}
-      <Footer />
-
-      {/* 9.8 Command Dock (Cmd+K Modal Filter) */}
-      <FlimCommandDock />
+      <section id="contact" data-chapter="contact" className="section dark">
+        <p className="label">02 / Contact</p>
+        <h2 className="h2">Tell us what you need.</h2>
+        <p className="body">Websites, software and systems for businesses that want to work better and grow. Mumbai, India.</p>
+        <a className="reach" href="mailto:saneeedotin@gmail.com">saneeedotin@gmail.com</a>
+      </section>
     </main>
   );
 }

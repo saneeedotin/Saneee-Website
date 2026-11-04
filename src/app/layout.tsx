@@ -1,67 +1,40 @@
 import type { Metadata, Viewport } from "next";
-import { Syne, Inter, Space_Mono } from "next/font/google";
+import { Instrument_Sans, Instrument_Serif } from "next/font/google";
 import "./globals.css";
-import SmoothScroll from "@/components/SmoothScroll";
-import CustomCursor from "@/components/CustomCursor";
+import Portal from "@/components/portal/Portal";
 
-const syne = Syne({
+const sans = Instrument_Sans({
   subsets: ["latin"],
-  variable: "--font-syne",
-  weight: ["600", "700", "800"],
+  variable: "--font-sans",
+  weight: ["400", "500"],
   display: "swap",
 });
 
-const inter = Inter({
+// shortcut: stand-in for Voyage, swap when the licensed files arrive.
+const serif = Instrument_Serif({
   subsets: ["latin"],
-  variable: "--font-inter",
-  weight: ["300", "400", "500"],
-  display: "swap",
-});
-
-const spaceMono = Space_Mono({
-  subsets: ["latin"],
-  variable: "--font-space-mono",
-  weight: ["400", "700"],
+  variable: "--font-serif",
+  weight: "400",
+  style: ["normal", "italic"],
   display: "swap",
 });
 
 export const viewport: Viewport = {
-  themeColor: "#0A0A0A",
+  themeColor: "#080808",
 };
 
 export const metadata: Metadata = {
   title: "saneee.in — Designed to be distinguished.",
   description:
-    "Premium digital presence studio in Mumbai. Websites, apps, UI/UX, brand identity, social media marketing, product and graphic design, and AI automations for ambitious businesses.",
-  icons: {
-    icon: "/logo/final_logo-removebg-preview.svg",
-    apple: "/logo/short sane logo.png",
-  },
-  openGraph: {
-    title: "saneee.in — Designed to be distinguished.",
-    description:
-      "Premium digital presence studio & engineering collective. World-class digital front doors for ambitious businesses.",
-    url: "https://saneee.in",
-    siteName: "saneee.in",
-    type: "website",
-  },
+    "Websites, custom software, business systems and AI automation for businesses that want to work better and grow. Mumbai.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="en"
-      className={`${syne.variable} ${inter.variable} ${spaceMono.variable}`}
-    >
-      <body className="antialiased bg-[#F6F5F0] text-[#0A0A0A] font-body selection:bg-[#C4F135] selection:text-[#0A0A0A]">
-        <SmoothScroll>
-          <CustomCursor />
-          {children}
-        </SmoothScroll>
+    <html lang="en" className={`${sans.variable} ${serif.variable}`}>
+      <body>
+        {children}
+        <Portal />
       </body>
     </html>
   );

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Saneee font test</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  @font-face { font-family:"Saneee Brand"; src:url("/fonts/saneee-brand-regular.woff2?v=3") format("woff2"); font-weight:400; font-display:swap; }
+  html { font-synthesis:none; }
+  body { margin:0; font-family:"Instrument Sans",sans-serif; }
+  section { padding:clamp(24px,5vw,72px); }
+  .brand { font-family:"Saneee Brand",sans-serif; }
+  .serif { font-family:"Instrument Serif",serif; font-style:italic; }
+  .paper { background:#F6F6EF; color:#080808; }
+  .ink { background:#080808; color:#F6F6EF; }
+  .lime { background:#C7FF2E; color:#080808; }
+  .tag { font-size:13px; opacity:.65; margin:0 0 16px; }
+  h1,h2,h3,p { margin:0; font-weight:400; }
+  .d { font-size:clamp(3.5rem,8.5vw,8.5rem); line-height:.96; letter-spacing:-.02em; }
+  .h2 { font-size:clamp(2.1rem,4vw,4rem); line-height:1.08; }
+  .chars { font-size:clamp(1.6rem,3.4vw,3.2rem); line-height:1.25; overflow-wrap:anywhere; }
+  .ui { display:flex; flex-wrap:wrap; gap:24px; align-items:center; font-size:15px; }
+  .btn { padding:14px 22px; border-radius:999px; background:#080808; color:#F6F6EF; }
+  .lab { font-size:13px; letter-spacing:.08em; text-transform:uppercase; }
+  .pair { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:32px; align-items:center; }
+  .body { max-width:60ch; font-size:17px; line-height:1.65; margin-top:20px; }
+  img { width:100%; max-width:560px; display:block; }
+</style>
+</head>
+<body>
+<section class="ink">
+  <p class="tag">Typed in the font vs the real logo</p>
+  <div class="pair">
+    <p class="brand" style="font-size:clamp(3rem,8vw,7rem);line-height:1">saneee.in</p>
+    <img src="/logo/font-test-logo.png" alt="Real logo">
+  </div>
+</section>
+<section class="paper">
+  <p class="tag">Display, Sane</p>
+  <h1 class="brand d">Designed to be distinguished.</h1>
+  <h2 class="h2" style="margin-top:32px"><span class="serif">Ideas that</span> <span class="brand">move.</span></h2>
+  <p class="body">We build websites, custom software and AI automation for businesses that want to work better and grow. This paragraph is the body sans, set beside the display face to check the pairing.</p>
+</section>
+<section class="lime">
+  <p class="tag">Display, Insane</p>
+  <h1 class="brand d">INSANELY GOOD.<br>SANELY BUILT.</h1>
+  <h2 class="brand h2" style="margin-top:32px">Your website is your first impression.</h2>
+</section>
+<section class="paper">
+  <p class="tag">Every character</p>
+  <p class="brand chars">ABCDEFGHIJKLMNOPQRSTUVWXYZ</p>
+  <p class="brand chars">abcdefghijklmnopqrstuvwxyz</p>
+  <p class="brand chars">0123456789</p>
+  <p class="brand chars">. , : ; ! ? ' " ’ “ ” - – — / ( ) &amp; + % # @ → ↗ ←</p>
+</section>
+<section class="paper">
+  <p class="tag">Real words, spacing check</p>
+  <p class="brand h2">Websites, custom software &amp; AI automation.</p>
+  <p class="brand h2">Businesses that came out sane.</p>
+  <p class="brand h2">The four people holding it together.</p>
+  <p class="brand h2">AVAILABLE Q4/25 — WAVE LYNX TOWN FLY KEY?</p>
+  <p class="brand h2">Hardik, Param, Smit &amp; Teesha. Mumbai, India.</p>
+  <p class="brand h2">Talk to us → saneeedotin@gmail.com</p>
+</section>
+<section class="ink">
+  <p class="tag">Small UI sizes, the real test</p>
+  <div class="ui brand"><span>Services</span><span>Work</span><span>People</span><span>Talk to us</span><span class="btn" style="background:#C7FF2E;color:#080808">Book a call →</span></div>
+  <p class="brand lab" style="margin-top:24px">01 / Selected work — Digital studio / 2026</p>
+  <p class="brand" style="margin-top:16px;font-size:12px;letter-spacing:.08em;text-transform:uppercase">12px label: Mumbai, India</p>
+  <p class="brand" style="margin-top:16px;font-size:16px;max-width:60ch;line-height:1.6">16px paragraph, for reference only: we build websites, custom software and AI automation for businesses that want to work better and grow.</p>
+</section>
+</body>
+</html>
