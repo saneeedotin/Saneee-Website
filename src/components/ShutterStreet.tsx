@@ -8,6 +8,10 @@ import ShutterLink from "./ShutterLink";
 const OPEN_SECONDS = 0.8;
 const CLOSE_SECONDS = 0.45;
 
+// Starts with the words on the shutter, so voice control users can say what they see.
+const shutterName = (project: Project, isOpen: boolean) =>
+  `${project.spray} Pull to ${isOpen ? "close" : "open"} the shutter of ${project.name}`;
+
 function Shop({ project }: { project: Project }) {
   const shop = useRef<HTMLElement>(null);
   const button = useRef<HTMLButtonElement>(null);
@@ -24,7 +28,7 @@ function Shop({ project }: { project: Project }) {
   const finish = () => {
     const isOpen = open.current > 0.5;
     button.current?.setAttribute("aria-expanded", String(isOpen));
-    button.current?.setAttribute("aria-label", `${isOpen ? "Close" : "Open"} the shutter of ${project.name}`);
+    button.current?.setAttribute("aria-label", shutterName(project, isOpen));
   };
 
   const settle = (target: number) => {
@@ -67,7 +71,7 @@ function Shop({ project }: { project: Project }) {
           className="shutter"
           type="button"
           aria-expanded="false"
-          aria-label={`Open the shutter of ${project.name}`}
+          aria-label={shutterName(project, false)}
           onPointerDown={(e) => {
             // With a finger only the handle drags, so the rest of the shutter still scrolls the page.
             if (e.pointerType !== "mouse" && !(e.target as Element).closest(".pull")) return;

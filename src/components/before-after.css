@@ -1,7 +1,7 @@
 .ba-stage { --grip: clamp(44px, 6cqw, 64px); position: relative; overflow: hidden; margin-top: clamp(32px, 5vw, 64px); aspect-ratio: 16 / 10; border: 1px solid #08080833; container-type: inline-size; user-select: none; -webkit-user-select: none; touch-action: pan-y; cursor: ew-resize; }
 .ba-site { position: absolute; inset: 0; overflow: hidden; }
 .ba-new { clip-path: inset(0 calc(100% - var(--p)) 0 0); }
-.ba-tag { position: absolute; z-index: 4; bottom: 7.4cqw; padding: 0.8cqw 1.6cqw; background: var(--ink); color: var(--paper); font: 400 clamp(11px, 1.1cqw, 14px)/1.2 var(--font-brand); letter-spacing: 0.08em; text-transform: uppercase; pointer-events: none; }
+.ba-tag { position: absolute; z-index: 4; bottom: 7.4cqw; padding: 0.8cqw 1.6cqw; background: var(--ink); color: var(--paper); font: 400 clamp(12px, 1.1cqw, 14px)/1.2 var(--font-brand); letter-spacing: 0.08em; text-transform: uppercase; pointer-events: none; }
 .ba-tag.old { right: 2cqw; }
 .ba-tag.new { left: 2cqw; background: var(--lime); color: var(--ink); }
 .ba-handle { position: absolute; z-index: 5; top: 0; bottom: 0; left: var(--p); width: 2px; margin-left: -1px; background: var(--ink); pointer-events: none; }
@@ -42,7 +42,7 @@
 .ba-call { padding: 1cqw 1.9cqw; border-radius: 9999px; background: #c8421c; color: #fff6e8; white-space: nowrap; }
 .ba-hero { flex: 1; display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 3cqw; padding: 1cqw 4cqw 2.4cqw; min-height: 0; }
 .ba-hero-text { display: flex; flex-direction: column; justify-content: center; }
-.ba-kick { margin: 0 0 1.2cqw; font-size: 1.25cqw; line-height: 1; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #c8421c; }
+.ba-kick { margin: 0 0 1.2cqw; font-size: 1.25cqw; line-height: 1; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #b83a17; }
 .ba-hl { margin: 0; font: 400 10cqw/0.88 var(--font-editorial); letter-spacing: -0.025em; }
 .ba-hl i { color: #c8421c; }
 .ba-sub { margin: 1.8cqw 0 2.2cqw; max-width: 30em; font-size: 1.8cqw; line-height: 1.35; }

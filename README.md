@@ -1,98 +1,55 @@
-# saneee.in — Designed to be distinguished.
+# saneee.in
 
-> **Digital Presence Studio & Engineering Collective**  
-> Sub-second, mobile-first flagships engineered to convert and distinguish your brand.
+The studio's website, in two worlds. **Sane** (`/`) is the clear editorial site. **Insane** (`/insane`) is the same studio in black on green. The cursor is the door between them: move it to look through, press and hold to cross.
 
----
+Built with Next.js (static export), React, TypeScript and `three`, hosted on Firebase Hosting.
 
-## 🌐 Live Deployments
-- **Production (Firebase CDN)**: [https://saneee-web-2026.web.app](https://saneee-web-2026.web.app)
-- **Alternate Mirror**: [https://saneee-web-2026.firebaseapp.com](https://saneee-web-2026.firebaseapp.com)
+## Run it
 
----
-
-## ⚡ Architecture & Tech Stack
-- **Framework**: [Next.js 15](https://nextjs.org/) (App Router, Static Export `output: "export"`)
-- **Runtime / UI**: React 19, TypeScript (Strict Mode)
-- **Styling**: Tailwind CSS v4, Vanilla CSS Design System Tokens
-- **Smooth Scrolling**: [Lenis Smooth Scroll](https://github.com/darkroomengineering/lenis)
-- **Icons**: [Lucide React](https://lucide.dev/)
-- **Hosting**: Firebase Hosting with global edge CDN caching
-
----
-
-## 🎨 Brand Design Tokens
-- **Ink**: `#0A0A0A`
-- **Paper**: `#F6F5F0`
-- **Cursor Green**: `#C4F135` (High-contrast focal accent)
-- **Depth**: `#141414`
-- **Mist**: `#E2E1DC`
-- **Ash**: `#7C7C76`
-
-### Typography
-- **Display**: `Syne` (600, 700, 800)
-- **Body**: `Inter` (300, 400, 500)
-- **Labels & HUD**: `Space Mono` (400, 700)
-
----
-
-## 📂 Project Structure
-```
-saneee-web/
-├── public/
-│   ├── logo/          # Brand wordmarks & kinetic MP4 video reel
-│   ├── team/          # Core team portrait photographs
-│   └── works/         # Pinned case study visual captures
-├── src/
-│   ├── app/           # Next.js App Router (layout, page, globals)
-│   ├── components/    # Modular UI components
-│   │   ├── FloatingHeader.tsx    # Frosted pill nav with sub-label
-│   │   ├── HeroWordmark.tsx      # HUD bar & 9-discipline workbench
-│   │   ├── HeroMediaPanel.tsx    # Kinetic brand video reel player
-│   │   ├── ScrollManifesto.tsx   # Word-by-word scrubbed manifesto
-│   │   ├── HomeWorks.tsx         # Pinned stacking case study cards
-│   │   ├── HomeAbout.tsx         # Concentric human orbit rings
-│   │   ├── HomeWhyUs.tsx         # Bento grid with Lighthouse 100/100 bar
-│   │   ├── Marquee.tsx           # Infinite edge-masked marquee
-│   │   ├── CraftDetails.tsx      # Design vs Engineering tab switcher
-│   │   ├── Footer.tsx            # Dual-theme footer with 4 live LCD clocks
-│   │   ├── FlimCommandDock.tsx   # Cmd+K quick filter modal
-│   │   └── CustomCursor.tsx      # Magnet cursor with morphing state
-│   ├── data/          # Typed data layers (projects, services, team, industries)
-│   └── types/         # Strict TypeScript schemas
-├── firebase.json      # Firebase Hosting configuration
-└── package.json
-```
-
----
-
-## 🛠️ Development & Build
-
-### Install Dependencies
 ```bash
 npm install
 ```
 
-### Run Locally
 ```bash
 npm run dev
-# Open http://localhost:3000
 ```
 
-### Static Production Build
+## Build it
+
+Stop `npm run dev` first: both use `.next`, and running them together breaks the build.
+
 ```bash
 npm run build
-# Compiles static HTML/CSS/JS export into the /out directory
 ```
 
-### Deploy to Firebase
+The site is exported to `out/`. To check it the way it will be served:
+
 ```bash
-firebase deploy --only hosting
+npx serve out
 ```
 
----
+## How it fits together
 
-## 📩 Contact
-- **Email**: [saneeedotin@gmail.com](mailto:saneeedotin@gmail.com)
-- **Instagram**: [@saneeedotin](https://instagram.com/saneeedotin)
-- **Location**: Mumbai, Maharashtra, India
+| Where | What |
+|---|---|
+| `src/app/(sane)/` | Sane pages |
+| `src/app/insane/` | Insane pages |
+| `src/components/portal/` | The cursor portal: shader, posters, and the path between worlds |
+| `src/components/Vortex.tsx` | The first scroll of the Sane home page |
+| `src/components/BeforeAfter.tsx` | The before/after wipe |
+| `src/components/ShutterStreet.tsx` | The shutter street on Insane |
+| `src/components/ContactForm.tsx` | Contact form, sent through formsubmit.co |
+| `src/data/` | Services, projects and team. Sane and Insane copy sit side by side |
+| `tools/font/` | Builds the Saneee font and logo SVGs from the artwork in `logo/` |
+| `sanity-machine/` | The earlier prototype, kept for reference until launch |
+
+Each page section sets `data-chapter` (`hero`, `services`, `work`, `people`, `contact`). The portal uses it to choose which poster to show and where to land when crossing. Anything with `data-portal-off` keeps the portal closed, for controls that need a press or drag.
+
+Type and colour follow `logo/typography.md` in the brand folder.
+
+## Before launch
+
+- Replace Instrument Serif with the licensed Voyage files. It's a stand-in, marked in `src/app/layout.tsx`.
+- Add the case study write-ups. Case study pages only show facts and a screenshot for now.
+- Send one real message through the contact form, because formsubmit.co needs the address activated once.
+- Test on real phones and on the Firebase preview channel.

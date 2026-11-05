@@ -72,6 +72,7 @@ img { display: block; max-width: 100%; height: auto; }
 .nav { position: fixed; z-index: 40; inset: 0 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px var(--gutter); font-family: var(--font-brand); font-size: 15px; }
 .nav { transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1); }
 .sane .nav { color: #fff; mix-blend-mode: difference; }
+.insane .nav { background: var(--lime); } /* Black text can't sit on the dark client colours of a case study. */
 .nav-away:not(:focus-within) { transform: translateY(-100%); }
 .sane .nav-solid { color: var(--ink); background: var(--paper); mix-blend-mode: normal; }
 .sane .nav-solid .nav-logo img { filter: invert(1); }
@@ -223,7 +224,7 @@ img { display: block; max-width: 100%; height: auto; }
 .shops { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(18px, 3vw, 44px); align-items: start; }
 .shop { min-width: 0; }
 .sign { display: flex; align-items: center; justify-content: center; min-height: clamp(52px, 6vw, 84px); padding: 8px 12px; text-align: center; }
-.sign h3 { font-family: var(--font-brand); font-size: clamp(1.1rem, 2.2vw, 2.2rem); line-height: 1.1; }
+.sign h3 { font-family: var(--font-brand); font-size: clamp(1.5rem, 2.2vw, 2.2rem); line-height: 1.1; } /* Client colours only reach 3:1, which needs large text. */
 .bay { position: relative; overflow: hidden; aspect-ratio: 16 / 11; background: var(--ink); border: clamp(4px, 0.6vw, 8px) solid var(--ink); touch-action: pan-y; }
 .bay img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
 .shutter { position: absolute; inset: 0; display: block; width: 100%; height: 100%; overflow: hidden; transform: translateY(calc(var(--o, 0) * -93%)); background: repeating-linear-gradient(#080808 0 7px, #2b2b2b 7px 9px); touch-action: pan-y; user-select: none; -webkit-user-select: none; cursor: ns-resize; will-change: transform; }
@@ -242,6 +243,7 @@ img { display: block; max-width: 100%; height: auto; }
 .case-sign { display: grid; align-content: end; gap: 12px; min-height: 80svh; padding: clamp(110px, 14vw, 180px) var(--gutter) clamp(24px, 4vw, 48px); }
 .case-sign h1 { font-family: var(--font-brand); font-size: clamp(3rem, 11vw, 11rem); line-height: 1.02; letter-spacing: -0.015em; overflow-wrap: anywhere; }
 .case-sign .voice { font-size: var(--text-h2); }
+.case-sign .label { justify-self: start; padding: 4px 8px; background: var(--ink); color: var(--lime); } /* Small text can't rely on client colours for contrast. */
 .case-body .shot { margin-top: 0; border: 1.5px solid var(--ink); }
 .case-next { display: grid; gap: 8px; padding: clamp(32px, 5vw, 64px) var(--gutter); background: var(--ink); color: var(--lime); }
 

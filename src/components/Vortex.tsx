@@ -361,7 +361,7 @@ export default function Vortex() {
       };
     };
 
-    // Waits until the section is close, so the 3D library isn't part of the first load.
+    // The hero fills the screen, so this waits for the first scroll: the 3D library isn't part of the first load.
     const near = new IntersectionObserver(([e]) => {
       if (!e.isIntersecting) return;
       near.disconnect();
@@ -369,7 +369,7 @@ export default function Vortex() {
         console.warn("Vortex is off:", err);
         section.current?.classList.add("vortex-static");
       });
-    }, { rootMargin: "100% 0px" });
+    }, { rootMargin: "-1px 0px" }); // At rest the section's edge touches the screen's, which already counts as intersecting.
     near.observe(section.current!);
 
     return () => {
