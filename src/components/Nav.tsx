@@ -14,8 +14,8 @@ const LINKS: Record<World, { href: string; label: string }[]> = {
   ],
   insane: [
     { href: "/insane/about", label: "Who we are" },
-    { href: "/insane/services", label: "We make" },
-    { href: "/insane/work", label: "Work" },
+    { href: "/insane/services", label: "What we make" },
+    { href: "/insane/work", label: "Our work" },
     { href: "/insane/contact", label: "Say hi" },
   ],
 };
