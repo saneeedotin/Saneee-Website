@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Instrument_Sans, Instrument_Serif } from "next/font/google";
 import "./globals.css";
+import Loader, { LOAD_SCRIPT } from "@/components/Loader";
 import Portal from "@/components/portal/Portal";
 import ScrollMotion from "@/components/ScrollMotion";
 
@@ -48,14 +49,17 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${sans.variable} ${serif.variable}`}>
+    // The load script writes data-load and data-world before React hydrates, so the attributes differ on purpose.
+    <html lang="en" className={`${sans.variable} ${serif.variable}`} suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: LOAD_SCRIPT }} />
         <link rel="preload" href="/fonts/saneee-brand-regular.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
       </head>
       <body>
         {children}
         <Portal />
         <ScrollMotion />
+        <Loader />
       </body>
     </html>
   );

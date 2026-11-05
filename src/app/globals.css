@@ -286,6 +286,22 @@ html { scrollbar-gutter: stable; } /* Locking scroll would otherwise drop the sc
 .case-body .shot { margin-top: 0; border: 1.5px solid var(--ink); }
 .case-next { display: grid; gap: 8px; padding: clamp(32px, 5vw, 64px) var(--gutter); background: var(--ink); color: var(--lime); }
 
+/* Loader. The load script in layout.tsx sets data-load before first paint; without JS it never shows. */
+.loader { position: fixed; inset: 0; z-index: 90; display: none; background: var(--ink); color: var(--lime); }
+html[data-load] .loader { display: block; }
+html[data-load] { overflow: hidden; }
+html[data-world="insane"] .loader { background: var(--lime); color: var(--ink); }
+.loader-mark { position: absolute; left: 50%; top: 50%; width: clamp(72px, 12vmin, 140px); height: auto; translate: -50% -50%; overflow: visible; }
+.loader-mark path { fill: currentColor; fill-opacity: 0; stroke: currentColor; stroke-width: 6; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
+html[data-load="cover"] .loader-mark path { fill-opacity: 1; stroke: none; }
+/* The intro's stage is a copy of the hero, sized and lettered by the same rules, so it lands on it exactly. */
+.loader-stage { position: absolute; inset: 0 0 auto; height: 100svh; min-height: 520px; container-type: inline-size; visibility: hidden; }
+.loader-stage[data-world="sane"] { color: var(--paper); }
+.loader-stage .word span { display: inline-block; }
+.loader-base { display: inline-block; width: 0; height: 0; }
+html[data-load="intro"][data-world="insane"] .loader-stage[data-world="insane"],
+html[data-load="intro"][data-world="sane"] .loader-stage[data-world="sane"] { visibility: visible; opacity: 0; }
+
 /* Footer */
 .footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 32px; padding: 24px var(--gutter); font-family: var(--font-brand); font-size: 15px; }
 .sane .footer { background: var(--ink); color: var(--paper); }
