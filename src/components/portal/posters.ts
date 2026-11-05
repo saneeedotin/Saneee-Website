@@ -55,7 +55,10 @@ export const paintPoster = (world: World, chapter: string, w: number, h: number)
     ctx.fillText(word, g, h - g - size * 0.025);
     const lineSize = Math.max(26, Math.min(64, w * 0.04));
     ctx.font = serifFont(lineSize);
-    ctx.fillText(line, g, 14 + lineSize * 0.9); // Matches `.lede`, which sits where the logo usually is.
+    // Matches `.lede`: where the logo usually is, or just above the word on phones.
+    const dpr = Math.min(devicePixelRatio || 1, 1.5);
+    const lineY = w / dpr <= 760 ? h - g - size * 0.71 - 20 * dpr - lineSize * 0.2 : 14 + lineSize * 0.9;
+    ctx.fillText(line, g, lineY);
     return canvas;
   }
 

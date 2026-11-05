@@ -14,7 +14,7 @@ export default function InsaneHome() {
   return (
     <>
       <section id="hero" data-chapter="hero" className="hero">
-        <p className="lede">Sanely built. Insanely good.</p>
+        <p className="lede" style={{ "--ratio": 4.492 } as React.CSSProperties}>Sanely built. Insanely good.</p>
         <h1 className="word" style={{ "--ratio": 4.492 } as React.CSSProperties}>INSANE</h1>
       </section>
 
