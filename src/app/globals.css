@@ -153,9 +153,6 @@ html { scrollbar-gutter: stable; } /* Locking scroll would otherwise drop the sc
 .projects a { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 2fr) auto; align-items: baseline; gap: 8px 32px; padding: 22px 0; border-top: 1px solid #08080833; }
 .projects .arrow { font-family: var(--font-brand); font-size: var(--text-h4); transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1); }
 .projects a:hover .arrow, .projects a:focus-visible .arrow { transform: translateX(8px); }
-.work-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: clamp(32px, 4vw, 56px) clamp(16px, 2vw, 32px); margin-top: clamp(32px, 5vw, 72px); }
-.work-grid img { width: 100%; aspect-ratio: 8 / 5; object-fit: cover; object-position: top; margin-bottom: 16px; border: 1px solid #08080833; }
-.work-grid p { color: var(--grey); }
 @media (max-width: 640px) { .projects a { grid-template-columns: minmax(0, 1fr) auto; } .projects a span:not(.arrow) { grid-row: 2; } }
 
 /* Work folders. The extra top room is where open files rise into. */
