@@ -1,5 +1,7 @@
 import ContactForm from "@/components/ContactForm";
+import Link from "next/link";
 import Evidence from "@/components/Evidence";
+import ReachList from "@/components/ReachList";
 import TeamBadges from "@/components/TeamBadges";
 import { services } from "@/data/services";
 
@@ -38,6 +40,7 @@ export default function InsaneHome() {
             </li>
           ))}
         </ul>
+        <Link className="button spaced" href="/insane/services">What&rsquo;s in each <span aria-hidden="true">→</span></Link>
       </section>
 
       <Evidence />
@@ -46,6 +49,7 @@ export default function InsaneHome() {
         <p className="label">The people</p>
         <h2 className="display">Who to blame.</h2>
         <TeamBadges />
+        <Link className="button spaced" href="/insane/about">More about us <span aria-hidden="true">→</span></Link>
       </section>
 
       <section id="contact" data-chapter="contact" className="section">
@@ -53,11 +57,7 @@ export default function InsaneHome() {
         <h2 className="display">We read everything. Even the long ones.</h2>
         <div className="contact">
           <ContactForm />
-          <ul className="reach-list">
-            <li><span className="label">Email</span><a href="mailto:saneeedotin@gmail.com">saneeedotin@gmail.com</a></li>
-            <li><span className="label">Instagram</span><a href="https://www.instagram.com/saneeedotin/" target="_blank" rel="noopener">saneeedotin <span aria-hidden="true">↗</span></a></li>
-            <li><span className="label">Where</span>Mumbai, India</li>
-          </ul>
+          <ReachList />
         </div>
       </section>
     </>

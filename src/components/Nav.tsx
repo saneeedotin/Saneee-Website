@@ -7,16 +7,16 @@ import type { World } from "./portal/world";
 
 const LINKS: Record<World, { href: string; label: string }[]> = {
   sane: [
-    { href: "/#services", label: "Services" },
+    { href: "/about", label: "About" },
+    { href: "/services", label: "Services" },
     { href: "/work", label: "Work" },
-    { href: "/#people", label: "People" },
-    { href: "/#contact", label: "Talk to us" },
+    { href: "/contact", label: "Contact" },
   ],
   insane: [
-    { href: "/insane#services", label: "We make" },
+    { href: "/insane/about", label: "Who we are" },
+    { href: "/insane/services", label: "We make" },
     { href: "/insane/work", label: "Work" },
-    { href: "/insane#people", label: "People" },
-    { href: "/insane#contact", label: "Say hi" },
+    { href: "/insane/contact", label: "Say hi" },
   ],
 };
 

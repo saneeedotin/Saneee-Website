@@ -1,6 +1,7 @@
 import Link from "next/link";
 import ContactForm from "@/components/ContactForm";
 import HeroMorph from "@/components/HeroMorph";
+import ReachList from "@/components/ReachList";
 import TeamBadges from "@/components/TeamBadges";
 import TheFix from "@/components/TheFix";
 import { projects } from "@/data/projects";
@@ -23,6 +24,7 @@ export default function SaneHome() {
               </li>
             ))}
           </ul>
+          <Link className="button-ghost spaced" href="/services">What each one includes <span aria-hidden="true">→</span></Link>
         </div>
       </section>
 
@@ -53,6 +55,7 @@ export default function SaneHome() {
           <h2 className="h-editorial">The four people holding it together.</h2>
         </div>
         <TeamBadges />
+        <Link className="button-ghost spaced" href="/about">More about us <span aria-hidden="true">→</span></Link>
       </section>
 
       <section id="contact" data-chapter="contact" className="section chapter dark">
@@ -61,11 +64,7 @@ export default function SaneHome() {
           <h2 className="h1 flush">Tell us what you need.</h2>
           <div className="contact">
             <ContactForm />
-            <ul className="reach-list">
-              <li><span className="label">Email</span><a href="mailto:saneeedotin@gmail.com">saneeedotin@gmail.com</a></li>
-              <li><span className="label">Instagram</span><a href="https://www.instagram.com/saneeedotin/" target="_blank" rel="noopener">saneeedotin <span aria-hidden="true">↗</span></a></li>
-              <li><span className="label">Where</span>Mumbai, India</li>
-            </ul>
+            <ReachList />
           </div>
         </div>
       </section>

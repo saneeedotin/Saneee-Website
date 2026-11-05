@@ -130,6 +130,7 @@ html { scrollbar-gutter: stable; } /* Locking scroll would otherwise drop the sc
 /* Sections */
 .section { padding: clamp(72px, 10vw, 150px) var(--gutter); }
 .page-top { min-height: 100svh; padding-top: clamp(110px, 14vw, 180px); }
+.page-top.fit { min-height: 0; } /* A short intro that hands straight on to the next section. */
 .dark { background: var(--ink); color: var(--paper); }
 .chapter { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 4fr); gap: 16px clamp(16px, 2vw, 32px); }
 .chapter > .label { padding-top: 0.6em; }
@@ -156,6 +157,35 @@ html { scrollbar-gutter: stable; } /* Locking scroll would otherwise drop the sc
 .work-grid img { width: 100%; aspect-ratio: 8 / 5; object-fit: cover; object-position: top; margin-bottom: 16px; border: 1px solid #08080833; }
 .work-grid p { color: var(--grey); }
 @media (max-width: 640px) { .projects a { grid-template-columns: minmax(0, 1fr) auto; } .projects a span:not(.arrow) { grid-row: 2; } }
+
+/* Work folders. The extra top room is where open files rise into. */
+.folders { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(40px, 5vw, 72px) clamp(16px, 3vw, 48px); margin-top: clamp(72px, 9vw, 140px); justify-items: center; }
+@media (max-width: 1100px) { .folders { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 700px) { .folders { grid-template-columns: minmax(0, 1fr); } }
+.folders li { width: 100%; display: flex; justify-content: center; }
+.gf-root.gf-brand { font-family: var(--font-body); }
+.gf-brand .gf-title { font-family: var(--font-brand); font-weight: 400; }
+
+/* Services page */
+.service-list { margin-top: clamp(32px, 5vw, 72px); padding: 0; list-style: none; border-bottom: 1px solid #08080833; }
+.service-list li { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 6fr) minmax(0, 6fr); gap: 8px 32px; padding: clamp(24px, 3vw, 40px) 0; border-top: 1px solid #08080833; }
+.service-list .label { padding-top: 0.8em; }
+.service-list .voice { grid-column: 2; }
+.service-list p:last-child { grid-column: 3; grid-row: 1 / span 2; max-width: 52ch; }
+@media (max-width: 900px) { .service-list li { grid-template-columns: minmax(0, 1fr); } .service-list .voice, .service-list p:last-child { grid-column: auto; grid-row: auto; } .service-list .label { padding-top: 0; } }
+.poster-text { margin-top: 12px; max-width: 46ch; }
+
+/* Long text: privacy */
+.prose { max-width: 68ch; }
+.prose .h-editorial, .prose .display { margin: 0 0 16px; }
+.prose h2 { margin-top: 40px; }
+.prose p:not(.label) { margin-top: 12px; font-size: var(--text-body-lg); }
+.prose a { text-decoration: underline; text-underline-offset: 4px; }
+
+/* 404 */
+.lost { display: grid; align-content: center; justify-items: start; gap: 24px; min-height: 100svh; }
+.lost svg { width: clamp(96px, 14vw, 180px); height: auto; fill: var(--lime); }
+.lost-links { display: flex; flex-wrap: wrap; gap: 12px; }
 
 /* Contact */
 .contact { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 80px); margin-top: clamp(32px, 5vw, 64px); }

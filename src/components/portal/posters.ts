@@ -9,12 +9,14 @@ const HEROES: Record<World, { word: string; line: string }> = {
 // Insane shouts in the brand face. Sane speaks in the editorial serif.
 const POSTERS: Record<World, Record<string, string[]>> = {
   insane: {
+    about: ["FOUR", "PEOPLE.", "ZERO", "TEMPLATES."],
     services: ["WE MAKE", "THINGS", "PROPERLY"],
     work: ["THE", "EVIDENCE"],
     people: ["WHO", "TO BLAME"],
     contact: ["SAY HI.", "WE READ", "EVERYTHING"],
   },
   sane: {
+    about: ["A small studio", "that works better."],
     services: ["What the studio", "makes."],
     work: ["Businesses that", "came out sane."],
     people: ["The four people", "holding it together."],

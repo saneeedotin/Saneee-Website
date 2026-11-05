@@ -11,6 +11,7 @@ export default function Footer({ world }: { world: World }) {
       <a href="mailto:saneeedotin@gmail.com">saneeedotin@gmail.com</a>
       <a href="https://www.instagram.com/saneeedotin/" target="_blank" rel="noopener">Instagram</a>
       <a href="https://www.linkedin.com/search/results/all/?keywords=saneee%20dotin" target="_blank" rel="noopener">LinkedIn</a>
+      <Link href={world === "sane" ? "/privacy" : "/insane/privacy"}>Privacy</Link>
       <span>Mumbai, India</span>
     </footer>
   );
