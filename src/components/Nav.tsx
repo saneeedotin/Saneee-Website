@@ -36,13 +36,18 @@ const overDark = (nav: HTMLElement | null) => {
   });
 };
 
-/** A wobbling circle around the top-right corner, as a CSS clip path. */
+// Fill, dark rim, faint halo: the same layers as the cursor portal's hole. Values are px beyond the fill.
+const LAYERS = [0, 9, 13];
+
+/** A lopsided, slowly shifting blob around the top-right corner, as a CSS clip path. */
 const bubble = (radius: number, time: number, wobble: number) => {
   const cx = innerWidth;
   const points = [];
   for (let i = 0; i < POINTS; i++) {
     const a = (i / POINTS) * Math.PI * 2;
-    const r = radius * (1 + wobble * (Math.sin(3 * a + time * 1.7) * 0.6 + Math.sin(5 * a - time * 1.1) * 0.4));
+    // Low harmonics give the portal's uneven, liquid outline rather than a rippled circle.
+    const shape = Math.sin(2 * a + time * 0.9) * 0.55 + Math.sin(3 * a - time * 1.3 + 1.2) * 0.3 + Math.sin(5 * a + time * 0.7) * 0.15;
+    const r = radius * (1 + wobble * shape);
     points.push(`${(cx + Math.cos(a) * r).toFixed(1)} ${(Math.sin(a) * r).toFixed(1)}`);
   }
   return `path('M${points.join("L")}Z')`;
@@ -53,7 +58,7 @@ export default function Nav({ world }: { world: World }) {
   const header = useRef<HTMLElement>(null);
   const opener = useRef<HTMLButtonElement>(null);
   const closer = useRef<HTMLButtonElement>(null);
-  const blob = useRef<HTMLDivElement>(null);
+  const layers = useRef<(HTMLDivElement | null)[]>([]);
   const body = useRef<HTMLDivElement>(null);
   const anim = useRef({ raf: 0, radius: 0, from: 0, to: 0, start: 0, seconds: 1, closing: false });
   const home = world === "sane" ? "/" : "/insane";
@@ -88,8 +93,10 @@ export default function Nav({ world }: { world: World }) {
       const eased = to > a.from ? 1 - Math.pow(1 - t, 4) : t * t;
       a.radius = a.from + (a.to - a.from) * eased;
       // Liquid while it moves, a gentle wobble once it settles.
-      const wobble = still ? 0 : 0.025 + 0.05 * (1 - t);
-      if (blob.current) blob.current.style.clipPath = bubble(a.radius, now / 1000, wobble);
+      const wobble = still ? 0 : 0.06 + 0.06 * (1 - t);
+      layers.current.forEach((el, i) => {
+        if (el) el.style.clipPath = a.radius > 0 ? bubble(a.radius + LAYERS[i], now / 1000, wobble) : "circle(0 at 100% 0)";
+      });
       if (t < 1 || (a.to > 0 && !still)) a.raf = requestAnimationFrame(frame);
       else done?.();
     };
@@ -103,7 +110,8 @@ export default function Nav({ world }: { world: World }) {
     // The close pill sits exactly where the menu pill was, so it reads as the same button.
     Object.assign(closer.current!.style, { top: `${pill.top}px`, left: `${pill.left}px`, width: `${pill.width}px` });
     const content = body.current!.getBoundingClientRect();
-    const reach = Math.hypot(innerWidth - content.left + 64, content.bottom + 64);
+    // Just big enough to hold the links, allowing for the blob's inward wobble.
+    const reach = Math.hypot(innerWidth - content.left + 24, content.bottom + 24) * 1.14;
     anim.current.closing = false;
     dialog.classList.add("menu-in");
     animate(reach, OPEN_SECONDS);
@@ -146,7 +154,9 @@ export default function Nav({ world }: { world: World }) {
           if (e.target === e.currentTarget) close();
         }}
       >
-        <div ref={blob} className="menu-bubble">
+        <div ref={(el) => { layers.current[2] = el; }} className="menu-halo" aria-hidden="true" />
+        <div ref={(el) => { layers.current[1] = el; }} className="menu-rim" aria-hidden="true" />
+        <div ref={(el) => { layers.current[0] = el; }} className="menu-bubble">
           <button ref={closer} className="switch menu-close" type="button" onClick={close}>Close</button>
           <div ref={body} className="menu-body">
             <nav aria-label="Menu">
