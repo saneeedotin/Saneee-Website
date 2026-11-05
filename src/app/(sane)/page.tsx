@@ -47,12 +47,12 @@ export default function SaneHome() {
         </div>
       </section>
 
-      <section id="people" data-chapter="people" className="section chapter">
-        <p className="label">04 / People</p>
-        <div>
+      <section id="people" data-chapter="people" className="section">
+        <div className="chapter">
+          <p className="label">04 / People</p>
           <h2 className="h-editorial">The four people holding it together.</h2>
-          <TeamBadges />
         </div>
+        <TeamBadges />
       </section>
 
       <section id="contact" data-chapter="contact" className="section chapter dark">

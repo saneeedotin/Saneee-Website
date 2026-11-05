@@ -9,7 +9,6 @@ const CARD_SIZES = {
   portrait: [1.6, 2.25],
   landscape: [2.25, 1.6]
 };
-const ANCHORS = { left: 0.27, center: 0.5, right: 0.73 };
 const THICKNESS = 0.018;
 const BEVEL = 0.007;
 const JOINTS = 4;
@@ -23,123 +22,13 @@ const RING_RADIUS = 0.095;
 const RING_TUBE = 0.0135;
 const EYELET_RADIUS = 0.036;
 const CLAMP_BODY = 0.15;
-const FACE_WIDTH = 1024;
-
-const FINISHES = {
-  glossy: { roughness: 0.42, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.06, foil: 0, anisotropy: 0 },
-  matte: { roughness: 0.85, metalness: 0, clearcoat: 0, clearcoatRoughness: 0.6, foil: 0, anisotropy: 0 },
-  holographic: { roughness: 0.3, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.04, foil: 1, anisotropy: 0 },
-  metallic: { roughness: 0.36, metalness: 0.75, clearcoat: 0.5, clearcoatRoughness: 0.18, foil: 0, anisotropy: 0.7 }
-};
+const FACE_WIDTH = 720;
+const NAME_FONT = '"Saneee Brand"';
+const PHOTO_SHARE = 0.84;
 
 const BAND_COLUMNS = [0, 0.07, 0.93, 1];
 const BAND_BEND = [-0.95, -0.28, 0.28, 0.95];
 const FLIP_SPIN = 9;
-
-const FOIL_VERTEX_HEAD = `
-varying vec2 vFoilUv;
-varying vec3 vFoilX;
-varying vec3 vFoilY;
-`;
-
-const FOIL_VERTEX_BODY = `
-vFoilUv = uv;
-vFoilX = normalize((modelViewMatrix * vec4(1.0, 0.0, 0.0, 0.0)).xyz);
-vFoilY = normalize((modelViewMatrix * vec4(0.0, 1.0, 0.0, 0.0)).xyz);
-`;
-
-const FOIL_FRAGMENT_HEAD = `
-uniform float foilStrength;
-uniform float foilAspect;
-uniform vec3 foilKey;
-uniform vec3 foilFill;
-uniform vec3 foilTop;
-varying vec2 vFoilUv;
-varying vec3 vFoilX;
-varying vec3 vFoilY;
-
-float foilHash(vec2 p) {
-  p = fract(p * vec2(234.34, 435.345));
-  p += dot(p, p + 34.23);
-  return fract(p.x * p.y);
-}
-
-float foilBump(float t, float center, float width) {
-  float x = (t - center) / width;
-  return max(0.0, 1.0 - x * x);
-}
-
-vec3 foilSpectrum(float t) {
-  return vec3(
-    foilBump(t, 0.82, 0.32) + 0.4 * foilBump(t, 0.02, 0.12),
-    foilBump(t, 0.5, 0.26),
-    foilBump(t, 0.18, 0.24)
-  );
-}
-
-vec3 foilGrating(float u, float spacing) {
-  vec3 color = vec3(0.0);
-  for (int m = 1; m <= 2; m++) {
-    float order = float(m);
-    float t = (spacing * abs(u) / order - 0.38) / 0.32;
-    color += foilSpectrum(t) / order;
-  }
-  return color;
-}
-
-vec3 foilShard(vec2 p) {
-  vec2 base = floor(p);
-  float best = 9.0;
-  float edge = 9.0;
-  vec2 id = base;
-  for (int j = -1; j <= 1; j++) {
-    for (int i = -1; i <= 1; i++) {
-      vec2 cell = base + vec2(float(i), float(j));
-      vec2 site = cell + vec2(foilHash(cell), foilHash(cell + 7.31)) * 0.9 + 0.05;
-      float d = length(site - p);
-      if (d < best) {
-        edge = best;
-        best = d;
-        id = cell;
-      } else if (d < edge) {
-        edge = d;
-      }
-    }
-  }
-  return vec3(foilHash(id + 3.17), foilHash(id + 11.73), edge - best);
-}
-`;
-
-const FOIL_FRAGMENT_BODY = `
-if (foilStrength > 0.0) {
-  vec3 foilView = normalize(vViewPosition);
-  vec3 foilNormal = normalize(normal);
-  vec2 foilP = vec2(vFoilUv.x, vFoilUv.y * foilAspect);
-  vec3 shard = foilShard(foilP * 26.0);
-  vec2 ray = foilP - vec2(-1.6, 2.6 * foilAspect);
-  float angle = atan(ray.y, ray.x) + (shard.x - 0.5) * 0.16;
-  vec3 grating = normalize(vFoilX * cos(angle) + vFoilY * sin(angle));
-  float spacing = 1.7 * (0.95 + shard.y * 0.1);
-  vec3 rainbow = foilGrating(dot(foilKey + foilView, grating), spacing);
-  rainbow += 0.6 * foilGrating(dot(foilTop + foilView, grating), spacing);
-  rainbow *= 0.8 + 0.2 * smoothstep(0.0, 0.04, shard.z);
-  rainbow = max(rainbow - 0.35 * min(rainbow.r, min(rainbow.g, rainbow.b)), 0.0);
-  vec2 grid = foilP * 64.0;
-  vec2 cell = floor(grid);
-  vec2 jitter = vec2(foilHash(cell + 1.7), foilHash(cell + 9.2));
-  float flake = smoothstep(0.32, 0.06, length(fract(grid) - jitter * 0.6 - 0.2)) * step(0.45, foilHash(cell + 4.4));
-  vec3 facet = normalize(foilNormal + (vFoilX * (jitter.x - 0.5) + vFoilY * (jitter.y - 0.5)) * 0.8);
-  float glint = pow(max(dot(reflect(-foilKey, facet), foilView), 0.0), 28.0);
-  glint += 0.7 * pow(max(dot(reflect(-foilTop, facet), foilView), 0.0), 28.0);
-  float fine = 1.0 - smoothstep(0.35, 0.9, max(fwidth(grid.x), fwidth(grid.y)));
-  vec3 sparkle = flake * glint * fine * (vec3(0.7) + foilGrating(dot(foilKey + foilView, grating) + jitter.x * 0.4, spacing));
-  float ink = dot(diffuseColor.rgb, vec3(0.2126, 0.7152, 0.0722));
-  float foil = foilStrength * (0.08 + 0.92 * smoothstep(0.04, 0.7, ink));
-  float facing = clamp(dot(foilNormal, foilView), 0.0, 1.0);
-  float tint = clamp(dot(rainbow, vec3(0.4)), 0.0, 1.0);
-  outgoingLight = outgoingLight * (1.0 - foil * (0.3 + 0.32 * tint)) + (rainbow * 0.62 * (0.4 + 0.6 * facing) + sparkle * 1.6) * foil;
-}
-`;
 
 const METALS = {
   silver: { color: '#d9dce2', roughness: 0.16 },
@@ -416,19 +305,41 @@ const buildWeaveTexture = () => {
   return texture;
 };
 
-const drawFitted = (ctx, image, width, height, fit) => {
-  const scale = (fit === 'contain' ? Math.min : Math.max)(width / image.width, height / image.height);
-  const w = image.width * scale;
-  const h = image.height * scale;
-  ctx.drawImage(image, (width - w) / 2, (height - h) / 2, w, h);
+// Fills the area and keeps the top of the image, where the head is.
+const drawCover = (ctx, image, width, height) => {
+  const scale = Math.max(width / image.width, height / image.height);
+  ctx.drawImage(image, (width - image.width * scale) / 2, 0, image.width * scale, image.height * scale);
 };
 
-const paintFace = (canvas, image, color, fit) => {
+// saneee: the photo, with the person's name on the band below it.
+const paintFront = (canvas, image, color, name, nameColor) => {
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+  const { width, height } = canvas;
+  const photo = Math.round(height * PHOTO_SHARE);
+  ctx.fillStyle = toCss(color);
+  ctx.fillRect(0, 0, width, height);
+  if (image) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, 0, width, photo);
+    ctx.clip();
+    drawCover(ctx, image, width, photo);
+    ctx.restore();
+  }
+  ctx.fillStyle = toCss(nameColor);
+  ctx.font = `400 ${Math.round(height * 0.066)}px ${NAME_FONT}, sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(name, width / 2, photo + (height - photo) / 2);
+};
+
+const paintBack = (canvas, image, color) => {
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
   ctx.fillStyle = toCss(color);
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  if (image) drawFitted(ctx, image, canvas.width, canvas.height, fit);
+  if (image) drawCover(ctx, image, canvas.width, canvas.height);
 };
 
 const paintStrap = (canvas, image, color) => {
@@ -701,64 +612,35 @@ const stepSimulation = (sim, dt, physics, time) => {
   sim.calm = energy < 2e-4 ? sim.calm + dt : 0;
 };
 
+// saneee: reworked from the React Bits original to hang several cards in one canvas, so they
+// can be dragged across each other. Props are read once on mount; remount with a key to change them.
 const Lanyard = ({
-  frontImage,
-  backImage,
-  imageFit = 'cover',
+  cards,
   cardColor = '#ffffff',
-  orientation = 'portrait',
-  finish = 'glossy',
   cornerRadius = 0.3,
-  size = 0.6,
-  anchor = 'center',
-  strapLength = 0.5,
+  size = 0.5,
+  strapLength = 0.3,
   strapImage,
   strapColor = '#111111',
   strapWidth = 0.65,
   metal = 'silver',
+  nameColor = '#ffffff',
   gravity = 1,
   damping = 0.5,
   elasticity = 0.5,
   breeze = 0.5,
-  interactive = true,
-  intro = true,
   className = '',
   style
 }) => {
   const containerRef = useRef(null);
   const settingsRef = useRef(null);
-  const applyRef = useRef(null);
 
-  settingsRef.current = {
-    frontImage,
-    backImage,
-    imageFit: imageFit === 'contain' ? 'contain' : 'cover',
-    cardColor,
-    orientation: orientation === 'landscape' ? 'landscape' : 'portrait',
-    finish,
-    cornerRadius,
-    size,
-    anchor,
-    strapLength,
-    strapImage,
-    strapColor,
-    strapWidth,
-    metal,
-    gravity,
-    damping,
-    elasticity,
-    breeze,
-    interactive,
-    intro
-  };
-
-  useEffect(() => {
-    applyRef.current?.();
-  });
+  settingsRef.current = { cards, cardColor, cornerRadius, size, strapLength, strapImage, strapColor, strapWidth, metal, nameColor, gravity, damping, elasticity, breeze };
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return undefined;
+    const s = settingsRef.current;
 
     let renderer;
     try {
@@ -773,6 +655,7 @@ const Lanyard = ({
     const canvas = renderer.domElement;
     canvas.className = 'lanyard-canvas';
     canvas.setAttribute('aria-hidden', 'true');
+    canvas.style.touchAction = 'pan-y';
     container.appendChild(canvas);
 
     const anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
@@ -786,49 +669,30 @@ const Lanyard = ({
     fillLight.position.set(3, -1, 4);
     scene.add(keyLight, fillLight);
 
-    const imageCache = new Map();
-    const images = { front: null, back: null, strap: null };
-    const frontCanvas = document.createElement('canvas');
-    const backCanvas = document.createElement('canvas');
+    const layout = cardLayout('portrait', s.cornerRadius);
+    const faceHeight = Math.round((FACE_WIDTH * layout.height) / layout.width);
+    const grain = buildGrainTexture();
+    const weave = buildWeaveTexture();
+    const faceMaterial = texture =>
+      new THREE.MeshPhysicalMaterial({
+        map: texture,
+        normalMap: grain,
+        normalScale: new THREE.Vector2(0.06, 0.06),
+        roughness: 0.42,
+        clearcoat: 1,
+        clearcoatRoughness: 0.06
+      });
+
+    const card = parseColor(s.cardColor, [1, 1, 1]);
+    const edgeMaterial = new THREE.MeshPhysicalMaterial({ roughness: 0.35, clearcoat: 1, clearcoatRoughness: 0.08 });
+    edgeMaterial.color.setRGB(card[0] * 0.92, card[1] * 0.92, card[2] * 0.92, THREE.SRGBColorSpace);
+    const metalLook = METALS[s.metal] || METALS.silver;
+    const metalMaterial = new THREE.MeshStandardMaterial({ metalness: 1, color: metalLook.color, roughness: metalLook.roughness });
+
     const strapCanvas = document.createElement('canvas');
-    const frontTexture = makeCanvasTexture(frontCanvas, anisotropy);
-    const backTexture = makeCanvasTexture(backCanvas, anisotropy);
     const strapTexture = makeCanvasTexture(strapCanvas, anisotropy);
     strapTexture.wrapS = THREE.ClampToEdgeWrapping;
     strapTexture.wrapT = THREE.RepeatWrapping;
-    const grain = buildGrainTexture();
-    const weave = buildWeaveTexture();
-    const foilUniforms = {
-      foilStrength: { value: 0 },
-      foilAspect: { value: 1.4 },
-      foilKey: { value: new THREE.Vector3() },
-      foilFill: { value: new THREE.Vector3() },
-      foilTop: { value: new THREE.Vector3() }
-    };
-    const injectFoil = shader => {
-      Object.assign(shader.uniforms, foilUniforms);
-      shader.vertexShader = shader.vertexShader
-        .replace('#include <common>', `#include <common>\n${FOIL_VERTEX_HEAD}`)
-        .replace('#include <project_vertex>', `#include <project_vertex>\n${FOIL_VERTEX_BODY}`);
-      shader.fragmentShader = shader.fragmentShader
-        .replace('#include <common>', `#include <common>\n${FOIL_FRAGMENT_HEAD}`)
-        .replace('#include <opaque_fragment>', `${FOIL_FRAGMENT_BODY}\n#include <opaque_fragment>`);
-    };
-
-    const frontMaterial = new THREE.MeshPhysicalMaterial({
-      map: frontTexture,
-      normalMap: grain,
-      normalScale: new THREE.Vector2(0.06, 0.06)
-    });
-    const backMaterial = new THREE.MeshPhysicalMaterial({
-      map: backTexture,
-      normalMap: grain,
-      normalScale: new THREE.Vector2(0.06, 0.06)
-    });
-    frontMaterial.onBeforeCompile = injectFoil;
-    backMaterial.onBeforeCompile = injectFoil;
-    const edgeMaterial = new THREE.MeshPhysicalMaterial();
-    const metalMaterial = new THREE.MeshStandardMaterial({ metalness: 1 });
     const bandMaterial = new THREE.MeshPhysicalMaterial({
       map: strapTexture,
       normalMap: weave,
@@ -839,38 +703,79 @@ const Lanyard = ({
       sheenColor: new THREE.Color(0.32, 0.32, 0.34),
       side: THREE.DoubleSide
     });
-
-    const cardGroup = new THREE.Group();
-    const bodyMesh = new THREE.Mesh(undefined, edgeMaterial);
-    const frontMesh = new THREE.Mesh(undefined, frontMaterial);
-    const backMesh = new THREE.Mesh(undefined, backMaterial);
-    const ring = new THREE.Mesh(new THREE.TorusGeometry(RING_RADIUS, RING_TUBE, 18, 72), metalMaterial);
-    ring.rotation.y = Math.PI / 2 - 0.7;
-    cardGroup.add(bodyMesh, frontMesh, backMesh, ring);
-    scene.add(cardGroup);
-
-    const bandGeometry = buildBandGeometry(SAMPLES);
-    const band = new THREE.Mesh(bandGeometry, bandMaterial);
-    band.frustumCulled = false;
-    scene.add(band);
-
-    const clampGroup = new THREE.Group();
-    const clampMesh = new THREE.Mesh(buildClampGeometry(STRAP_WIDTH), metalMaterial);
-    clampMesh.position.y = EYELET_RADIUS + CLAMP_BODY / 2 - 0.004;
-    const eyelet = new THREE.Mesh(new THREE.TorusGeometry(EYELET_RADIUS, 0.0105, 14, 40), metalMaterial);
-    clampGroup.add(clampMesh, eyelet);
-    scene.add(clampGroup);
-
-    const sim = createSimulation();
-    const controls = [];
-    const mouth = new THREE.Vector3();
-    const tuck = new THREE.Vector3();
-    const curve = new THREE.CatmullRomCurve3(controls, false, 'centripetal');
-    const view = { width: 1, height: 1 };
-    let layout = cardLayout('portrait', 0.3);
-    let applied = {};
-    let strapScale = STRAP_WIDTH;
+    const strapScale = STRAP_WIDTH * clamp(s.strapWidth, 0.4, 2);
     let tileRatio = 2;
+
+    const faces = buildCardGeometry(layout);
+    const ringGeometry = new THREE.TorusGeometry(RING_RADIUS, RING_TUBE, 18, 72);
+    const clampGeometry = buildClampGeometry(strapScale);
+    const eyeletGeometry = new THREE.TorusGeometry(EYELET_RADIUS, 0.0105, 14, 40);
+
+    const makeFaceCanvas = () => {
+      const c = document.createElement('canvas');
+      c.width = FACE_WIDTH;
+      c.height = faceHeight;
+      return c;
+    };
+
+    const backCanvas = makeFaceCanvas();
+    const backTexture = makeCanvasTexture(backCanvas, anisotropy);
+    const backMaterial = faceMaterial(backTexture);
+
+    const rigs = s.cards.map((data, index) => {
+      const frontCanvas = makeFaceCanvas();
+      const frontTexture = makeCanvasTexture(frontCanvas, anisotropy);
+      const frontMaterial = faceMaterial(frontTexture);
+      const cardGroup = new THREE.Group();
+      const bodyMesh = new THREE.Mesh(faces.body, edgeMaterial);
+      const frontMesh = new THREE.Mesh(faces.face, frontMaterial);
+      const backMesh = new THREE.Mesh(faces.face, backMaterial);
+      frontMesh.position.z = THICKNESS / 2 + BEVEL + 0.0006;
+      backMesh.rotation.y = Math.PI;
+      backMesh.position.z = -(THICKNESS / 2 + BEVEL + 0.0006);
+      const ring = new THREE.Mesh(ringGeometry, metalMaterial);
+      ring.rotation.y = Math.PI / 2 - 0.7;
+      ring.position.set(0, layout.ringY, 0);
+      cardGroup.add(bodyMesh, frontMesh, backMesh, ring);
+      scene.add(cardGroup);
+
+      const bandGeometry = buildBandGeometry(SAMPLES);
+      const band = new THREE.Mesh(bandGeometry, bandMaterial);
+      band.frustumCulled = false;
+      scene.add(band);
+
+      const clampGroup = new THREE.Group();
+      const clampMesh = new THREE.Mesh(clampGeometry, metalMaterial);
+      clampMesh.position.y = EYELET_RADIUS + CLAMP_BODY / 2 - 0.004;
+      clampGroup.add(clampMesh, new THREE.Mesh(eyeletGeometry, metalMaterial));
+      scene.add(clampGroup);
+
+      const rig = {
+        data,
+        index,
+        sim: createSimulation(),
+        frontCanvas,
+        frontTexture,
+        frontMaterial,
+        cardGroup,
+        pickable: [bodyMesh, frontMesh, backMesh],
+        bandGeometry,
+        clampGroup,
+        controls: [],
+        mouth: new THREE.Vector3(),
+        tuck: new THREE.Vector3(),
+        points: Array.from({ length: SAMPLES }, () => new THREE.Vector3()),
+        sides: Array.from({ length: SAMPLES }, () => new THREE.Vector3())
+      };
+      rig.curve = new THREE.CatmullRomCurve3(rig.controls, false, 'centripetal');
+      rig.pickable.forEach(mesh => {
+        mesh.userData.rig = rig;
+      });
+      return rig;
+    });
+    const pickable = rigs.flatMap(rig => rig.pickable);
+
+    const view = { width: 1, height: 1 };
     let raf = 0;
     let last = performance.now();
     let time = 0;
@@ -879,43 +784,12 @@ const Lanyard = ({
     let placed = false;
     let hovering = false;
     let press = null;
-    let imageToken = 0;
-    const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
-
-    const paintFaces = () => {
-      const s = settingsRef.current;
-      const color = parseColor(s.cardColor, [1, 1, 1]);
-      const width = FACE_WIDTH;
-      const height = Math.round((FACE_WIDTH * layout.height) / layout.width);
-      if (frontCanvas.width !== width || frontCanvas.height !== height) {
-        frontCanvas.width = width;
-        frontCanvas.height = height;
-        backCanvas.width = width;
-        backCanvas.height = height;
-        frontTexture.dispose();
-        backTexture.dispose();
-      }
-      paintFace(frontCanvas, images.front, color, s.imageFit);
-      paintFace(backCanvas, images.back || images.front, color, s.imageFit);
-      frontTexture.needsUpdate = true;
-      backTexture.needsUpdate = true;
-      start();
-    };
-
-    const repaintStrap = () => {
-      const s = settingsRef.current;
-      tileRatio = paintStrap(strapCanvas, images.strap, parseColor(s.strapColor, [0.07, 0.07, 0.07]));
-      weave.repeat.set(2, 2 * tileRatio);
-      strapTexture.dispose();
-      strapTexture.needsUpdate = true;
-      start();
-    };
+    let active = null;
 
     const frameView = () => {
-      const s = settingsRef.current;
       const aspect = view.width / view.height;
       let viewHeight = layout.height / clamp(s.size, 0.15, 0.9);
-      const minimumWidth = layout.width / 0.58; // saneee: was 0.72. Leaves room to swing, with .badge's wider canvas.
+      const minimumWidth = (layout.width * rigs.length) / 0.62;
       if (viewHeight * aspect < minimumWidth) viewHeight = minimumWidth / aspect;
       const viewWidth = viewHeight * aspect;
       camera.aspect = aspect;
@@ -923,101 +797,18 @@ const Lanyard = ({
       camera.lookAt(0, 0, 0);
       camera.updateProjectionMatrix();
       camera.updateMatrixWorld();
-      foilUniforms.foilKey.value.set(-2.5, 4, 6).normalize().transformDirection(camera.matrixWorldInverse);
-      foilUniforms.foilFill.value.set(3, -1, 4).normalize().transformDirection(camera.matrixWorldInverse);
-      foilUniforms.foilTop.value.set(0.5, 4.5, 8).normalize().transformDirection(camera.matrixWorldInverse);
-      const anchorX = ((ANCHORS[s.anchor] ?? 0.5) - 0.5) * viewWidth;
       const anchorY = viewHeight / 2 + 0.2;
       const cardTop = viewHeight / 2 - viewHeight * mix(0.12, 0.42, clamp(s.strapLength, 0, 1));
       const hangTop = cardTop + (layout.hangY - layout.height / 2);
-      sim.anchor.set(anchorX, anchorY, 0);
-      configureSimulation(sim, layout, anchorY - hangTop);
-      sim.nodes[0].copy(sim.anchor);
-      sim.previous[0].copy(sim.anchor);
-    };
-
-    const apply = () => {
-      const s = settingsRef.current;
-      const layoutKey = `${s.orientation}|${s.cornerRadius}`;
-      if (layoutKey !== applied.layoutKey) {
-        layout = cardLayout(s.orientation, s.cornerRadius);
-        const geometry = buildCardGeometry(layout);
-        bodyMesh.geometry.dispose();
-        frontMesh.geometry.dispose();
-        backMesh.geometry.dispose();
-        bodyMesh.geometry = geometry.body;
-        frontMesh.geometry = geometry.face;
-        backMesh.geometry = geometry.face.clone();
-        frontMesh.position.z = THICKNESS / 2 + BEVEL + 0.0006;
-        backMesh.rotation.y = Math.PI;
-        backMesh.position.z = -(THICKNESS / 2 + BEVEL + 0.0006);
-        ring.position.set(0, layout.ringY, 0);
-        applied.framingKey = '';
-      }
-      const framingKey = `${layoutKey}|${s.size}|${s.anchor}|${s.strapLength}|${view.width}|${view.height}`;
-      if (framingKey !== applied.framingKey) {
-        frameView();
-        if (!placed) {
-          placeHanging(sim, layout, s.intro && !reducedMotion);
-          placed = true;
-        } else if (layoutKey !== applied.layoutKey) {
-          placeHanging(sim, layout, false);
-        }
-      }
-
-      const imageKey = `${s.frontImage}|${s.backImage}|${s.strapImage}`;
-      if (imageKey !== applied.imageKey) {
-        const token = ++imageToken;
-        Promise.all([
-          loadImage(imageCache, s.frontImage),
-          loadImage(imageCache, s.backImage),
-          loadImage(imageCache, s.strapImage)
-        ]).then(([front, back, strap]) => {
-          if (!alive || token !== imageToken) return;
-          images.front = front;
-          images.back = back;
-          images.strap = strap;
-          paintFaces();
-          repaintStrap();
-        });
-      }
-      const faceKey = `${layoutKey}|${s.cardColor}|${s.imageFit}`;
-      if (faceKey !== applied.faceKey) paintFaces();
-      if (s.strapColor !== applied.strapColor) repaintStrap();
-
-      const finish = FINISHES[s.finish] || FINISHES.glossy;
-      const card = parseColor(s.cardColor, [1, 1, 1]);
-      [frontMaterial, backMaterial].forEach(material => {
-        material.roughness = finish.roughness;
-        material.metalness = finish.metalness;
-        material.clearcoat = finish.clearcoat;
-        material.clearcoatRoughness = finish.clearcoatRoughness;
-        material.anisotropy = finish.anisotropy;
+      rigs.forEach(({ sim, index }) => {
+        // Slightly different depths, so overlapping cards stack instead of flickering through each other.
+        sim.anchor.set(((index + 0.5) / rigs.length - 0.5) * viewWidth, anchorY, (index - (rigs.length - 1) / 2) * 0.05);
+        configureSimulation(sim, layout, anchorY - hangTop);
+        sim.nodes[0].copy(sim.anchor);
+        sim.previous[0].copy(sim.anchor);
       });
-      foilUniforms.foilStrength.value = finish.foil;
-      foilUniforms.foilAspect.value = layout.height / layout.width;
-      edgeMaterial.color.setRGB(card[0] * 0.92, card[1] * 0.92, card[2] * 0.92, THREE.SRGBColorSpace);
-      edgeMaterial.roughness = Math.min(finish.roughness, 0.35);
-      edgeMaterial.metalness = finish.metalness;
-      edgeMaterial.clearcoat = 1;
-      edgeMaterial.clearcoatRoughness = 0.08;
-      const metalLook = METALS[s.metal] || METALS.silver;
-      metalMaterial.color.set(metalLook.color);
-      metalMaterial.roughness = metalLook.roughness;
-      strapScale = STRAP_WIDTH * clamp(s.strapWidth, 0.4, 2);
-      if (strapScale !== applied.strapScale) {
-        clampMesh.geometry.dispose();
-        clampMesh.geometry = buildClampGeometry(strapScale);
-      }
-      canvas.style.touchAction = s.interactive ? 'pan-y' : 'auto';
-
-      applied = { layoutKey, framingKey, imageKey, faceKey, strapColor: s.strapColor, strapScale };
-      start();
     };
 
-    const points = Array.from({ length: SAMPLES }, () => new THREE.Vector3());
-    const sides = Array.from({ length: SAMPLES }, () => new THREE.Vector3());
-    const bends = BAND_BEND.map(angle => [Math.cos(angle), Math.sin(angle)]);
     const work = {
       tangent: new THREE.Vector3(),
       toCamera: new THREE.Vector3(),
@@ -1027,8 +818,10 @@ const Lanyard = ({
       facing: new THREE.Vector3(),
       end: new THREE.Vector3()
     };
+    const bends = BAND_BEND.map(angle => [Math.cos(angle), Math.sin(angle)]);
 
-    const updateBand = () => {
+    const updateBand = rig => {
+      const { sim, controls, mouth, tuck, curve, points, sides, bandGeometry, clampGroup } = rig;
       const hang = sim.nodes[JOINTS];
       const reach = EYELET_RADIUS + CLAMP_BODY + 0.05;
       let guide = JOINTS - 1;
@@ -1095,37 +888,36 @@ const Lanyard = ({
     };
 
     const render = () => {
-      cardGroup.position.copy(sim.body.position);
-      cardGroup.quaternion.copy(sim.body.quaternion);
-      updateBand();
+      rigs.forEach(rig => {
+        rig.cardGroup.position.copy(rig.sim.body.position);
+        rig.cardGroup.quaternion.copy(rig.sim.body.quaternion);
+        updateBand(rig);
+      });
       renderer.render(scene, camera);
     };
 
-    const physics = () => {
-      const s = settingsRef.current;
-      const gravity = 40 * clamp(s.gravity, 0, 3);
-      const weight = Math.max(gravity, 20);
-      const springy = clamp(s.elasticity, 0, 1);
-      const settle = clamp(s.damping, 0, 1);
-      return {
-        gravity,
-        hold: weight * mix(2.2, 5.5, springy),
-        stiffness: weight * 10 * JOINTS,
-        spring: weight * mix(0.1, 0.4, springy) * JOINTS,
-        bandDamping: weight * mix(0.3, 0.08, springy) * JOINTS,
-        linearDrag: 0.25 * Math.pow(16, settle),
-        angularDrag: 0.5 * Math.pow(12, settle),
-        air: 0.15,
-        broadside: 0.5,
-        spinAir: 0.03,
-        nodeDrag: 2,
-        nodeAir: 0.2,
-        twist: 30,
-        twistDamping: 3,
-        grip: 40,
-        gripDamping: 6,
-        breeze: reducedMotion ? 0 : clamp(s.breeze, 0, 1)
-      };
+    const gravityForce = 40 * clamp(s.gravity, 0, 3);
+    const weight = Math.max(gravityForce, 20);
+    const springy = clamp(s.elasticity, 0, 1);
+    const settle = clamp(s.damping, 0, 1);
+    const physics = {
+      gravity: gravityForce,
+      hold: weight * mix(2.2, 5.5, springy),
+      stiffness: weight * 10 * JOINTS,
+      spring: weight * mix(0.1, 0.4, springy) * JOINTS,
+      bandDamping: weight * mix(0.3, 0.08, springy) * JOINTS,
+      linearDrag: 0.25 * Math.pow(16, settle),
+      angularDrag: 0.5 * Math.pow(12, settle),
+      air: 0.15,
+      broadside: 0.5,
+      spinAir: 0.03,
+      nodeDrag: 2,
+      nodeAir: 0.2,
+      twist: 30,
+      twistDamping: 3,
+      grip: 40,
+      gripDamping: 6,
+      breeze: clamp(s.breeze, 0, 1)
     };
 
     const tick = now => {
@@ -1134,21 +926,21 @@ const Lanyard = ({
       const dt = Math.min(1 / 30, Math.max(1 / 240, (now - last) / 1000));
       last = now;
       time += dt;
-      const current = physics();
-      stepSimulation(sim, dt, current, time);
-      const body = sim.body;
-      if (!Number.isFinite(body.position.x + body.position.y + body.position.z + body.quaternion.w)) {
-        sim.grab = null;
-        placeHanging(sim, layout, false);
-      }
+      rigs.forEach(rig => {
+        // Each card gets its own moment in the breeze, so they don't sway in step.
+        stepSimulation(rig.sim, dt, physics, time + rig.index * 2.3);
+        const { body } = rig.sim;
+        if (!Number.isFinite(body.position.x + body.position.y + body.position.z + body.quaternion.w)) {
+          rig.sim.grab = null;
+          placeHanging(rig.sim, layout, false);
+        }
+      });
       render();
-      const resting = sim.calm > 1.2 && !sim.grab && current.breeze === 0;
-      if (visible && !resting) raf = requestAnimationFrame(tick);
+      if (visible) raf = requestAnimationFrame(tick);
     };
 
     const start = () => {
       if (raf || !visible || !alive) return;
-      sim.calm = 0;
       last = performance.now();
       raf = requestAnimationFrame(tick);
     };
@@ -1166,16 +958,15 @@ const Lanyard = ({
     };
 
     const pickCard = () => {
-      cardGroup.updateMatrixWorld();
-      const hits = raycaster.intersectObjects([bodyMesh, frontMesh, backMesh], false);
-      return hits[0] || null;
+      rigs.forEach(rig => rig.cardGroup.updateMatrixWorld());
+      return raycaster.intersectObjects(pickable, false)[0] || null;
     };
 
     const setCursor = value => {
       if (canvas.style.cursor !== value) canvas.style.cursor = value;
     };
 
-    const flip = point => {
+    const flip = (sim, point) => {
       const body = sim.body;
       const up = scratch.a.set(0, 1, 0).applyQuaternion(body.quaternion);
       let direction = sim.turn > 0 ? -1 : 1;
@@ -1188,14 +979,15 @@ const Lanyard = ({
     };
 
     const onPointerDown = event => {
-      if (!settingsRef.current.interactive || event.button > 0) return;
+      if (event.button > 0) return;
       toPointer(event);
       const hit = pickCard();
       if (!hit) return;
-      sim.grab = {
-        local: hit.point.clone().sub(sim.body.position).applyQuaternion(sim.body.quaternion.clone().invert()),
-        rotation: sim.body.quaternion.clone(),
-        reach: hit.distance,
+      active = hit.object.userData.rig.sim;
+      active.grab = {
+        local: hit.point.clone().sub(active.body.position).applyQuaternion(active.body.quaternion.clone().invert()),
+        rotation: active.body.quaternion.clone(),
+        reach: hit.distance - 1.2, // Lifted towards the viewer, so the held card passes in front of the others, even while tilted.
         from: hit.point.clone(),
         target: hit.point.clone()
       };
@@ -1207,11 +999,10 @@ const Lanyard = ({
     };
 
     const onPointerMove = event => {
-      if (!settingsRef.current.interactive) return;
       toPointer(event);
-      if (sim.grab) {
+      if (active) {
         if (press && Math.hypot(event.clientX - press.x, event.clientY - press.y) > 6) press = null;
-        raycaster.ray.at(sim.grab.reach, sim.grab.target);
+        raycaster.ray.at(active.grab.reach, active.grab.target);
         start();
         return;
       }
@@ -1221,17 +1012,18 @@ const Lanyard = ({
     };
 
     const onPointerUp = event => {
-      if (!sim.grab) return;
-      sim.grab = null;
-      if (press && event.type === 'pointerup' && performance.now() - press.time < 450) flip(press.point);
+      if (!active) return;
+      active.grab = null;
+      if (press && event.type === 'pointerup' && performance.now() - press.time < 450) flip(active, press.point);
       press = null;
+      active = null;
       canvas.releasePointerCapture?.(event.pointerId);
       setCursor(hovering && event.pointerType !== 'touch' ? 'grab' : '');
       start();
     };
 
     const onTouchStart = event => {
-      if (!settingsRef.current.interactive || event.touches.length !== 1) return;
+      if (event.touches.length !== 1) return;
       toPointer(event.touches[0]);
       if (pickCard()) event.preventDefault();
     };
@@ -1248,8 +1040,13 @@ const Lanyard = ({
       view.height = Math.max(1, container.clientHeight);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
       renderer.setSize(view.width, view.height, false);
-      apply();
+      frameView();
+      if (!placed) {
+        rigs.forEach(rig => placeHanging(rig.sim, layout, true));
+        placed = true;
+      }
       render();
+      start();
     };
 
     const resizeObserver = new ResizeObserver(resize);
@@ -1264,13 +1061,36 @@ const Lanyard = ({
     };
     document.addEventListener('visibilitychange', onVisibility);
 
-    applyRef.current = apply;
+    // Names are drawn on the card, so the brand font has to be ready first.
+    const imageCache = new Map();
+    const color = parseColor(s.cardColor, [1, 1, 1]);
+    const nameColor = parseColor(s.nameColor, [1, 1, 1]);
+    const font = document.fonts?.load(`400 64px ${NAME_FONT}`) ?? Promise.resolve();
+    Promise.all([
+      Promise.all(s.cards.map(c => loadImage(imageCache, c.frontImage))),
+      loadImage(imageCache, s.cards[0]?.backImage),
+      loadImage(imageCache, s.strapImage),
+      font.catch(() => {})
+    ]).then(([fronts, back, strap]) => {
+      if (!alive) return;
+      rigs.forEach((rig, i) => {
+        paintFront(rig.frontCanvas, fronts[i], color, rig.data.name, nameColor);
+        rig.frontTexture.needsUpdate = true;
+      });
+      paintBack(backCanvas, back, color);
+      backTexture.needsUpdate = true;
+      tileRatio = paintStrap(strapCanvas, strap, parseColor(s.strapColor, [0.07, 0.07, 0.07]));
+      weave.repeat.set(2, 2 * tileRatio);
+      strapTexture.dispose(); // The canvas changed size, and a texture's size is fixed once uploaded.
+      strapTexture.needsUpdate = true;
+      start();
+    });
+
     resize();
 
     return () => {
       alive = false;
       cancelAnimationFrame(raf);
-      applyRef.current = null;
       resizeObserver.disconnect();
       intersectionObserver.disconnect();
       document.removeEventListener('visibilitychange', onVisibility);
@@ -1280,9 +1100,14 @@ const Lanyard = ({
       canvas.removeEventListener('pointercancel', onPointerUp);
       canvas.removeEventListener('lostpointercapture', onPointerUp);
       canvas.removeEventListener('touchstart', onTouchStart);
-      [bodyMesh, frontMesh, backMesh, ring, clampMesh, eyelet, band].forEach(mesh => mesh.geometry?.dispose());
-      [frontMaterial, backMaterial, edgeMaterial, metalMaterial, bandMaterial].forEach(material => material.dispose());
-      [frontTexture, backTexture, strapTexture, grain, weave].forEach(texture => texture.dispose());
+      rigs.forEach(rig => {
+        rig.bandGeometry.dispose();
+        rig.frontMaterial.dispose();
+        rig.frontTexture.dispose();
+      });
+      [faces.body, faces.face, ringGeometry, clampGeometry, eyeletGeometry].forEach(geometry => geometry.dispose());
+      [backMaterial, edgeMaterial, metalMaterial, bandMaterial].forEach(material => material.dispose());
+      [backTexture, strapTexture, grain, weave].forEach(texture => texture.dispose());
       environment.dispose();
       renderer.dispose();
       if (canvas.parentNode) canvas.parentNode.removeChild(canvas);

@@ -168,16 +168,22 @@ img { display: block; max-width: 100%; height: auto; }
 .rows { margin-top: clamp(32px, 5vw, 72px); border-bottom: 1px solid #08080833; }
 .rows li { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px 32px; padding: 22px 0; border-top: 1px solid #08080833; }
 .rows p { max-width: 52ch; }
-.people { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: clamp(32px, 4vw, 56px) clamp(16px, 2vw, 32px); margin-top: clamp(32px, 5vw, 72px); }
-.badge { height: clamp(440px, 42vw, 620px); border-top: 1px solid currentColor; }
-.badge img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
-.badge .lanyard { width: 130%; margin-left: -15%; overflow: visible; } /* Wider than its column, so a swinging card isn't cut off. */
-@media (max-width: 760px) { .badge .lanyard { width: 100%; margin-left: 0; } }
-.people h3 { margin-top: 12px; text-align: center; }
 .posters { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 1.5px; margin-top: clamp(32px, 5vw, 72px); background: var(--ink); border: 1.5px solid var(--ink); }
 .posters li { display: flex; flex-direction: column; justify-content: space-between; gap: 32px; min-height: 260px; padding: clamp(20px, 3vw, 36px); background: var(--lime); }
 .reach { display: inline-flex; align-items: center; min-height: 44px; margin-top: 24px; font-family: var(--font-brand); font-size: clamp(1.25rem, 3.2vw, 3rem); overflow-wrap: anywhere; }
 @media (max-width: 760px) { .rows li { grid-template-columns: 1fr; } }
+
+/* Team: one shared stage, so cards can be dragged across each other. Height is set here so later links land correctly. */
+.team { margin: clamp(32px, 5vw, 72px) calc(var(--gutter) * -1) 0; border-top: 1px solid currentColor; }
+.team-stage { flex: 1; min-height: 0; }
+.team-still { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr)); gap: 24px clamp(16px, 2vw, 32px); padding: 24px var(--gutter) 0; text-align: center; }
+.team-still img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: top; margin-bottom: 12px; }
+@media (prefers-reduced-motion: no-preference) {
+  .team:not(.team-static) { display: flex; flex-direction: column; height: clamp(620px, 84vh, 900px); overflow: hidden; }
+}
+@media (prefers-reduced-motion: no-preference) and (max-width: 760px) {
+  .team:not(.team-static) { height: 760px; }
+}
 
 /* Case study */
 .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 0 clamp(16px, 2vw, 32px); margin-top: clamp(32px, 5vw, 64px); }
