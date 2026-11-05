@@ -14,7 +14,7 @@ const MIN_MS = 600;
 const MAX_MS = 2500;
 const EASE = "expo.inOut";
 // Only what the timelines set: "all" would also wipe the inline --ratio the word is sized by.
-const ANIMATED = "transform,opacity,visibility,clip-path,fill-opacity,stroke-dasharray,stroke-dashoffset";
+const ANIMATED = "transform,translate,left,top,width,height,opacity,visibility,clip-path,fill-opacity,stroke-dasharray,stroke-dashoffset";
 
 /**
  * Runs before React, from layout.tsx: picks the screen that covers the first paint.
@@ -67,20 +67,22 @@ export default function Loader() {
       } else {
         // The mark draws in the middle, then flies onto the ink of the word's S while the other letters rise.
         // The svg's viewBox is the S's own bounds, so its box is its ink; the glyph's ink comes from the font's metrics.
+        // The mark flies as a plain box (left, top, width, height): transforms would mix with its CSS centring.
         const word = stage.querySelector<HTMLElement>(".word")!;
-        let flight = { x: 0, y: 0, scaleX: 1, scaleY: 1 };
+        let flight = { left: 0, top: 0, width: 0, height: 0 };
         const measure = () => {
           const ctx = document.createElement("canvas").getContext("2d")!;
           ctx.font = `400 ${getComputedStyle(word).fontSize} "Saneee Brand"`;
           const ink = ctx.measureText("S");
           const baseline = word.querySelector(".loader-base")!.getBoundingClientRect().bottom;
           const from = svg.getBoundingClientRect();
-          // The font's S is a touch wider than the logo's, so each axis scales on its own.
+          gsap.set(svg, { translate: "none", left: from.left, top: from.top, width: from.width, height: from.height });
+          // The font's S is a touch wider than the logo's; the svg stretches to fit (preserveAspectRatio="none").
           flight = {
-            x: s.getBoundingClientRect().left - ink.actualBoundingBoxLeft - from.left,
-            y: baseline - ink.actualBoundingBoxAscent - from.top,
-            scaleX: (ink.actualBoundingBoxLeft + ink.actualBoundingBoxRight) / from.width,
-            scaleY: (ink.actualBoundingBoxAscent + ink.actualBoundingBoxDescent) / from.height,
+            left: s.getBoundingClientRect().left - ink.actualBoundingBoxLeft,
+            top: baseline - ink.actualBoundingBoxAscent,
+            width: ink.actualBoundingBoxLeft + ink.actualBoundingBoxRight,
+            height: ink.actualBoundingBoxAscent + ink.actualBoundingBoxDescent,
           };
         };
         const rest = letters.filter((l) => l !== s);
@@ -91,7 +93,7 @@ export default function Loader() {
           .fromTo(mark, { strokeDasharray: length, strokeDashoffset: length }, { strokeDashoffset: 0, duration: 0.7, ease: "power2.inOut" })
           .to(mark, { fillOpacity: 1, duration: 0.25 }, "-=0.1")
           .add(measure)
-          .to(svg, { x: () => flight.x, y: () => flight.y, scaleX: () => flight.scaleX, scaleY: () => flight.scaleY, transformOrigin: "0 0", duration: 0.8, ease: EASE })
+          .to(svg, { left: () => flight.left, top: () => flight.top, width: () => flight.width, height: () => flight.height, duration: 0.8, ease: EASE })
           .to(rest, { opacity: 1, yPercent: 0, duration: 0.6, stagger: 0.05, ease: "expo.out" }, "<0.35")
           .to(s, { opacity: 1, duration: 0.2 }, "-=0.15")
           .to(svg, { autoAlpha: 0, duration: 0.2 }, "<")
@@ -150,7 +152,7 @@ export default function Loader() {
 
   return (
     <div ref={root} className="loader" aria-hidden="true" data-lenis-prevent>
-      <svg className="loader-mark" viewBox={S_VIEWBOX}><path d={S_PATH} pathLength={1} /></svg>
+      <svg className="loader-mark" viewBox={S_VIEWBOX} preserveAspectRatio="none"><path d={S_PATH} pathLength={1} /></svg>
       {(["sane", "insane"] as const).map((w) => (
         <div key={w} className="loader-stage" data-world={w}>
           <p className="lede" style={{ "--ratio": HEROES[w].ratio } as React.CSSProperties}>{HEROES[w].line}</p>
