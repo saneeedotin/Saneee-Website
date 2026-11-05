@@ -1,6 +1,7 @@
 import Link from "next/link";
 import BeforeAfter from "@/components/BeforeAfter";
 import ContactForm from "@/components/ContactForm";
+import Vortex from "@/components/Vortex";
 import { projects } from "@/data/projects";
 import { services } from "@/data/services";
 import { team } from "@/data/team";
@@ -17,6 +18,8 @@ export default function SaneHome() {
         </p>
         <h1 className="word" style={{ "--ratio": 4.977 } as React.CSSProperties}>SANEEE</h1>
       </section>
+
+      <Vortex />
 
       <section id="services" data-chapter="services" className="section chapter">
         <p className="label">01 / Services</p>

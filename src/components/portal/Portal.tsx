@@ -159,6 +159,13 @@ export default function Portal() {
       wake();
     };
 
+    // Scrolling moves the page under a still cursor, so what it's over has to be checked again.
+    const onScroll = () => {
+      if (!pointer.seen) return;
+      pointer.overInteractive = !!document.elementFromPoint(pointer.x, pointer.y)?.closest(INTERACTIVE);
+      wake();
+    };
+
     const onDown = (e: PointerEvent) => {
       if (e.button !== 0 || crossingRef.current) return;
       const target = e.target as Element;
@@ -187,6 +194,7 @@ export default function Portal() {
     };
 
     addEventListener("pointermove", onMove, { passive: true });
+    addEventListener("scroll", onScroll, { passive: true });
     addEventListener("pointerdown", onDown);
     addEventListener("pointerup", onUp);
     addEventListener("pointercancel", onUp);
@@ -205,6 +213,7 @@ export default function Portal() {
       alive = false;
       cancelAnimationFrame(raf);
       removeEventListener("pointermove", onMove);
+      removeEventListener("scroll", onScroll);
       removeEventListener("pointerdown", onDown);
       removeEventListener("pointerup", onUp);
       removeEventListener("pointercancel", onUp);
