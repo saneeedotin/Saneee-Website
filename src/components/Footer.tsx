@@ -1,5 +1,6 @@
 import Link from "next/link";
 import FooterWord from "./FooterWord";
+import CRTWarp from "./ui/CRTWarp";
 import LocalTime from "./LocalTime";
 import { EMAIL } from "./ReachList";
 import type { World } from "./portal/world";
@@ -27,6 +28,26 @@ export default function Footer({ world }: { world: World }) {
 
   return (
     <footer className="footer dark">
+      {/* Sane gets a lime CRT plasma behind it; Insane's lime type already carries the colour. */}
+      {world === "sane" && (
+        <CRTWarp
+          className="footer-crt"
+          color="#c7ff2e"
+          backgroundColor="#080808"
+          mask="none"
+          curvature={0.25}
+          persistence={0.4}
+          lightMode
+          variation={10}
+          waveAmplitude={0.4}
+          columns={111}
+          maskStrength={0.21}
+          bloom={1.05}
+          bloomRadius={2}
+          brightness={0.38}
+          dpr={1}
+        />
+      )}
       <div className="footer-top">
         <div className="footer-ask">
           <p className="label">{copy.label}</p>
