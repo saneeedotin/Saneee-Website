@@ -135,7 +135,6 @@ img { display: block; max-width: 100%; height: auto; }
 .dark { background: var(--ink); color: var(--paper); }
 .chapter { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 4fr); gap: 16px clamp(16px, 2vw, 32px); }
 .chapter > .label { padding-top: 0.6em; }
-.tight-top { padding-top: 0; }
 .flush { margin-top: 0; }
 .chapter .h-editorial { margin-top: 0; }
 .spaced { margin-top: clamp(24px, 3vw, 40px); }
@@ -219,26 +218,37 @@ img { display: block; max-width: 100%; height: auto; }
 .insane .field input:focus-visible, .insane .field textarea:focus-visible { border-bottom-color: var(--ink); border-bottom-width: 3px; }
 .insane .form-error { color: var(--ink); font-weight: 500; }
 
-/* Shutter street */
-.street { margin-top: clamp(32px, 5vw, 72px); padding-bottom: clamp(16px, 2vw, 24px); border-bottom: 3px solid var(--ink); }
-.shops { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(18px, 3vw, 44px); align-items: start; }
-.shop { min-width: 0; }
-.sign { display: flex; align-items: center; justify-content: center; min-height: clamp(52px, 6vw, 84px); padding: 8px 12px; text-align: center; }
-.sign h3 { font-family: var(--font-brand); font-size: clamp(1.5rem, 2.2vw, 2.2rem); line-height: 1.1; } /* Client colours only reach 3:1, which needs large text. */
-.bay { position: relative; overflow: hidden; aspect-ratio: 16 / 11; background: var(--ink); border: clamp(4px, 0.6vw, 8px) solid var(--ink); touch-action: pan-y; }
-.bay img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
-.shutter { position: absolute; inset: 0; display: block; width: 100%; height: 100%; overflow: hidden; transform: translateY(calc(var(--o, 0) * -93%)); background: repeating-linear-gradient(#080808 0 7px, #2b2b2b 7px 9px); touch-action: pan-y; user-select: none; -webkit-user-select: none; cursor: ns-resize; will-change: transform; }
-.spray { position: absolute; left: 8%; right: 8%; top: 28%; color: var(--lime); font: italic 400 clamp(1.6rem, 3vw, 3rem)/1.05 var(--font-editorial); text-align: left; pointer-events: none; }
-.pull { position: absolute; left: 50%; bottom: 0; display: grid; place-items: center; width: clamp(92px, 12vw, 150px); height: 44px; transform: translateX(-50%); background: var(--lime); color: var(--ink); font: 400 13px/1 var(--font-brand); letter-spacing: 0.08em; text-transform: uppercase; touch-action: none; }
-.shutter:focus-visible { outline-offset: -6px; outline-color: var(--lime); }
-.shop-kind { margin-top: 12px; }
-.shop-link { display: flex; align-items: center; gap: 8px; min-height: 44px; font-family: var(--font-brand); font-size: 15px; text-decoration: underline; text-underline-offset: 4px; }
-@media (max-width: 860px) { .shops { grid-template-columns: minmax(0, 1fr); gap: 36px; } }
+/* The fix: the cursor rewrites each line as you scroll. Default state, without motion, shows the fixed line. */
+.fix { padding: clamp(32px, 5vw, 72px) var(--gutter); }
+.fix-rows { margin-top: clamp(24px, 3vw, 44px); padding: 0; list-style: none; border-bottom: 1px solid #08080833; }
+.fix-row { position: relative; display: grid; align-items: center; border-top: 1px solid #08080833; font-size: clamp(1.2rem, 2.3vw, 2.2rem); line-height: 1.2; }
+.fix-row del, .fix-row ins { grid-area: 1 / 1; display: flex; align-items: center; padding: clamp(14px, 1.8vw, 24px) 16px; }
+.fix-row del { color: var(--grey); font: italic 400 1em/1.2 var(--font-editorial); text-decoration-thickness: 1px; }
+.fix-row ins { background: var(--lime); font-family: var(--font-brand); text-decoration: none; }
+.fix-cursor { position: absolute; top: 50%; left: 100%; width: 22px; height: 29px; margin-top: -14px; visibility: hidden; fill: var(--lime); stroke: var(--ink); stroke-width: 8; pointer-events: none; }
 
-.curtain { position: fixed; z-index: 45; inset: 0; display: flex; flex-direction: column; background: repeating-linear-gradient(#080808 0 7px, #2b2b2b 7px 9px); transform: translateY(-101%); pointer-events: none; transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1); }
-.curtain b { display: flex; align-items: center; justify-content: center; min-height: clamp(70px, 12vh, 120px); padding: 8px 16px; font: 400 clamp(1.5rem, 4vw, 3.5rem)/1.1 var(--font-brand); text-align: center; }
-.curtain-down { transform: none; pointer-events: auto; transition: transform 0.42s cubic-bezier(0.6, 0, 0.9, 0.4); }
-@media (prefers-reduced-motion: reduce) { .curtain { display: none; } }
+/* The evidence */
+.evidence { padding: clamp(72px, 10vw, 150px) var(--gutter); }
+.evidence-track { display: grid; gap: 40px; margin-top: clamp(24px, 3vw, 40px); }
+.exhibit { display: flex; flex-direction: column; min-width: 0; }
+.exhibit-shot { display: block; flex: 1; min-height: 0; border: 1.5px solid var(--ink); border-bottom: 0; }
+.exhibit-shot img { width: 100%; height: 100%; aspect-ratio: 8 / 5; object-fit: cover; object-position: top; }
+.exhibit-sign { padding: 12px 16px; }
+.exhibit-sign h2, .exhibit-sign h3 { font: 400 clamp(1.5rem, 2.6vw, 2.5rem)/1.1 var(--font-brand); }
+.exhibit .voice { margin-top: 12px; }
+.exhibit-live { display: inline-flex; align-items: center; min-height: 44px; font-family: var(--font-brand); font-size: 15px; text-decoration: underline; text-underline-offset: 4px; }
+
+/* Keep in step with STAGE in ScrollMotion.tsx. Heights live here so links to later sections land correctly. */
+@media (min-width: 761px) and (min-height: 600px) and (prefers-reduced-motion: no-preference) {
+  .fix { height: 320vh; padding: 0; }
+  .fix-stage { position: sticky; top: 0; align-content: center; min-height: 100vh; padding: 76px var(--gutter) 24px; }
+  .evidence { height: 320vh; padding: 0; }
+  .evidence-stage { position: sticky; top: 0; display: flex; flex-direction: column; height: 100vh; padding: 84px var(--gutter) 24px; overflow: clip; }
+  .evidence-stage .display { font-size: clamp(2.6rem, 6vw, 6rem); margin-top: 8px; }
+  .evidence-track { display: flex; flex: 1; min-height: 0; gap: clamp(24px, 4vw, 64px); margin-inline: calc(var(--gutter) * -1); padding-inline: var(--gutter); }
+  .exhibit { flex: none; width: min(68vw, 1000px); height: 100%; }
+  .exhibit-shot img { aspect-ratio: auto; }
+}
 
 .case-sign { display: grid; align-content: end; gap: 12px; min-height: 80svh; padding: clamp(110px, 14vw, 180px) var(--gutter) clamp(24px, 4vw, 48px); }
 .case-sign h1 { font-family: var(--font-brand); font-size: clamp(3rem, 11vw, 11rem); line-height: 1.02; letter-spacing: -0.015em; overflow-wrap: anywhere; }

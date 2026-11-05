@@ -14,8 +14,8 @@ export type Project = {
   image: string;
   live?: { url: string; label: string };
   sign: { background: string; color: string };
-  /** Insane: the line painted on the shutter. */
-  spray: string;
+  /** Insane: one line. */
+  line: string;
 };
 
 export type Person = {

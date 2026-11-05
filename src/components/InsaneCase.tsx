@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { nextProject } from "@/data/projects";
 import type { Project } from "@/types";
-import ShutterLink from "./ShutterLink";
 
 // shortcut: facts and screenshot only. The problem, build and results aren't written yet, even in the prototype.
 export default function InsaneCase({ project }: { project: Project }) {
@@ -9,9 +8,9 @@ export default function InsaneCase({ project }: { project: Project }) {
   return (
     <article id="work" data-chapter="work">
       <header className="case-sign" style={{ background: project.sign.background, color: project.sign.color }}>
-        <p className="label"><Link href="/insane/work">The street</Link> / {project.business}</p>
+        <p className="label"><Link href="/insane/work">The evidence</Link> / {project.business}</p>
         <h1>{project.name}</h1>
-        <p className="voice">{project.spray}</p>
+        <p className="voice">{project.line}</p>
       </header>
       <div className="section case-body">
         <img className="shot" src={project.image} alt={`${project.name} website`} />
@@ -26,10 +25,10 @@ export default function InsaneCase({ project }: { project: Project }) {
           )}
         </dl>
       </div>
-      <ShutterLink className="case-next" href={`/insane/work/${next.slug}`} project={next}>
-        <span className="label">Next on the street</span>
+      <Link className="case-next" href={`/insane/work/${next.slug}`}>
+        <span className="label">Next</span>
         <span className="h1 flush">{next.name} <span aria-hidden="true">→</span></span>
-      </ShutterLink>
+      </Link>
     </article>
   );
 }

@@ -10,7 +10,7 @@ const HEROES: Record<World, { word: string; line: string }> = {
 const POSTERS: Record<World, Record<string, string[]>> = {
   insane: {
     services: ["WE MAKE", "THINGS", "PROPERLY"],
-    work: ["PULL", "A SHUTTER"],
+    work: ["THE", "EVIDENCE"],
     people: ["WHO", "TO BLAME"],
     contact: ["SAY HI.", "WE READ", "EVERYTHING"],
   },

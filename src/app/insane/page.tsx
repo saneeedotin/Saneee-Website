@@ -1,5 +1,5 @@
 import ContactForm from "@/components/ContactForm";
-import ShutterStreet from "@/components/ShutterStreet";
+import Evidence from "@/components/Evidence";
 import { services } from "@/data/services";
 import { team } from "@/data/team";
 
@@ -41,11 +41,7 @@ export default function InsaneHome() {
         </ul>
       </section>
 
-      <section id="work" data-chapter="work" className="section">
-        <p className="label">The street</p>
-        <h2 className="display">Pull a shutter.</h2>
-        <ShutterStreet />
-      </section>
+      <Evidence />
 
       <section id="people" data-chapter="people" className="section">
         <p className="label">The people</p>

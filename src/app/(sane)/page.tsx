@@ -1,6 +1,6 @@
 import Link from "next/link";
-import BeforeAfter from "@/components/BeforeAfter";
 import ContactForm from "@/components/ContactForm";
+import TheFix from "@/components/TheFix";
 import Vortex from "@/components/Vortex";
 import { projects } from "@/data/projects";
 import { services } from "@/data/services";
@@ -36,15 +36,7 @@ export default function SaneHome() {
         </div>
       </section>
 
-      <section id="before-after" data-chapter="services" className="section chapter tight-top">
-        <p className="label">02 / Before and after</p>
-        <div>
-          <h2 className="h-editorial">Same business. Now sane.</h2>
-          <p className="body">Drag the handle across. Joshi&rsquo;s is made up. Your website doesn&rsquo;t have to be this bad to need it.</p>
-          <BeforeAfter />
-          <a className="button-ghost spaced" href="#contact">Do this to my website <span aria-hidden="true">→</span></a>
-        </div>
-      </section>
+      <TheFix />
 
       <section id="work" data-chapter="work" className="section chapter">
         <p className="label">03 / Work</p>

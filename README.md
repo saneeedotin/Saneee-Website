@@ -36,8 +36,9 @@ npx serve out
 | `src/app/insane/` | Insane pages |
 | `src/components/portal/` | The cursor portal: shader, posters, and the path between worlds |
 | `src/components/Vortex.tsx` | The first scroll of the Sane home page |
-| `src/components/BeforeAfter.tsx` | The before/after wipe |
-| `src/components/ShutterStreet.tsx` | The shutter street on Insane |
+| `src/components/TheFix.tsx` | The cursor fixing each problem on the Sane home page |
+| `src/components/Evidence.tsx` | The sideways-scrolling client work on Insane |
+| `src/components/ScrollMotion.tsx` | Smooth scrolling (Lenis) and all scroll animation (GSAP) |
 | `src/components/ContactForm.tsx` | Contact form, sent through formsubmit.co |
 | `src/data/` | Services, projects and team. Sane and Insane copy sit side by side |
 | `tools/font/` | Builds the Saneee font and logo SVGs from the artwork in `logo/` |

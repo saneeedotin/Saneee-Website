@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Instrument_Sans, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import Portal from "@/components/portal/Portal";
+import ScrollMotion from "@/components/ScrollMotion";
 
 // shortcut: a third family, against the brief's two. Needed until Saneee has a text weight.
 const sans = Instrument_Sans({
@@ -54,6 +55,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body>
         {children}
         <Portal />
+        <ScrollMotion />
       </body>
     </html>
   );
