@@ -28,7 +28,7 @@ function animatePage({ stage }: { stage: boolean }) {
     gsap.from(belief.querySelector(".voice"), { opacity: 0, y: 24, ease: "none", scrollTrigger: { trigger: belief, start: "center 55%", end: "center 40%", scrub: true } });
   });
 
-  const lists = gsap.utils.toArray<HTMLElement>(".rows li, .projects a, .posters li, .work-grid li, .facts div");
+  const lists = gsap.utils.toArray<HTMLElement>(".rows li, .projects a, .posters > li, .marks li, .work-grid li, .facts div");
   if (lists.length) {
     gsap.set(lists, { y: 40, opacity: 0 });
     ScrollTrigger.batch(lists, { start: "top 92%", once: true, onEnter: (batch) => gsap.to(batch, { y: 0, opacity: 1, duration: 0.8, stagger: 0.07, ease: EASE }) });
@@ -57,23 +57,6 @@ function animatePage({ stage }: { stage: boolean }) {
   } else {
     rows.forEach((row) => wipe(gsap.timeline({ scrollTrigger: { trigger: row, start: "top 85%", end: "top 45%", scrub: true } }), row));
   }
-
-  const track = document.querySelector<HTMLElement>(".evidence-track");
-  if (!track || !stage) return;
-  const section = track.closest<HTMLElement>(".evidence")!;
-  const distance = () => track.scrollWidth - track.clientWidth;
-  gsap.to(track, { x: () => -distance(), ease: "none", scrollTrigger: { trigger: section, start: "top top", end: "bottom bottom", scrub: true, invalidateOnRefresh: true } });
-
-  // The stage clips overflow, so tabbing to a link off to the side has to scroll it into view.
-  const onFocus = (e: FocusEvent) => {
-    const exhibit = (e.target as Element).closest<HTMLElement>(".exhibit");
-    if (!exhibit) return;
-    const progress = Math.min(1, exhibit.offsetLeft / distance());
-    const start = section.getBoundingClientRect().top + scrollY;
-    scrollTo(0, start + progress * (section.offsetHeight - innerHeight));
-  };
-  track.addEventListener("focusin", onFocus);
-  return () => track.removeEventListener("focusin", onFocus);
 }
 
 export default function ScrollMotion() {

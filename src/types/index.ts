@@ -16,6 +16,10 @@ export type Project = {
   sign: { background: string; color: string };
   /** Insane: one line. */
   line: string;
+  /** One-colour mark (transparent PNG used as a mask). Without one, the name is set as a wordmark. */
+  logo?: string;
+  /** The thinking behind the project, for its case page. */
+  story: { brief: string; approach: string; built: string[] };
 };
 
 export type Person = {
