@@ -35,7 +35,7 @@ npx serve out
 | `src/app/(sane)/` | Sane pages |
 | `src/app/insane/` | Insane pages |
 | `src/components/portal/` | The cursor portal: shader, posters, and the path between worlds |
-| `src/components/Vortex.tsx` | The first scroll of the Sane home page |
+| `src/components/HeroMorph.tsx` | The Sane hero: SANEEE folds into the logo, the arrow becomes the cursor, the S opens into Services |
 | `src/components/TheFix.tsx` | The cursor fixing each problem on the Sane home page |
 | `src/components/Evidence.tsx` | The sideways-scrolling client work on Insane |
 | `src/components/ScrollMotion.tsx` | Smooth scrolling (Lenis) and all scroll animation (GSAP) |

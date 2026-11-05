@@ -133,7 +133,8 @@ export default function Portal() {
       gl.uniform1f(uni.H, hold);
       gl.uniform1f(uni.F, hold * hold);
       // Hero posters scroll with the hero, so the two words stay locked together.
-      gl.uniform1f(uni.O, currentChapter() === "hero" ? scrollY / canvas.clientHeight : 0);
+      const hero = currentChapter() === "hero" ? document.querySelector('[data-chapter="hero"]') : null;
+      gl.uniform1f(uni.O, hero ? -hero.getBoundingClientRect().top / canvas.clientHeight : 0);
       gl.uniform2fv(uni.P, new Float32Array(trail.flatMap((p) => [p.x, p.y])));
       gl.drawArrays(gl.TRIANGLES, 0, 3);
 

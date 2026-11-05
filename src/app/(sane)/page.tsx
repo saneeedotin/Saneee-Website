@@ -1,7 +1,7 @@
 import Link from "next/link";
 import ContactForm from "@/components/ContactForm";
+import HeroMorph from "@/components/HeroMorph";
 import TheFix from "@/components/TheFix";
-import Vortex from "@/components/Vortex";
 import { projects } from "@/data/projects";
 import { services } from "@/data/services";
 import { team } from "@/data/team";
@@ -9,17 +9,7 @@ import { team } from "@/data/team";
 export default function SaneHome() {
   return (
     <>
-      <section id="hero" data-chapter="hero" className="hero">
-        <p className="lede">Designed to be distinguished.</p>
-        <p className="sub">Websites, custom software and AI automation that bring your business back to its senses. Mumbai.</p>
-        <p className="hint">
-          <span className="hint-mouse">Move your cursor. Press and hold to cross.</span>
-          <span className="hint-touch">Touch and hold here to cross.</span>
-        </p>
-        <h1 className="word" style={{ "--ratio": 4.977 } as React.CSSProperties}>SANEEE</h1>
-      </section>
-
-      <Vortex />
+      <HeroMorph />
 
       <section id="services" data-chapter="services" className="section chapter">
         <p className="label">01 / Services</p>

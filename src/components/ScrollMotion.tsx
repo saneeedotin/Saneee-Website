@@ -39,7 +39,9 @@ function animatePage({ stage }: { stage: boolean }) {
   });
 
   // The hero's big word stays put: the portal's poster has to line up with it.
-  gsap.to(".hero .lede, .hero .sub, .hero .hint", { opacity: 0, y: -48, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "45% top", scrub: true } });
+  // On Sane the hero is sticky, so timing comes from the section around it, whose position doesn't change.
+  const hero = document.querySelector(".morph") ?? document.querySelector(".hero");
+  if (hero) gsap.to(".hero .lede, .hero .sub, .hero .hint", { opacity: 0, y: -48, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "+=45%", scrub: true } });
 
   const wipe = (tl: gsap.core.Timeline, row: Element) => {
     const cursor = row.querySelector(".fix-cursor");

@@ -109,24 +109,13 @@ img { display: block; max-width: 100%; height: auto; }
   .hint-touch { display: inline; }
 }
 
-/* Vortex. Height comes from CSS, not JS, so links to sections below it land in the right place. */
-.vortex { position: relative; background: var(--ink); color: var(--paper); }
-.vortex-pin { display: grid; justify-items: center; gap: clamp(24px, 4vw, 48px); padding: clamp(48px, 8vw, 96px) var(--gutter); }
-.vortex-canvas { display: none; }
-.vortex-still { width: min(70vw, 420px); height: auto; }
-.beats { display: grid; gap: 8px; width: 100%; }
-.beat { font: italic 400 clamp(38px, 6.4vw, 104px)/1.08 var(--font-editorial); letter-spacing: -0.015em; }
+/* Hero morph. Height comes from CSS, not JS, so links to sections below it land in the right place. */
+.morph-canvas { display: none; }
 @media (prefers-reduced-motion: no-preference) {
-  .vortex:not(.vortex-static) { height: 400vh; }
-  .vortex:not(.vortex-static) .vortex-pin { position: sticky; top: 0; display: block; height: 100vh; height: 100svh; padding: 0; overflow: hidden; }
-  .vortex:not(.vortex-static) .vortex-canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
-  .vortex:not(.vortex-static) .vortex-still { display: none; }
-  .vortex:not(.vortex-static) .beats { position: absolute; left: var(--gutter); right: var(--gutter); bottom: clamp(24px, 6vh, 64px); display: block; }
-  .vortex:not(.vortex-static) .beat { position: absolute; left: 0; right: 0; bottom: 0; opacity: 0; transform: translateY(24px); transition: opacity 0.35s, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1); pointer-events: none; }
-  .vortex:not(.vortex-static) .beat.on { opacity: 1; transform: none; }
-  /* Paper-coloured tiles pass behind the words, so the words carry their own ink. */
-  .vortex:not(.vortex-static) .beat span { background: var(--ink); padding: 0 0.18em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
-  .vortex-flying { cursor: none; }
+  .morph:not(.morph-static) { height: 400vh; background: var(--ink); }
+  .morph:not(.morph-static) .hero { position: sticky; top: 0; }
+  .morph:not(.morph-static) .morph-canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; visibility: hidden; }
+  .morph-flying { cursor: none; }
 }
 
 /* Sections */
