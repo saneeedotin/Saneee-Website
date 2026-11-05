@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import WorldSwitch from "./WorldSwitch";
 import type { World } from "./portal/world";
 
@@ -22,11 +22,26 @@ const LINKS: Record<World, { href: string; label: string }[]> = {
 
 export default function Nav({ world }: { world: World }) {
   const menu = useRef<HTMLDialogElement>(null);
+  const header = useRef<HTMLElement>(null);
   const home = world === "sane" ? "/" : "/insane";
+
+  // Out of the way going down, a solid bar coming back up, so it never sits on top of text.
+  useEffect(() => {
+    let last = scrollY;
+    const onScroll = () => {
+      const y = scrollY;
+      header.current?.classList.toggle("nav-solid", y > 8);
+      header.current?.classList.toggle("nav-away", y > last && y > 120);
+      last = y;
+    };
+    onScroll();
+    addEventListener("scroll", onScroll, { passive: true });
+    return () => removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
     <>
-      <header className="nav">
+      <header ref={header} className="nav">
         <Link className="nav-logo" href={home}>
           {/* The Sane nav blends against what's behind it, so it starts from white. */}
           <img src={world === "sane" ? "/img/logo-white.svg" : "/img/logo-black.svg"} alt="saneee.in, home" width={182} height={40} />

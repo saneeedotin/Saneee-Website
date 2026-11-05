@@ -8,12 +8,15 @@ export default function SaneWork() {
   return (
     <section id="work" data-chapter="work" className="section page-top">
       <p className="label">Work</p>
-      <h1 className="h1">Businesses that came out sane.</h1>
-      <ul className="rows">
+      <h1 className="h-editorial">Businesses that came out sane.</h1>
+      <ul className="work-grid">
         {projects.map((p) => (
           <li key={p.slug}>
-            <h2 className="h3"><Link href={`/work/${p.slug}`}>{p.name}</Link></h2>
-            <p>{[p.business, p.where].filter(Boolean).join(", ")}</p>
+            <Link href={`/work/${p.slug}`}>
+              <img src={p.image} alt="" loading="lazy" />
+              <h2 className="h3">{p.name}</h2>
+              <p>{[p.business, p.where].filter(Boolean).join(", ")}</p>
+            </Link>
           </li>
         ))}
       </ul>
