@@ -1,18 +1,22 @@
 import type { World } from "./world";
 
-type Poster = { word: string; line: string };
+type Poster = { word: string; line?: string };
 
 // What the hole shows: the chapter you're in, as it looks from the other world.
 const POSTERS: Record<World, Record<string, Poster>> = {
   insane: {
     hero: { word: "INSANE", line: "Sanely built. Insanely good." },
-    services: { word: "WE MAKE", line: "Seven things, done properly." },
-    contact: { word: "SAY HI", line: "We read everything. Even the long ones." },
+    services: { word: "WE MAKE" },
+    work: { word: "THE STREET" },
+    people: { word: "SUSPECTS" },
+    contact: { word: "SAY HI" },
   },
   sane: {
     hero: { word: "SANEEE", line: "Designed to be distinguished." },
-    services: { word: "SERVICES", line: "What the studio makes." },
-    contact: { word: "CONTACT", line: "Tell us what you need." },
+    services: { word: "SERVICES" },
+    work: { word: "WORK" },
+    people: { word: "PEOPLE" },
+    contact: { word: "CONTACT" },
   },
 };
 
@@ -42,8 +46,9 @@ export const paintPoster = (world: World, chapter: string, w: number, h: number)
   // Matches `.word` in globals.css, so the word lands exactly where the page's own hero word sits.
   const bottom = h - g - size * 0.025;
   ctx.fillText(poster.word, g, bottom);
-  // Away from the hero the hole can open anywhere, so type fills the height and it's never blank green.
-  if (chapter !== "hero") {
+
+  // shortcut: repeated words so the hole is never blank green, hand-designed posters come in Milestone 4.
+  if (!poster.line) {
     for (let y = bottom - size * 0.82; y > -size; y -= size * 0.82) ctx.fillText(poster.word, g, y);
     return canvas;
   }

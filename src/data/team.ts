@@ -1,40 +1,8 @@
-import { TeamMember } from "@/types";
+import type { Person } from "@/types";
 
-export const teamMembers: TeamMember[] = [
-  {
-    id: "param",
-    name: "Param Mehta",
-    role: "Founder & Creative Lead",
-    initials: "PM",
-    seed: "01",
-    image: "/team/team-param.jpeg",
-    bio: "Shapes the overall digital experience, brand identity and design engineering."
-  },
-  {
-    id: "hardik",
-    name: "Hardik Solanki",
-    role: "Lead Full-Stack Engineer",
-    initials: "HD",
-    seed: "02",
-    image: "/team/team-hardik.jpeg",
-    bio: "Architects high-performance web systems, Next.js backbones and fluid micro-interactions."
-  },
-  {
-    id: "smit",
-    name: "Smit Chauhan",
-    role: "Lead UI/UX Designer",
-    initials: "SM",
-    seed: "03",
-    image: "/team/team-smit.jpeg",
-    bio: "Translates business logic into intuitive, visually rich interfaces and design systems."
-  },
-  {
-    id: "teesha",
-    name: "Teesha Wala",
-    role: "Brand & Visual Designer",
-    initials: "TS",
-    seed: "04",
-    image: "/team/team-teesha.jpeg",
-    bio: "Crafts bespoke visual identities, typography systems and creative art direction."
-  }
+export const team: Person[] = [
+  { name: "Param Mehta", role: "Founder, Creative Lead & System Designer", image: "/img/team-param.jpeg", line: "Every detail is a decision.", bio: "I lead saneee.in’s creative direction and design how our systems fit together. I start by understanding the business, then make sure both the experience and the structure behind it work as one." },
+  { name: "Teesha Wala", role: "Co-founder, Brand & Visual Designer", image: "/img/team-teesha.jpeg", line: "Making brands impossible to forget.", bio: "I create visual identities that give businesses a clear, confident personality. From logos and type to colour and art direction, I make sure every piece feels like one brand." },
+  { name: "Hardik Solanki", role: "Full Stack Engineer & Business Lead", image: "/img/team-hardik.jpeg", line: "If it can be imagined, I’ll make it run.", bio: "I lead saneee.in’s business direction and build the technology behind our work, from interfaces to databases. Understanding both sides helps me turn what a business needs into products that work and help it grow." },
+  { name: "Smit Chauhan", role: "UI/UX Designer & Software Tester", image: "/img/team-smit.jpeg", line: "Designing Seamless Experiences, Ensuring Flawless Performances.", bio: "I’m a UI/UX Designer and Software Tester passionate about creating intuitive, user-friendly interfaces and delivering smooth, reliable digital experiences. I focus on user-centered design, usability, functionality, and detail-oriented testing." },
 ];

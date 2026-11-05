@@ -1,76 +1,11 @@
-import { Service } from "@/types";
+import type { Service } from "@/types";
 
 export const services: Service[] = [
-  {
-    slug: "website",
-    title: "Website Development & Design",
-    description: "Sub-second, mobile-first web flagships engineered to convert and distinguish your brand.",
-    tags: ["Web Design", "Development", "Next.js", "Performance"],
-    seed: "01",
-    iconName: "Globe"
-  },
-  {
-    slug: "app",
-    title: "App Development & Design",
-    description: "Fluid cross-platform and native mobile experiences built with startup speed.",
-    tags: ["Mobile Apps", "Web Apps", "Development", "Design"],
-    seed: "02",
-    iconName: "Smartphone"
-  },
-  {
-    slug: "ui-ux-design",
-    title: "UI/UX Design",
-    description: "Pixel-calibrated design systems and intuitive user journeys that customers love.",
-    tags: ["Interfaces", "User Flows", "Design Systems"],
-    seed: "03",
-    iconName: "Layout"
-  },
-  {
-    slug: "brand-identity",
-    title: "Brand Identity & Logo Design",
-    description: "Bespoke vector geometry, typography hierarchies, and unmistakable brand presence.",
-    tags: ["Identity", "Logo", "Typography", "Brand Systems"],
-    seed: "04",
-    iconName: "Sparkles"
-  },
-  {
-    slug: "social-media-marketing",
-    title: "Social Media Marketing",
-    description: "High-impact visual narratives, reel art direction, and digital campaign collateral.",
-    tags: ["Instagram", "Content", "Reels", "Campaigns"],
-    seed: "05",
-    iconName: "Share2"
-  },
-  {
-    slug: "product-design",
-    title: "Product Design",
-    description: "End-to-end product architecture from rapid wireframing to high-fidelity design.",
-    tags: ["Product Strategy", "Prototyping", "UX"],
-    seed: "06",
-    iconName: "Layers"
-  },
-  {
-    slug: "graphic-design",
-    title: "Graphic Design",
-    description: "Editorial layouts, typography posters, and distinguished brand collateral.",
-    tags: ["Posters", "Social Creatives", "Print"],
-    seed: "07",
-    iconName: "PenTool"
-  },
-  {
-    slug: "ai-automations",
-    title: "AI & Automations",
-    description: "Intelligent workflows, API integrations, and generative systems that multiply productivity.",
-    tags: ["AI Workflows", "Automation", "Integrations"],
-    seed: "08",
-    iconName: "Cpu"
-  },
-  {
-    slug: "custom-projects",
-    title: "Customised web & app projects for every need",
-    description: "Tailored engineering and design solutions calibrated for unique digital challenges.",
-    tags: ["Bespoke", "Web", "Apps"],
-    seed: "09",
-    iconName: "Code2"
-  }
+  { name: "Websites", voice: "Your shopfront, open all night.", text: "Business websites, landing pages, portfolios, product sites and online stores, or a redesign of what you already have. Fast on every phone, and looked after once it is live." },
+  { name: "Custom software", voice: "Built around how you already work.", text: "Web and mobile apps, customer portals, internal tools and admin dashboards, with the right access for each person on your team." },
+  { name: "Business systems", voice: "Bookings, customers and bills, in one place.", text: "CRM and ERP-style systems, inventory, booking and ticketing, billing and invoices, and simple reports, so paper, phone calls and scattered spreadsheets stop running your day." },
+  { name: "AI & automation", voice: "Stop doing the same job twice.", text: "AI assistants and tools, automatic reminders and workflows, and help with documents and data, so your people get time back for the work that matters." },
+  { name: "UI/UX & product design", voice: "Easy to use on the first try.", text: "Research, user flows, wireframes, visual design and design systems for websites, dashboards, portals and products." },
+  { name: "Branding & creative", voice: "Look like the business you actually are.", text: "Brand identity, logos, graphic design, digital creatives and marketing material that all feel like one business." },
+  { name: "Digital marketing", voice: "Get seen by the right people.", text: "Social media and Instagram management, Meta ads, creative content and a plan for how customers find you online." },
 ];

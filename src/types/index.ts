@@ -1,56 +1,29 @@
-export interface Project {
-  slug: string;
-  title: string;
-  year: number;
-  industry: string;
-  service:
-    | "website"
-    | "app"
-    | "ui-ux-design"
-    | "brand-identity"
-    | "social-media-marketing"
-    | "product-design"
-    | "graphic-design"
-    | "ai-automations"
-    | "custom-projects";
-  summary: string;
-  client: string;
-  role: string;
-  timeline: string;
-  liveUrl: string;
-  demo: { type: "iframe" | "video" | "gallery"; src?: string };
-  challenge: string;
-  approach: string;
-  solution: string;
-  results: string[];
-  seed: string;
-  coverImage: string;
-  keyImpact: string;
-}
+export type Service = {
+  name: string;
+  /** Sane: what it actually includes. */
+  text: string;
+  /** Insane: the same thing in one line. */
+  voice: string;
+};
 
-export interface Service {
-  slug: string;
-  title: string;
-  description: string;
-  tags: string[];
-  seed: string;
-  iconName?: string;
-}
-
-export interface Industry {
+export type Project = {
   slug: string;
   name: string;
-  description: string;
-  tags: string[];
-}
-
-export interface TeamMember {
-  id: string;
-  name: string;
-  role: string;
-  initials: string;
-  seed: string;
+  business: string;
+  where?: string;
   image: string;
+  live?: { url: string; label: string };
+  sign: { background: string; color: string };
+  /** Insane: the line painted on the shutter. */
+  spray: string;
+};
+
+export type Person = {
+  name: string;
+  role: string;
+  image: string;
+  /** Sane: in their own words. */
   bio: string;
-  linkedIn?: string;
-}
+  /** Insane: one line. */
+  line: string;
+};
