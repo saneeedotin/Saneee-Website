@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import CaseStudy from "@/components/CaseStudy";
+import InsaneCaseStudy from "@/components/InsaneCase";
 import { projects } from "@/data/projects";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -17,5 +17,5 @@ export default async function InsaneCase({ params }: Props) {
   const { slug } = await params;
   const project = projects.find((p) => p.slug === slug);
   if (!project) notFound();
-  return <CaseStudy project={project} world="insane" />;
+  return <InsaneCaseStudy project={project} />;
 }

@@ -85,7 +85,7 @@ export default function ContactForm() {
         <label className="label" htmlFor="f-business">Your business (optional)</label>
         <input id="f-business" name="business" type="text" autoComplete="organization" />
       </div>
-      <div className="ba-vh" aria-hidden="true">
+      <div className="vh" aria-hidden="true">
         <label htmlFor="f-website">Leave this empty</label>
         <input id="f-website" name="website" type="text" tabIndex={-1} autoComplete="off" />
       </div>

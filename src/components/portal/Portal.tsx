@@ -96,7 +96,8 @@ export default function Portal() {
     };
 
     const frame = (now: number) => {
-      const dt = Math.min((now - lastFrame) / 1000, 0.1);
+      const elapsed = (now - lastFrame) / 1000;
+      const dt = Math.min(elapsed, 0.1); // Smoothing can't jump, but the hold below always takes real time.
       lastFrame = now;
       const blend = (k: number) => 1 - Math.pow(1 - k, dt * 60);
 
@@ -106,8 +107,8 @@ export default function Portal() {
       open += ((wantsOpen ? 1 : 0) - open) * blend(wantsOpen ? 0.14 : 0.2);
 
       if (crossingRef.current) hold = 1;
-      else if (pressing) hold = Math.min(1, hold + dt / HOLD_SECONDS);
-      else hold = Math.max(0, hold - dt / (hold > 0.6 ? 0.5 : 0.25));
+      else if (pressing) hold = Math.min(1, hold + elapsed / HOLD_SECONDS);
+      else hold = Math.max(0, hold - elapsed / (hold > 0.6 ? 0.5 : 0.25));
 
       if (pressing && hold >= 1 && !crossingRef.current) {
         crossingRef.current = true;

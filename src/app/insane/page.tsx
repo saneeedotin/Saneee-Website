@@ -1,9 +1,15 @@
-import Link from "next/link";
-import { projects } from "@/data/projects";
+import ContactForm from "@/components/ContactForm";
+import ShutterStreet from "@/components/ShutterStreet";
 import { services } from "@/data/services";
 import { team } from "@/data/team";
 
-// shortcut: placeholder voice taken from the prototype, real Insane copy comes with Milestone 4.
+// From the brand's own manifesto lines in logo/design.md.
+const BELIEFS = [
+  ["We don’t do templates.", "We never will."],
+  ["Your business isn’t generic.", "Your website shouldn’t be either."],
+  ["Your website is your first impression.", "There’s no second chance for it."],
+];
+
 export default function InsaneHome() {
   return (
     <>
@@ -13,9 +19,18 @@ export default function InsaneHome() {
         <h1 className="word" style={{ "--ratio": 4.492 } as React.CSSProperties}>INSANE</h1>
       </section>
 
+      <section data-chapter="services" className="beliefs" aria-label="What we believe">
+        {BELIEFS.map(([loud, quiet]) => (
+          <div key={loud} className="belief">
+            <p className="display">{loud}</p>
+            <p className="voice">{quiet}</p>
+          </div>
+        ))}
+      </section>
+
       <section id="services" data-chapter="services" className="section">
         <p className="label">We make</p>
-        <h2 className="h1">Seven things, done properly.</h2>
+        <h2 className="display">Seven things, done properly.</h2>
         <ul className="posters">
           {services.map((s) => (
             <li key={s.name}>
@@ -28,24 +43,19 @@ export default function InsaneHome() {
 
       <section id="work" data-chapter="work" className="section">
         <p className="label">The street</p>
-        <h2 className="h1">Came in mad. Left sane.</h2>
-        <ul className="posters">
-          {projects.map((p) => (
-            <li key={p.slug}>
-              <h3 className="h3"><Link href={`/insane/work/${p.slug}`}>{p.name}</Link></h3>
-              <p className="voice">{p.spray}</p>
-            </li>
-          ))}
-        </ul>
+        <h2 className="display">Pull a shutter.</h2>
+        <ShutterStreet />
       </section>
 
       <section id="people" data-chapter="people" className="section">
-        <p className="label">The suspects</p>
-        <h2 className="h1">Four people. One brain cell, shared carefully.</h2>
-        <ul className="posters">
+        <p className="label">The people</p>
+        <h2 className="display">Who to blame.</h2>
+        <ul className="suspects">
           {team.map((p) => (
             <li key={p.name}>
+              <img src={p.image} alt={`Portrait of ${p.name}`} loading="lazy" />
               <h3 className="h3">{p.name}</h3>
+              <p className="label">{p.role}</p>
               <p className="voice">{p.line}</p>
             </li>
           ))}
@@ -54,8 +64,15 @@ export default function InsaneHome() {
 
       <section id="contact" data-chapter="contact" className="section">
         <p className="label">Say hi</p>
-        <h2 className="h-editorial">We read everything. Even the long ones.</h2>
-        <a className="reach" href="mailto:saneeedotin@gmail.com">saneeedotin@gmail.com</a>
+        <h2 className="display">We read everything. Even the long ones.</h2>
+        <div className="contact">
+          <ContactForm />
+          <ul className="reach-list">
+            <li><span className="label">Email</span><a href="mailto:saneeedotin@gmail.com">saneeedotin@gmail.com</a></li>
+            <li><span className="label">Instagram</span><a href="https://www.instagram.com/saneeedotin/" target="_blank" rel="noopener">saneeedotin <span aria-hidden="true">↗</span></a></li>
+            <li><span className="label">Where</span>Mumbai, India</li>
+          </ul>
+        </div>
       </section>
     </>
   );

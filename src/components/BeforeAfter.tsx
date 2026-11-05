@@ -24,7 +24,7 @@ export default function BeforeAfter() {
 
   return (
     <>
-      <p className="ba-vh">The same made-up sweet shop as a messy old website and as a clean new one. Move the slider to wipe from one to the other.</p>
+      <p className="vh">The same made-up sweet shop as a messy old website and as a clean new one. Move the slider to wipe from one to the other.</p>
       <div
         ref={stage}
         className="ba-stage"

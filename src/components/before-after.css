@@ -1,4 +1,3 @@
-.ba-vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .ba-stage { --grip: clamp(44px, 6cqw, 64px); position: relative; overflow: hidden; margin-top: clamp(32px, 5vw, 64px); aspect-ratio: 16 / 10; border: 1px solid #08080833; container-type: inline-size; user-select: none; -webkit-user-select: none; touch-action: pan-y; cursor: ew-resize; }
 .ba-site { position: absolute; inset: 0; overflow: hidden; }
 .ba-new { clip-path: inset(0 calc(100% - var(--p)) 0 0); }

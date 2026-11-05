@@ -17,5 +17,5 @@ export default async function SaneCase({ params }: Props) {
   const { slug } = await params;
   const project = projects.find((p) => p.slug === slug);
   if (!project) notFound();
-  return <CaseStudy project={project} world="sane" />;
+  return <CaseStudy project={project} />;
 }
