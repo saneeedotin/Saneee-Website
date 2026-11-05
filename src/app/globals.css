@@ -308,8 +308,42 @@ html[data-load="intro"][data-world="insane"] .loader-stage[data-world="insane"],
 html[data-load="intro"][data-world="sane"] .loader-stage[data-world="sane"] { visibility: visible; opacity: 0; }
 
 /* Footer */
-.footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 32px; padding: 24px var(--gutter); font-family: var(--font-brand); font-size: 15px; }
-.sane .footer { background: var(--ink); color: var(--paper); }
-.insane .footer { border-top: 1.5px solid var(--ink); }
-.footer a { display: inline-flex; align-items: center; min-height: 44px; }
-.footer img { height: clamp(28px, 2.8vw, 40px); width: auto; }
+/* Footer: an ask, the map of the site, a bar of small print, then the name across the whole width. */
+.footer { --accent: var(--lime); overflow: hidden; padding: clamp(56px, 8vw, 120px) var(--gutter) 0; background: var(--ink); color: var(--paper); }
+.insane .footer { color: var(--lime); --accent: var(--paper); }
+.footer-top { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(40px, 6vw, 96px); }
+.footer-line { margin-top: 16px; font: italic 400 clamp(2.4rem, 5vw, 5rem)/1.02 var(--font-editorial); letter-spacing: -0.015em; }
+.insane .footer-line { font: 400 clamp(2.2rem, 4.4vw, 4.4rem)/1.04 var(--font-brand); letter-spacing: -0.015em; }
+.footer-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px; margin-top: clamp(24px, 3vw, 40px); }
+.footer .button { background: var(--lime); color: var(--ink); }
+.insane .footer .button { background: var(--lime); color: var(--ink); }
+.footer .button:hover { background: var(--paper); }
+.footer-mail { display: inline-flex; align-items: center; min-height: 44px; font-size: var(--text-body-lg); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 6px; overflow-wrap: anywhere; }
+.footer-cols { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px clamp(16px, 2vw, 32px); align-content: start; }
+.footer-cols .label { padding-bottom: 12px; margin-bottom: 8px; border-bottom: 1px solid currentColor; opacity: 0.6; }
+.footer-cols li { display: flex; align-items: center; min-height: 40px; font-family: var(--font-brand); font-size: clamp(15px, 1.15vw, 18px); }
+.footer-cols a { position: relative; display: inline-flex; align-items: center; min-height: 40px; }
+.footer-cols a::after { content: ""; position: absolute; left: 0; right: 0; bottom: 8px; height: 1.5px; background: var(--accent); transform: scaleX(0); transform-origin: right; transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
+.footer-cols a:hover::after, .footer-cols a:focus-visible::after { transform: scaleX(1); transform-origin: left; }
+.footer-time { display: inline-flex; align-items: center; gap: 8px; font-variant-numeric: tabular-nums; }
+.footer-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: footer-pulse 2s ease-in-out infinite; }
+@keyframes footer-pulse { 50% { opacity: 0.25; } }
+.footer-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 24px; margin-top: clamp(56px, 8vw, 120px); padding-block: 8px; border-block: 1px solid color-mix(in srgb, currentColor 30%, transparent); font-family: var(--font-brand); font-size: 13px; letter-spacing: 0.04em; }
+.footer-bar a { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; white-space: nowrap; }
+.footer-bar a:hover { color: var(--accent); }
+/* The name, edge to edge, sitting on the bottom of the page. Hover trades its halves: saneee.in <-> in.saneee. */
+.footer-word { margin: clamp(16px, 2vw, 32px) calc(var(--gutter) * -1) 0; padding-inline: var(--gutter); line-height: 0; }
+.fw { display: inline-flex; align-items: flex-end; font-family: var(--font-brand); line-height: 0.82; white-space: nowrap; padding-bottom: 0.04em; }
+.fw span { display: inline-block; transition: transform 0.9s cubic-bezier(0.76, 0, 0.24, 1), color 0.4s; }
+.fw-dot { color: var(--accent); }
+.fw:hover .fw-a, .fw:focus-visible .fw-a { transform: translateX(var(--to-b)); }
+.fw:hover .fw-b, .fw:focus-visible .fw-b { transform: translateX(var(--to-a)); }
+.fw:hover .fw-dot, .fw:focus-visible .fw-dot { transform: translateX(var(--to-dot)); }
+.fw:focus-visible { outline: none; }
+@media (prefers-reduced-motion: reduce) { .fw span { transition: none; } }
+@media (max-width: 1000px) { .footer-top { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 640px) {
+  .footer-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .footer-bar { justify-content: flex-start; }
+  .footer-bar span { flex-basis: 100%; padding-top: 12px; }
+}

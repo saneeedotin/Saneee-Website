@@ -1,18 +1,72 @@
 import Link from "next/link";
+import { projects } from "@/data/projects";
+import FooterWord from "./FooterWord";
+import LocalTime from "./LocalTime";
+import { EMAIL } from "./ReachList";
 import type { World } from "./portal/world";
 
+const COPY: Record<World, { label: string; ask: string; button: string }> = {
+  sane: { label: "Start something", ask: "Tell us what you need.", button: "Talk to us" },
+  insane: { label: "Say hi", ask: "Something broken? Good.", button: "Tell us everything" },
+};
+
+const SOCIAL = [
+  { href: "https://www.instagram.com/saneeedotin/", label: "Instagram" },
+  { href: "https://www.linkedin.com/search/results/all/?keywords=saneee%20dotin", label: "LinkedIn" },
+];
+
 export default function Footer({ world }: { world: World }) {
-  const home = world === "sane" ? "/" : "/insane";
+  const base = world === "sane" ? "" : "/insane";
+  const copy = COPY[world];
+  const pages = [
+    { href: `${base}/about`, label: "About" },
+    { href: `${base}/services`, label: "Services" },
+    { href: `${base}/work`, label: "Work" },
+    { href: `${base}/contact`, label: "Contact" },
+  ];
+
   return (
-    <footer className="footer">
-      <Link href={home}>
-        <img src={world === "sane" ? "/img/logo-white.svg" : "/img/logo-black.svg"} alt="saneee.in, home" width={182} height={40} />
-      </Link>
-      <a href="mailto:saneeedotin@gmail.com">saneeedotin@gmail.com</a>
-      <a href="https://www.instagram.com/saneeedotin/" target="_blank" rel="noopener">Instagram</a>
-      <a href="https://www.linkedin.com/search/results/all/?keywords=saneee%20dotin" target="_blank" rel="noopener">LinkedIn</a>
-      <Link href={world === "sane" ? "/privacy" : "/insane/privacy"}>Privacy</Link>
-      <span>Mumbai, India</span>
+    <footer className="footer dark">
+      <div className="footer-top">
+        <div className="footer-ask">
+          <p className="label">{copy.label}</p>
+          <p className="footer-line">{copy.ask}</p>
+          <div className="footer-actions">
+            <Link className="button" href={`${base}/contact`}>{copy.button} <span aria-hidden="true">→</span></Link>
+            <a className="footer-mail" href={`mailto:${EMAIL}`}>{EMAIL}</a>
+          </div>
+        </div>
+
+        <nav className="footer-cols" aria-label="Footer">
+          <div>
+            <p className="label">Pages</p>
+            <ul>{pages.map((p) => <li key={p.href}><Link href={p.href}>{p.label}</Link></li>)}</ul>
+          </div>
+          <div>
+            <p className="label">Work</p>
+            <ul>{projects.map((p) => <li key={p.slug}><Link href={`${base}/work/${p.slug}`}>{p.name}</Link></li>)}</ul>
+          </div>
+          <div>
+            <p className="label">Elsewhere</p>
+            <ul>{SOCIAL.map((s) => <li key={s.label}><a href={s.href} target="_blank" rel="noopener">{s.label} <span aria-hidden="true">↗</span></a></li>)}</ul>
+          </div>
+          <div>
+            <p className="label">Studio</p>
+            <ul>
+              <li>Mumbai, India</li>
+              <li><LocalTime /></li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+
+      <div className="footer-bar">
+        <span>© {new Date().getFullYear()} saneee.in</span>
+        <Link href={`${base}/privacy`}>Privacy</Link>
+        <a href="#main">Back to top <span aria-hidden="true">↑</span></a>
+      </div>
+
+      <FooterWord world={world} />
     </footer>
   );
 }
