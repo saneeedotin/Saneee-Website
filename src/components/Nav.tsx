@@ -20,6 +20,18 @@ const LINKS: Record<World, { href: string; label: string }[]> = {
   ],
 };
 
+// The hero stage counts as dark until the S's zoom has mostly flooded it with paper.
+const overDark = (nav: HTMLElement | null) => {
+  if (!nav) return false;
+  const edge = nav.offsetHeight;
+  const hero = document.querySelector(".morph")?.getBoundingClientRect();
+  if (hero && hero.top <= edge && hero.bottom > innerHeight + (hero.height - innerHeight) * 0.1) return true;
+  return [...document.querySelectorAll(".dark")].some((el) => {
+    const r = el.getBoundingClientRect();
+    return r.top <= edge && r.bottom > edge;
+  });
+};
+
 export default function Nav({ world }: { world: World }) {
   const menu = useRef<HTMLDialogElement>(null);
   const header = useRef<HTMLElement>(null);
@@ -32,6 +44,7 @@ export default function Nav({ world }: { world: World }) {
       const y = scrollY;
       header.current?.classList.toggle("nav-solid", y > 8);
       header.current?.classList.toggle("nav-away", y > last && y > 120);
+      header.current?.classList.toggle("nav-on-dark", overDark(header.current));
       last = y;
     };
     onScroll();

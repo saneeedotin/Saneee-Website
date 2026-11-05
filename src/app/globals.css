@@ -76,6 +76,8 @@ img { display: block; max-width: 100%; height: auto; }
 .nav-away:not(:focus-within) { transform: translateY(-100%); }
 .sane .nav-solid { color: var(--ink); background: var(--paper); mix-blend-mode: normal; }
 .sane .nav-solid .nav-logo img { filter: invert(1); }
+.sane .nav-solid.nav-on-dark { color: var(--paper); background: var(--ink); }
+.sane .nav-solid.nav-on-dark .nav-logo img { filter: none; }
 .insane .nav-solid { background: var(--lime); }
 @media (prefers-reduced-motion: reduce) { .nav { transition: none; } }
 .nav-logo { display: flex; align-items: center; min-height: 44px; }
