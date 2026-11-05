@@ -15,7 +15,7 @@ export default function Privacy({ heading }: { heading: React.ReactNode }) {
         <p>Only what you type into the contact form: your message, your name, your email address and, if you give it, your business name. Nothing else is collected about you.</p>
 
         <h2 className="h4">How it reaches us</h2>
-        <p>The form is delivered to our inbox ({EMAIL}) by FormSubmit (formsubmit.co), an email forwarding service. It passes your message on and does not use it for anything else. If you email us directly, your message goes straight to Gmail.</p>
+        <p>The form sends your message through a small script in our own Google account, which emails it to our Gmail inbox ({EMAIL}). No other service sees it. If you email us directly, your message goes straight to Gmail.</p>
 
         <h2 className="h4">What we do with it</h2>
         <p>We use your details to reply to you and to talk about your project. We never sell them, share them with advertisers or add you to a mailing list.</p>

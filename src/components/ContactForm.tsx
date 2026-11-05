@@ -2,11 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const ENDPOINT = "https://formsubmit.co/ajax/saneeedotin@gmail.com";
+// The Google Apps Script web app in tools/contact-form, which mails the studio inbox.
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbxBXqgrLRa7zKd_yhbpX8NbKIb8AmSEEsIOnKRdxLaJNjjGrU_Crza03Lg92J8N4F42kA/exec";
 const TIMEOUT_MS = 15000;
 
 export default function ContactForm() {
-  const [state, setState] = useState<"idle" | "sending" | "failed" | "inactive" | "sent">("idle");
+  const [state, setState] = useState<"idle" | "sending" | "failed" | "sent">("idle");
   const done = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -33,22 +34,18 @@ export default function ContactForm() {
       const res = await fetch(ENDPOINT, {
         method: "POST",
         signal: timer.signal,
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        // Plain text keeps this a "simple" request: Apps Script can't answer a CORS preflight.
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify({
           name: text("name"),
           email: text("email"),
-          business: text("business") || "Not given",
+          business: text("business"),
           message: text("message"),
-          _subject: `New website enquiry from ${text("name")}`,
-          _replyto: text("email"),
-          _template: "table",
-          _captcha: "false",
         }),
       });
       const reply = await res.json().catch(() => ({}));
-      if (res.ok && String(reply.success) === "true") finish(form);
-      // FormSubmit holds every message until the inbox clicks the one-time "Activate Form" link it emails.
-      else setState(/activat/i.test(String(reply.message ?? "")) ? "inactive" : "failed");
+      if (res.ok && reply.ok === true) finish(form);
+      else setState("failed");
     } catch {
       setState("failed");
     } finally {
@@ -96,11 +93,6 @@ export default function ContactForm() {
       {state === "failed" && (
         <p className="form-error" role="alert">
           That didn&rsquo;t send, and your message is still here. Please try again, or email us at saneeedotin@gmail.com.
-        </p>
-      )}
-      {state === "inactive" && (
-        <p className="form-error" role="alert">
-          Almost there: our inbox has to confirm this form once before messages come through. Please email us at saneeedotin@gmail.com for now.
         </p>
       )}
     </form>
