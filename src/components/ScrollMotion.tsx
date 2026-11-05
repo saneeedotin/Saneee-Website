@@ -28,13 +28,13 @@ function animatePage({ stage }: { stage: boolean }) {
     gsap.from(belief.querySelector(".voice"), { opacity: 0, y: 24, ease: "none", scrollTrigger: { trigger: belief, start: "center 55%", end: "center 40%", scrub: true } });
   });
 
-  const lists = gsap.utils.toArray<HTMLElement>(".rows li, .projects a, .posters li, .people li, .suspects li, .work-grid li, .facts div");
+  const lists = gsap.utils.toArray<HTMLElement>(".rows li, .projects a, .posters li, .people li, .work-grid li, .facts div");
   if (lists.length) {
     gsap.set(lists, { y: 40, opacity: 0 });
     ScrollTrigger.batch(lists, { start: "top 92%", once: true, onEnter: (batch) => gsap.to(batch, { y: 0, opacity: 1, duration: 0.8, stagger: 0.07, ease: EASE }) });
   }
 
-  gsap.utils.toArray<HTMLElement>(".people img, .suspects img, .work-grid img, .shot").forEach((img) => {
+  gsap.utils.toArray<HTMLElement>(".work-grid img, .shot").forEach((img) => {
     gsap.fromTo(img, { clipPath: "inset(14% 14% 14% 14%)" }, { clipPath: "inset(0% 0% 0% 0%)", ease: "none", scrollTrigger: { trigger: img, start: "top 95%", end: "top 55%", scrub: true } });
   });
 

@@ -1,7 +1,7 @@
 import ContactForm from "@/components/ContactForm";
 import Evidence from "@/components/Evidence";
+import TeamBadges from "@/components/TeamBadges";
 import { services } from "@/data/services";
-import { team } from "@/data/team";
 
 // From the brand's own manifesto lines in logo/design.md.
 const BELIEFS = [
@@ -46,16 +46,7 @@ export default function InsaneHome() {
       <section id="people" data-chapter="people" className="section">
         <p className="label">The people</p>
         <h2 className="display">Who to blame.</h2>
-        <ul className="suspects">
-          {team.map((p) => (
-            <li key={p.name}>
-              <img src={p.image} alt={`Portrait of ${p.name}`} loading="lazy" />
-              <h3 className="h3">{p.name}</h3>
-              <p className="label">{p.role}</p>
-              <p className="voice">{p.line}</p>
-            </li>
-          ))}
-        </ul>
+        <TeamBadges />
       </section>
 
       <section id="contact" data-chapter="contact" className="section">

@@ -1,10 +1,10 @@
 import Link from "next/link";
 import ContactForm from "@/components/ContactForm";
 import HeroMorph from "@/components/HeroMorph";
+import TeamBadges from "@/components/TeamBadges";
 import TheFix from "@/components/TheFix";
 import { projects } from "@/data/projects";
 import { services } from "@/data/services";
-import { team } from "@/data/team";
 
 export default function SaneHome() {
   return (
@@ -51,16 +51,7 @@ export default function SaneHome() {
         <p className="label">04 / People</p>
         <div>
           <h2 className="h-editorial">The four people holding it together.</h2>
-          <ul className="people">
-            {team.map((p) => (
-              <li key={p.name}>
-                <img src={p.image} alt={`Portrait of ${p.name}`} loading="lazy" />
-                <h3 className="h4">{p.name}</h3>
-                <p className="label">{p.role}</p>
-                <p>{p.bio}</p>
-              </li>
-            ))}
-          </ul>
+          <TeamBadges />
         </div>
       </section>
 

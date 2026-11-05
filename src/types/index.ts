@@ -20,10 +20,5 @@ export type Project = {
 
 export type Person = {
   name: string;
-  role: string;
   image: string;
-  /** Sane: in their own words. */
-  bio: string;
-  /** Insane: one line. */
-  line: string;
 };
