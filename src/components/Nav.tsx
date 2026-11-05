@@ -22,7 +22,7 @@ const LINKS: Record<World, { href: string; label: string }[]> = {
 
 const OPEN_SECONDS = 0.75;
 const CLOSE_SECONDS = 0.45;
-const POINTS = 96;
+const POINTS = 360;
 
 // The hero stage counts as dark until the S's zoom has mostly flooded it with paper.
 const overDark = (nav: HTMLElement | null) => {
@@ -45,8 +45,13 @@ const bubble = (radius: number, time: number, wobble: number) => {
   const points = [];
   for (let i = 0; i < POINTS; i++) {
     const a = (i / POINTS) * Math.PI * 2;
-    // Low harmonics give the portal's uneven, liquid outline rather than a rippled circle.
-    const shape = Math.sin(2 * a + time * 0.9) * 0.55 + Math.sin(3 * a - time * 1.3 + 1.2) * 0.3 + Math.sin(5 * a + time * 0.7) * 0.15;
+    // Only a quarter of the blob is on screen, so the bumps have to be tight enough to show in that arc:
+    // a few uneven lobes, like the portal's hole, rather than one smooth curve.
+    const shape =
+      Math.sin(5 * a + time * 0.9) * 0.45 +
+      Math.sin(8 * a - time * 1.3 + 1.2) * 0.3 +
+      Math.sin(13 * a + time * 0.7 + 2.1) * 0.15 +
+      Math.sin(3 * a - time * 0.5) * 0.1;
     const r = radius * (1 + wobble * shape);
     points.push(`${(cx + Math.cos(a) * r).toFixed(1)} ${(Math.sin(a) * r).toFixed(1)}`);
   }
@@ -93,7 +98,7 @@ export default function Nav({ world }: { world: World }) {
       const eased = to > a.from ? 1 - Math.pow(1 - t, 4) : t * t;
       a.radius = a.from + (a.to - a.from) * eased;
       // Liquid while it moves, a gentle wobble once it settles.
-      const wobble = still ? 0 : 0.06 + 0.06 * (1 - t);
+      const wobble = still ? 0 : 0.1 + 0.08 * (1 - t);
       layers.current.forEach((el, i) => {
         if (el) el.style.clipPath = a.radius > 0 ? bubble(a.radius + LAYERS[i], now / 1000, wobble) : "circle(0 at 100% 0)";
       });
@@ -111,7 +116,7 @@ export default function Nav({ world }: { world: World }) {
     Object.assign(closer.current!.style, { top: `${pill.top}px`, left: `${pill.left}px`, width: `${pill.width}px` });
     const content = body.current!.getBoundingClientRect();
     // Just big enough to hold the links, allowing for the blob's inward wobble.
-    const reach = Math.hypot(innerWidth - content.left + 24, content.bottom + 24) * 1.14;
+    const reach = Math.hypot(innerWidth - content.left + 24, content.bottom + 24) * 1.2;
     anim.current.closing = false;
     dialog.classList.add("menu-in");
     animate(reach, OPEN_SECONDS);
