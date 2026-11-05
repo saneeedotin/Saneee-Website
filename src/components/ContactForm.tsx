@@ -6,7 +6,7 @@ const ENDPOINT = "https://formsubmit.co/ajax/saneeedotin@gmail.com";
 const TIMEOUT_MS = 15000;
 
 export default function ContactForm() {
-  const [state, setState] = useState<"idle" | "sending" | "failed" | "sent">("idle");
+  const [state, setState] = useState<"idle" | "sending" | "failed" | "inactive" | "sent">("idle");
   const done = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -47,7 +47,8 @@ export default function ContactForm() {
       });
       const reply = await res.json().catch(() => ({}));
       if (res.ok && String(reply.success) === "true") finish(form);
-      else setState("failed");
+      // FormSubmit holds every message until the inbox clicks the one-time "Activate Form" link it emails.
+      else setState(/activat/i.test(String(reply.message ?? "")) ? "inactive" : "failed");
     } catch {
       setState("failed");
     } finally {
@@ -95,6 +96,11 @@ export default function ContactForm() {
       {state === "failed" && (
         <p className="form-error" role="alert">
           That didn&rsquo;t send, and your message is still here. Please try again, or email us at saneeedotin@gmail.com.
+        </p>
+      )}
+      {state === "inactive" && (
+        <p className="form-error" role="alert">
+          Almost there: our inbox has to confirm this form once before messages come through. Please email us at saneeedotin@gmail.com for now.
         </p>
       )}
     </form>
