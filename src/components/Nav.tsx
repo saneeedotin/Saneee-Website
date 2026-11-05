@@ -20,6 +20,10 @@ const LINKS: Record<World, { href: string; label: string }[]> = {
   ],
 };
 
+const OPEN_SECONDS = 0.75;
+const CLOSE_SECONDS = 0.45;
+const POINTS = 96;
+
 // The hero stage counts as dark until the S's zoom has mostly flooded it with paper.
 const overDark = (nav: HTMLElement | null) => {
   if (!nav) return false;
@@ -32,9 +36,26 @@ const overDark = (nav: HTMLElement | null) => {
   });
 };
 
+/** A wobbling circle around the top-right corner, as a CSS clip path. */
+const bubble = (radius: number, time: number, wobble: number) => {
+  const cx = innerWidth;
+  const points = [];
+  for (let i = 0; i < POINTS; i++) {
+    const a = (i / POINTS) * Math.PI * 2;
+    const r = radius * (1 + wobble * (Math.sin(3 * a + time * 1.7) * 0.6 + Math.sin(5 * a - time * 1.1) * 0.4));
+    points.push(`${(cx + Math.cos(a) * r).toFixed(1)} ${(Math.sin(a) * r).toFixed(1)}`);
+  }
+  return `path('M${points.join("L")}Z')`;
+};
+
 export default function Nav({ world }: { world: World }) {
   const menu = useRef<HTMLDialogElement>(null);
   const header = useRef<HTMLElement>(null);
+  const opener = useRef<HTMLButtonElement>(null);
+  const closer = useRef<HTMLButtonElement>(null);
+  const blob = useRef<HTMLDivElement>(null);
+  const body = useRef<HTMLDivElement>(null);
+  const anim = useRef({ raf: 0, radius: 0, from: 0, to: 0, start: 0, seconds: 1, closing: false });
   const home = world === "sane" ? "/" : "/insane";
 
   // Out of the way going down, a solid bar coming back up, so it never sits on top of text.
@@ -45,12 +66,59 @@ export default function Nav({ world }: { world: World }) {
       header.current?.classList.toggle("nav-solid", y > 8);
       header.current?.classList.toggle("nav-away", y > last && y > 120);
       header.current?.classList.toggle("nav-on-dark", overDark(header.current));
+      // In the hero the tagline takes the logo's place; the logo returns once the tagline has gone.
+      header.current?.classList.toggle("nav-hero", !!document.querySelector(".hero") && y < innerHeight * 0.4);
       last = y;
     };
     onScroll();
     addEventListener("scroll", onScroll, { passive: true });
-    return () => removeEventListener("scroll", onScroll);
+    return () => {
+      removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(anim.current.raf);
+    };
   }, []);
+
+  const animate = (to: number, seconds: number, done?: () => void) => {
+    const a = anim.current;
+    const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    cancelAnimationFrame(a.raf);
+    Object.assign(a, { from: a.radius, to, start: performance.now(), seconds: still ? 0 : seconds });
+    const frame = (now: number) => {
+      const t = a.seconds ? Math.min(1, (now - a.start) / 1000 / a.seconds) : 1;
+      const eased = to > a.from ? 1 - Math.pow(1 - t, 4) : t * t;
+      a.radius = a.from + (a.to - a.from) * eased;
+      // Liquid while it moves, a gentle wobble once it settles.
+      const wobble = still ? 0 : 0.025 + 0.05 * (1 - t);
+      if (blob.current) blob.current.style.clipPath = bubble(a.radius, now / 1000, wobble);
+      if (t < 1 || (a.to > 0 && !still)) a.raf = requestAnimationFrame(frame);
+      else done?.();
+    };
+    a.raf = requestAnimationFrame(frame);
+  };
+
+  const open = () => {
+    const dialog = menu.current!;
+    const pill = opener.current!.getBoundingClientRect();
+    dialog.showModal();
+    // The close pill sits exactly where the menu pill was, so it reads as the same button.
+    Object.assign(closer.current!.style, { top: `${pill.top}px`, left: `${pill.left}px`, width: `${pill.width}px` });
+    const content = body.current!.getBoundingClientRect();
+    const reach = Math.hypot(innerWidth - content.left + 64, content.bottom + 64);
+    anim.current.closing = false;
+    dialog.classList.add("menu-in");
+    animate(reach, OPEN_SECONDS);
+  };
+
+  const close = () => {
+    const dialog = menu.current!;
+    if (!dialog.open || anim.current.closing) return;
+    anim.current.closing = true;
+    dialog.classList.remove("menu-in");
+    animate(0, CLOSE_SECONDS, () => {
+      dialog.close();
+      anim.current.closing = false;
+    });
+  };
 
   return (
     <>
@@ -59,24 +127,35 @@ export default function Nav({ world }: { world: World }) {
           {/* The Sane nav blends against what's behind it, so it starts from white. */}
           <img src={world === "sane" ? "/img/logo-white.svg" : "/img/logo-black.svg"} alt="saneee.in, home" width={182} height={40} />
         </Link>
-        <nav className="nav-links" aria-label="Main">
-          {LINKS[world].map((l) => (
-            <Link key={l.href} href={l.href}>{l.label}</Link>
-          ))}
-        </nav>
         <div className="nav-actions">
+          <button ref={opener} className="switch" type="button" aria-haspopup="dialog" onClick={open}>Menu</button>
           <WorldSwitch />
-          <button className="nav-menu" type="button" onClick={() => menu.current?.showModal()}>Menu</button>
         </div>
       </header>
 
-      <dialog ref={menu} className="menu" aria-label="Menu">
-        <button className="menu-close" type="button" onClick={() => menu.current?.close()}>Close</button>
-        <nav aria-label="Menu">
-          {LINKS[world].map((l) => (
-            <Link key={l.href} href={l.href} onClick={() => menu.current?.close()}>{l.label}</Link>
-          ))}
-        </nav>
+      <dialog
+        ref={menu}
+        className="menu"
+        aria-label="Menu"
+        data-lenis-prevent
+        onCancel={(e) => {
+          e.preventDefault();
+          close();
+        }}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) close();
+        }}
+      >
+        <div ref={blob} className="menu-bubble">
+          <button ref={closer} className="switch menu-close" type="button" onClick={close}>Close</button>
+          <div ref={body} className="menu-body">
+            <nav aria-label="Menu">
+              {LINKS[world].map((l, i) => (
+                <Link key={l.href} href={l.href} style={{ "--i": i } as React.CSSProperties} onClick={close}>{l.label}</Link>
+              ))}
+            </nav>
+          </div>
+        </div>
       </dialog>
     </>
   );

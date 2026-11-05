@@ -53,8 +53,9 @@ export const paintPoster = (world: World, chapter: string, w: number, h: number)
     ctx.font = brandFont(size);
     // Matches `.word` in globals.css, so the word lands exactly where the page's own hero word sits.
     ctx.fillText(word, g, h - g - size * 0.025);
-    ctx.font = serifFont(Math.max(26, Math.min(64, w * 0.04)));
-    ctx.fillText(line, g, h * 0.3);
+    const lineSize = Math.max(26, Math.min(64, w * 0.04));
+    ctx.font = serifFont(lineSize);
+    ctx.fillText(line, g, 14 + lineSize * 0.9); // Matches `.lede`, which sits where the logo usually is.
     return canvas;
   }
 

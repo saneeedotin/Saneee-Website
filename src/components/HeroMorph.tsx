@@ -313,11 +313,6 @@ export default function HeroMorph() {
       <div ref={stage} data-chapter="hero" className="hero">
         <canvas ref={canvas} className="morph-canvas" aria-hidden="true" />
         <p className="lede">Designed to be distinguished.</p>
-        <p className="sub">Websites, custom software and AI automation that bring your business back to its senses. Mumbai.</p>
-        <p className="hint">
-          <span className="hint-mouse">Move your cursor. Press and hold to cross.</span>
-          <span className="hint-touch">Touch and hold here to cross.</span>
-        </p>
         <h1 ref={word} className="word" style={{ "--ratio": 4.977 } as React.CSSProperties}>SANEEE</h1>
       </div>
     </section>
