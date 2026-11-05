@@ -23,10 +23,12 @@ export const projects: Project[] = [
     name: "Vidhya Tutorials",
     business: "Coaching institute",
     image: "/img/work-vidya.webp",
+    logo: "/img/clients/vidhya.png",
+    live: { url: "https://vidhyatutorials.in", label: "vidhyatutorials.in" },
     sign: { background: "#1F3F86", color: "#FFFFFF" },
     line: "Class is inside.",
     story: {
-      brief: "A coaching institute for classes 6 to 12 across school, commerce and science, with a strong local reputation and no clear way online for parents to see the programmes.",
+      brief: "A Mumbai coaching institute with an 18-year record of board toppers, teaching SSC classes and 11th–12th commerce and science, that needed parents to see that record online.",
       approach: "Calm and trustworthy for parents, clear for students: lead with the promise, show the reviews they already have, and make the first step a free demo class.",
       built: ["Institute website", "Programme pages by class and stream", "Free demo booking", "Reviews and ratings up front"],
     },
