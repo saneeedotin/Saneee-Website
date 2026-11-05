@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { projects } from "@/data/projects";
 import FooterWord from "./FooterWord";
 import LocalTime from "./LocalTime";
 import { EMAIL } from "./ReachList";
@@ -12,6 +11,7 @@ const COPY: Record<World, { label: string; ask: string; button: string }> = {
 
 const SOCIAL = [
   { href: "https://www.instagram.com/saneeedotin/", label: "Instagram" },
+  { href: "https://in.pinterest.com/saneeedotin/", label: "Pinterest" },
   { href: "https://www.linkedin.com/search/results/all/?keywords=saneee%20dotin", label: "LinkedIn" },
 ];
 
@@ -34,6 +34,7 @@ export default function Footer({ world }: { world: World }) {
           <div className="footer-actions">
             <Link className="button" href={`${base}/contact`}>{copy.button} <span aria-hidden="true">→</span></Link>
             <a className="footer-mail" href={`mailto:${EMAIL}`}>{EMAIL}</a>
+            <a className="footer-top-link" href="#main" aria-label="Back to top"><span aria-hidden="true">↑</span></a>
           </div>
         </div>
 
@@ -41,10 +42,6 @@ export default function Footer({ world }: { world: World }) {
           <div>
             <p className="label">Pages</p>
             <ul>{pages.map((p) => <li key={p.href}><Link href={p.href}>{p.label}</Link></li>)}</ul>
-          </div>
-          <div>
-            <p className="label">Work</p>
-            <ul>{projects.map((p) => <li key={p.slug}><Link href={`${base}/work/${p.slug}`}>{p.name}</Link></li>)}</ul>
           </div>
           <div>
             <p className="label">Elsewhere</p>
@@ -55,15 +52,11 @@ export default function Footer({ world }: { world: World }) {
             <ul>
               <li>Mumbai, India</li>
               <li><LocalTime /></li>
+              <li><Link href={`${base}/privacy`}>Privacy</Link></li>
+              <li className="footer-small">© {new Date().getFullYear()} saneee.in</li>
             </ul>
           </div>
         </nav>
-      </div>
-
-      <div className="footer-bar">
-        <span>© {new Date().getFullYear()} saneee.in</span>
-        <Link href={`${base}/privacy`}>Privacy</Link>
-        <a href="#main">Back to top <span aria-hidden="true">↑</span></a>
       </div>
 
       <FooterWord world={world} />
