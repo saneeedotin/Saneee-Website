@@ -4,6 +4,7 @@ import "./globals.css";
 import Loader, { LOAD_SCRIPT } from "@/components/Loader";
 import Portal from "@/components/portal/Portal";
 import ScrollMotion from "@/components/ScrollMotion";
+import TabTitle from "@/components/TabTitle";
 
 // shortcut: a third family, against the brief's two. Needed until Saneee has a text weight.
 const sans = Instrument_Sans({
@@ -29,7 +30,7 @@ export const viewport: Viewport = { themeColor: "#080808" };
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://saneee.in"),
-  title: { default: "saneee.in — Designed to be distinguished.", template: "%s — saneee.in" },
+  title: { default: "saneee.in · Designed to be distinguished.", template: "%s · saneee.in" },
   description,
   icons: {
     icon: [
@@ -39,7 +40,7 @@ export const metadata: Metadata = {
     apple: "/img/apple-touch-icon.png",
   },
   openGraph: {
-    title: "saneee.in — Designed to be distinguished.",
+    title: "saneee.in · Designed to be distinguished.",
     description,
     siteName: "saneee.in",
     type: "website",
@@ -60,6 +61,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <Portal />
         <ScrollMotion />
         <Loader />
+        <TabTitle />
       </body>
     </html>
   );
