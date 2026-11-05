@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 import WorldSwitch from "./WorldSwitch";
 import type { World } from "./portal/world";
@@ -67,6 +68,7 @@ export default function Nav({ world }: { world: World }) {
   const body = useRef<HTMLDivElement>(null);
   const anim = useRef({ raf: 0, radius: 0, from: 0, to: 0, start: 0, seconds: 1, closing: false });
   const home = world === "sane" ? "/" : "/insane";
+  const pathname = usePathname();
 
   // Out of the way going down, a solid bar coming back up, so it never sits on top of text.
   useEffect(() => {
@@ -81,12 +83,16 @@ export default function Nav({ world }: { world: World }) {
       last = y;
     };
     onScroll();
+    // The nav outlives page changes, so each new page is measured again, after Next has reset the scroll.
+    const settle = requestAnimationFrame(onScroll);
     addEventListener("scroll", onScroll, { passive: true });
     return () => {
+      cancelAnimationFrame(settle);
       removeEventListener("scroll", onScroll);
-      cancelAnimationFrame(anim.current.raf);
     };
-  }, []);
+  }, [pathname]);
+
+  useEffect(() => () => cancelAnimationFrame(anim.current.raf), []);
 
   const animate = (to: number, seconds: number, done?: () => void) => {
     const a = anim.current;
