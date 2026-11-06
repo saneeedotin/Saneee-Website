@@ -333,13 +333,20 @@ html { scrollbar-gutter: stable; } /* Locking scroll would otherwise drop the sc
   .fix-stage { position: sticky; top: 0; align-content: center; min-height: 100vh; padding: 76px var(--gutter) 24px; }
 }
 
-.case-sign { display: grid; align-content: end; gap: 12px; min-height: 80svh; padding: clamp(110px, 14vw, 180px) var(--gutter) clamp(24px, 4vw, 48px); }
-/* The client's name: small, since the mark above it already says who it is. */
+/* The case header: label, then the client's mark with its name, line and live link beside it (stacked on phones). */
+.case-sign { display: grid; align-content: end; gap: 12px; padding: clamp(110px, 12vw, 150px) var(--gutter) clamp(32px, 5vw, 64px); }
+.case-sign-info { display: grid; justify-items: start; gap: 12px; }
+@media (min-width: 761px) {
+  .case-sign { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; column-gap: clamp(32px, 5vw, 80px); }
+  .case-sign .label { grid-column: 1 / -1; }
+  .case-sign .case-mark { margin: clamp(16px, 2vw, 32px) 0; }
+}
+/* The client's name: small, since the mark beside it already says who it is. */
 .case-client { font: inherit; }
 .case-sign .case-client { font-family: var(--font-brand); font-size: var(--text-h4); line-height: 1.25; }
 .case-sign .voice { font-size: var(--text-h2); }
 .case-sign .label { justify-self: start; }
-.case-sign .button { justify-self: start; margin-top: 12px; }
+.case-sign .button { margin-top: 12px; }
 .case-mark { width: min(100%, 520px); height: clamp(90px, 12vw, 170px); margin: clamp(24px, 4vw, 56px) 0 8px; mask-position: left center; -webkit-mask-position: left center; }
 .case-mark.client-word { place-items: center start; font-size: clamp(3rem, 7vw, 6rem); }
 .case-story { display: grid; gap: clamp(40px, 6vw, 88px); margin-top: clamp(56px, 8vw, 120px); }

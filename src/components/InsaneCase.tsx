@@ -12,9 +12,11 @@ export default function InsaneCase({ project }: { project: Project }) {
       <header className="case-sign">
         <p className="label"><Link href="/insane/work">The evidence</Link> / {project.business}</p>
         <ClientMark project={project} className="case-mark" />
-        <h1 className="case-client">{project.name}</h1>
-        <p className="voice">{project.line}</p>
-        {project.live && <a className="button" href={project.live.url} target="_blank" rel="noopener">Go see it live <span aria-hidden="true">↗</span></a>}
+        <div className="case-sign-info">
+          <h1 className="case-client">{project.name}</h1>
+          <p className="voice">{project.line}</p>
+          {project.live && <a className="button" href={project.live.url} target="_blank" rel="noopener">Go see it live <span aria-hidden="true">↗</span></a>}
+        </div>
       </header>
 
       <ul className="posters case-posters">
