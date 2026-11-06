@@ -33,7 +33,7 @@ export default function BeliefStage({ beliefs }: { beliefs: [string, string][] }
       const o = (i === 0 ? 1 : smooth((u + 0.12) / 0.24)) * (i === slides.length - 1 ? 1 : 1 - smooth((u - 0.88) / 0.24));
       s.style.opacity = String(o);
       s.style.transform = `translateY(${(0.5 - Math.min(1, Math.max(0, u))) * 40}px)`;
-      s.style.visibility = o < 0.01 ? "hidden" : "";
+      s.style.visibility = o < 0.01 ? "hidden" : "visible"; // Explicit: the stylesheet hides all but the first.
     });
 
     let raf = 0;
@@ -51,7 +51,7 @@ export default function BeliefStage({ beliefs }: { beliefs: [string, string][] }
       const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 60);
       camera.position.z = 10;
       scene.add(new THREE.HemisphereLight(0xffffff, 0x222222, 1.2));
-      const key = new THREE.DirectionalLight(0xffffff, 3.2);
+      const key = new THREE.DirectionalLight(0xffffff, 4);
       key.position.set(3, 5, 7);
       scene.add(key);
       const rim = new THREE.DirectionalLight(0xc7ff2e, 2.2); // A lime edge, so the ink arrow reads as solid.
@@ -64,7 +64,8 @@ export default function BeliefStage({ beliefs }: { beliefs: [string, string][] }
       const geo = new THREE.ExtrudeGeometry(shape, { depth: 28, bevelEnabled: true, bevelSize: 6, bevelThickness: 7, bevelSegments: 6 });
       geo.center();
       geo.scale(1 / 151, 1 / 151, 1 / 151);
-      const arrow: Mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: 0x141414, metalness: 0.45, roughness: 0.22 }));
+      // Lacquered ink: a clear coat catches the light the way cvnt's foil does.
+      const arrow: Mesh = new THREE.Mesh(geo, new THREE.MeshPhysicalMaterial({ color: 0x1a1a1a, metalness: 0.1, roughness: 0.35, clearcoat: 1, clearcoatRoughness: 0.08 }));
       scene.add(arrow);
 
       let w = 0, h = 0, viewW = 0, viewH = 0;
@@ -105,10 +106,11 @@ export default function BeliefStage({ beliefs }: { beliefs: [string, string][] }
         spin.y += spin.vy;
 
         // Fully below the stage at the start, fully above at the end, dead centre halfway.
-        const tall = viewH * 0.72;
+        const tall = Math.min(viewH * 0.5, viewW * 0.6);
         arrow.scale.setScalar(tall);
-        arrow.position.set(Math.sin(p * Math.PI * 2) * viewW * 0.06, (p - 0.5) * (viewH + tall * 1.1), 0);
-        arrow.rotation.set(0.35 + Math.sin(p * Math.PI) * 0.35 + lean.y * 0.45 + spin.x, p * Math.PI * 2 + lean.x * 0.6 + spin.y, -0.5 + p);
+        arrow.position.set(Math.sin(p * Math.PI * 2) * viewW * 0.06, (p - 0.5) * (viewH + tall * 1.4), 0);
+        // A slow sway rather than a full turn, so it never goes edge-on and reads as a slab.
+        arrow.rotation.set(0.25 + Math.sin(p * Math.PI) * 0.3 + lean.y * 0.45 + spin.x, Math.sin(p * Math.PI * 2) * 0.7 + lean.x * 0.6 + spin.y, -0.35 + p * 0.7);
         renderer.render(scene, camera);
 
         const settled = !drag && Math.abs(lean.tx - lean.x) + Math.abs(lean.ty - lean.y) < 0.001
