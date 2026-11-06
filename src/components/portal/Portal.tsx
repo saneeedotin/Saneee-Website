@@ -9,10 +9,10 @@ import { currentChapter, otherPath, worldOf } from "./world";
 const INTERACTIVE = "a,button,input,textarea,select,label,summary,[data-portal-off]";
 const REST_MS = 1500;
 const HOLD_SECONDS = 0.95;
-const MOVE_CANCELS_HOLD = 12; // px; further than this is a drag or text selection, not a hold (or a tap)
-const TAP_MS = 350;
-const PARK_MS = 3000; // how long a let-go blob waits on phones before drifting again
-const TAP_REACH = 0.2; // of the short side; a little wider than the blob, which is about 0.18 across at rest
+const MOVE_CANCELS_HOLD = 12; // px; further than this is a drag, a swipe or text selection, not a hold
+const PEEK_MS = 250; // a finger rests this long before the blob opens under it, so a quick swipe just scrolls
+const STILL_MS = 150; // a dragging finger has to settle this long before the hold to cross starts again
+const TOUCH_HOLD_SECONDS = 1.3; // then holding still this long crosses over
 
 export default function Portal() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -66,12 +66,11 @@ export default function Portal() {
     const pointer = { x: 0, y: 0, seen: false, overInteractive: false, lastMove: 0 };
     let open = 0;
     let hold = 0;
-    let pressing = false;
-    let touching = false;
+    let pressing = false; // mouse held down
+    let touching = false; // finger down in the hero, and not swiping
+    let touchAt = 0;
+    let stillSince = 0;
     let pressAt = { x: 0, y: 0 };
-    let tap: { x: number; y: number; at: number } | null = null;
-    let releasedAt = -Infinity;
-    const touchOnly = matchMedia("(hover: none)").matches;
     let posterKey = "";
     let fontsReady = false;
     let raf = 0;
@@ -107,26 +106,26 @@ export default function Portal() {
       lastFrame = now;
       const blend = (k: number) => 1 - Math.pow(1 - k, dt * 60);
 
-      // Phones have no cursor to follow: while the hero is on screen the hole drifts on its own, and a finger takes it over.
-      const heroBox = touchOnly && !touching ? document.querySelector('[data-chapter="hero"]')?.getBoundingClientRect() : undefined;
-      const drifting = !!heroBox && heroBox.bottom > canvas.clientHeight * 0.35;
-      // Let go and it waits where the finger left it, so it can be tapped.
-      if (heroBox && drifting && now - releasedAt > PARK_MS) {
-        const t = now / 1000;
-        pointer.x = canvas.clientWidth * (0.5 + Math.sin(t * 0.61) * 0.3);
-        pointer.y = heroBox.top + heroBox.height * (0.42 + Math.sin(t * 0.93 + 1) * 0.14);
-      }
+      // Touch: rest a finger to peek through, drag to move the hole, hold still longer to cross.
+      const peeking = touching && now - touchAt > PEEK_MS;
+      const touchHolding = peeking && now - stillSince > STILL_MS;
 
       const resting = now - pointer.lastMove > REST_MS;
       const mouseWantsOpen = pointer.seen && !pointer.overInteractive && (!resting || pressing);
-      const wantsOpen = crossingRef.current || touching || drifting || mouseWantsOpen;
+      const wantsOpen = crossingRef.current || peeking || mouseWantsOpen;
       open += ((wantsOpen ? 1 : 0) - open) * blend(wantsOpen ? 0.14 : 0.2);
 
       if (crossingRef.current) hold = 1;
       else if (pressing) hold = Math.min(1, hold + elapsed / HOLD_SECONDS);
+      else if (touchHolding) hold = Math.min(1, hold + elapsed / TOUCH_HOLD_SECONDS);
       else hold = Math.max(0, hold - elapsed / (hold > 0.6 ? 0.5 : 0.25));
 
-      if (pressing && hold >= 1 && !crossingRef.current) cross();
+      if ((pressing || touchHolding) && hold >= 1 && !crossingRef.current) {
+        crossingRef.current = true;
+        pressing = false;
+        touching = false;
+        router.push(`${otherPath(pathRef.current)}#${currentChapter()}`);
+      }
 
       const tx = pointer.x / canvas.clientWidth;
       const ty = 1 - pointer.y / canvas.clientHeight;
@@ -149,7 +148,8 @@ export default function Portal() {
       gl.uniform2fv(uni.P, new Float32Array(trail.flatMap((p) => [p.x, p.y])));
       gl.drawArrays(gl.TRIANGLES, 0, 3);
 
-      const idle = open < 0.005 && hold === 0 && !wantsOpen;
+      // A resting finger isn't open yet, but the loop has to run to notice when it is.
+      const idle = open < 0.005 && hold === 0 && !wantsOpen && !touching;
       raf = idle ? 0 : requestAnimationFrame(frame);
       if (idle) gl.clear(gl.COLOR_BUFFER_BIT);
     };
@@ -160,50 +160,46 @@ export default function Portal() {
       raf = requestAnimationFrame(frame);
     };
 
-    const cross = () => {
-      crossingRef.current = true;
-      pressing = false;
-      touching = false;
-      tap = null;
-      router.push(`${otherPath(pathRef.current)}#${currentChapter()}`);
+    const moveFinger = (x: number, y: number) => {
+      if (!touching) return;
+      if (Math.hypot(x - pressAt.x, y - pressAt.y) > MOVE_CANCELS_HOLD) {
+        // Moving off before the blob opened is a swipe: leave it to the scroll.
+        if (performance.now() - touchAt < PEEK_MS) {
+          touching = false;
+          return;
+        }
+        pressAt = { x, y };
+        stillSince = performance.now();
+      }
+      pointer.x = x;
+      pointer.y = y;
       wake();
     };
 
     const onMove = (e: PointerEvent) => {
+      if (e.pointerType !== "mouse") return moveFinger(e.clientX, e.clientY);
       pointer.x = e.clientX;
       pointer.y = e.clientY;
-      if (e.pointerType === "mouse") {
-        pointer.seen = true;
-        pointer.lastMove = performance.now();
-        pointer.overInteractive = !!(e.target as Element)?.closest?.(INTERACTIVE);
-      }
+      pointer.seen = true;
+      pointer.lastMove = performance.now();
+      pointer.overInteractive = !!(e.target as Element)?.closest?.(INTERACTIVE);
       if (pressing && Math.hypot(e.clientX - pressAt.x, e.clientY - pressAt.y) > MOVE_CANCELS_HOLD) pressing = false;
-      // A finger that set off on the blob and kept going is dragging it, not tapping it.
-      if (tap && Math.hypot(e.clientX - tap.x, e.clientY - tap.y) > MOVE_CANCELS_HOLD) {
-        tap = null;
-        touching = true;
-      }
       wake();
     };
 
     // Once the page starts scrolling the pointer is cancelled, but touch events keep coming, so the blob stays on the finger.
     const onTouchMove = (e: TouchEvent) => {
-      if (!touching || !e.touches.length) return;
-      pointer.x = e.touches[0].clientX;
-      pointer.y = e.touches[0].clientY;
-      wake();
+      if (e.touches.length) moveFinger(e.touches[0].clientX, e.touches[0].clientY);
     };
 
     const onTouchEnd = (e: TouchEvent) => {
       if (e.touches.length) return;
-      if (touching) releasedAt = performance.now();
       touching = false;
       wake();
     };
 
     // Scrolling moves the page under a still cursor, so what it's over has to be checked again.
     const onScroll = () => {
-      if (touchOnly) wake(); // Brings the drifting hole back when the hero scrolls into view.
       if (!pointer.seen) return;
       pointer.overInteractive = !!document.elementFromPoint(pointer.x, pointer.y)?.closest(INTERACTIVE);
       wake();
@@ -213,37 +209,24 @@ export default function Portal() {
       if (e.button !== 0 || crossingRef.current) return;
       const target = e.target as Element;
       if (target.closest?.(INTERACTIVE)) return;
-      // On touch the hole lives in the hero only, so everywhere else scrolls normally.
-      // No long press: a tap on the blob crosses over, a touch anywhere else brings the blob to the finger.
-      if (e.pointerType !== "mouse") {
-        if (!target.closest?.('[data-chapter="hero"]')) return;
-        const headX = trail[0].x * canvas.clientWidth;
-        const headY = (1 - trail[0].y) * canvas.clientHeight;
-        const reach = TAP_REACH * Math.min(canvas.clientWidth, canvas.clientHeight);
-        if (open > 0.5 && Math.hypot(e.clientX - headX, e.clientY - headY) < reach) {
-          tap = { x: e.clientX, y: e.clientY, at: performance.now() };
-        } else {
-          touching = true;
-          pointer.x = e.clientX;
-          pointer.y = e.clientY;
-        }
-        wake();
-        return;
-      }
-      pressing = true;
       pressAt = { x: e.clientX, y: e.clientY };
+      pointer.x = e.clientX;
+      pointer.y = e.clientY;
+      if (e.pointerType === "mouse") {
+        pressing = true;
+      } else {
+        // On touch the hole lives in the hero only, so everywhere else scrolls normally.
+        if (!target.closest?.('[data-chapter="hero"]')) return;
+        touching = true;
+        touchAt = stillSince = performance.now();
+      }
       wake();
     };
 
     const onUp = (e: PointerEvent) => {
       pressing = false;
-      if (tap && e.type === "pointerup" && performance.now() - tap.at < TAP_MS) cross();
-      tap = null;
-      // A scroll cancels the pointer mid-touch; the finger is still down, and touchend lets go of the blob.
-      if (e.type === "pointerup" && touching) {
-        touching = false;
-        releasedAt = performance.now();
-      }
+      // A scroll cancels the pointer mid-touch while the finger is still down; touchend lets go of the blob then.
+      if (e.type === "pointerup") touching = false;
       wake();
     };
 
