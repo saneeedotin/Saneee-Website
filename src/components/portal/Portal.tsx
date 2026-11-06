@@ -66,6 +66,7 @@ export default function Portal() {
     let pressing = false;
     let touching = false;
     let pressAt = { x: 0, y: 0 };
+    const touchOnly = matchMedia("(hover: none)").matches;
     let posterKey = "";
     let fontsReady = false;
     let raf = 0;
@@ -101,9 +102,18 @@ export default function Portal() {
       lastFrame = now;
       const blend = (k: number) => 1 - Math.pow(1 - k, dt * 60);
 
+      // Phones have no cursor to follow: while the hero is on screen the hole drifts on its own, and a finger takes it over.
+      const heroBox = touchOnly && !touching ? document.querySelector('[data-chapter="hero"]')?.getBoundingClientRect() : undefined;
+      const drifting = !!heroBox && heroBox.bottom > canvas.clientHeight * 0.35;
+      if (heroBox && drifting) {
+        const t = now / 1000;
+        pointer.x = canvas.clientWidth * (0.5 + Math.sin(t * 0.61) * 0.3);
+        pointer.y = heroBox.top + heroBox.height * (0.42 + Math.sin(t * 0.93 + 1) * 0.14);
+      }
+
       const resting = now - pointer.lastMove > REST_MS;
       const mouseWantsOpen = pointer.seen && !pointer.overInteractive && (!resting || pressing);
-      const wantsOpen = crossingRef.current || touching || mouseWantsOpen;
+      const wantsOpen = crossingRef.current || touching || drifting || mouseWantsOpen;
       open += ((wantsOpen ? 1 : 0) - open) * blend(wantsOpen ? 0.14 : 0.2);
 
       if (crossingRef.current) hold = 1;
@@ -163,6 +173,7 @@ export default function Portal() {
 
     // Scrolling moves the page under a still cursor, so what it's over has to be checked again.
     const onScroll = () => {
+      if (touchOnly) wake(); // Brings the drifting hole back when the hero scrolls into view.
       if (!pointer.seen) return;
       pointer.overInteractive = !!document.elementFromPoint(pointer.x, pointer.y)?.closest(INTERACTIVE);
       wake();
