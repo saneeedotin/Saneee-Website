@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import PhysicalType from "@/components/PhysicalType";
 import Evidence from "@/components/Evidence";
 import WorkFolders from "@/components/WorkFolders";
 
@@ -13,7 +12,7 @@ export default function InsaneWork() {
     <>
       <section data-chapter="work" className="section page-top">
         <p className="label">The files</p>
-        <PhysicalType text="Open a folder. Judge for yourself." className="display" />
+        <h1 className="display">Open a folder. Judge for yourself.</h1>
         <WorkFolders world="insane" />
       </section>
       <Evidence />

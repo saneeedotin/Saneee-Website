@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import PhysicalType from "@/components/PhysicalType";
 import Link from "next/link";
 import { services } from "@/data/services";
 
@@ -13,7 +12,7 @@ export default function InsaneServices() {
     <>
       <section id="services" data-chapter="services" className="section page-top">
         <p className="label">We make</p>
-        <PhysicalType text="Seven things, done properly." className="display" />
+        <h1 className="display">Seven things, done properly.</h1>
         <ul className="posters">
           {services.map((s) => (
             <li key={s.name}>

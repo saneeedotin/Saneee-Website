@@ -18,13 +18,13 @@ export default function InsaneHome() {
     <>
       <section id="hero" data-chapter="hero" className="hero">
         <p className="lede" style={{ "--ratio": 4.492 } as React.CSSProperties}>Sanely built. Insanely good.</p>
-        <PhysicalType as="h1" text="INSANE" split="letters" entrance="hop" className="word" style={{ "--ratio": 4.492 } as React.CSSProperties} />
+        <PhysicalType text="INSANE" className="word" style={{ "--ratio": 4.492 } as React.CSSProperties} />
       </section>
 
       <section data-chapter="services" className="beliefs" aria-label="What we believe">
         {BELIEFS.map(([loud, quiet]) => (
           <div key={loud} className="belief">
-            <PhysicalType as="p" text={loud} className="display" />
+            <p className="display">{loud}</p>
             <p className="voice">{quiet}</p>
           </div>
         ))}

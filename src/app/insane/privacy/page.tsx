@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import PhysicalType from "@/components/PhysicalType";
 import Privacy from "@/components/Privacy";
 
 export const metadata: Metadata = {
@@ -8,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function InsanePrivacy() {
-  return <Privacy heading={<PhysicalType text="Short version: we keep almost nothing." className="display" />} />;
+  return <Privacy heading={<h1 className="display">Short version: we keep almost nothing.</h1>} />;
 }

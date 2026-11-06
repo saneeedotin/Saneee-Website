@@ -261,9 +261,8 @@ html { scrollbar-gutter: stable; } /* Locking scroll would otherwise drop the sc
   .lead { font-size: 1.375rem; line-height: 1.35; } /* Case study paragraphs; h3 size is too loud to read at length. */
 }
 
-/* Physical type (PhysicalType.tsx): each piece moves by transform only, so the layout never shifts. */
-.phys { display: inline-block; will-change: transform; touch-action: manipulation; }
-.belief { overflow: clip; } /* Words dropping in shouldn't fall through the panel above. */
+/* The Insane hero's throwable letters (PhysicalType.tsx): they move by transform only, so the layout never shifts. */
+.phys { display: inline-block; touch-action: manipulation; }
 
 .insane .button { background: var(--ink); color: var(--lime); }
 .insane .button-ghost:hover { background: var(--ink); color: var(--lime); }
