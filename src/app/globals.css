@@ -248,7 +248,7 @@ html { scrollbar-gutter: stable; } /* Locking scroll would otherwise drop the sc
 .display { font-family: var(--font-brand); font-size: clamp(2.2rem, 8vw, 8.5rem); line-height: 1.04; letter-spacing: -0.015em; margin-top: 16px; }
 /* Beliefs (BeliefStage.tsx): one pinned lime stage, a screen of scroll per statement, the arrow rising behind.
    The words are lime with a difference blend: ink on the lime, lime where the ink arrow passes behind them. */
-.belief-pin { position: relative; height: 400svh; border-top: 1.5px solid var(--ink); }
+.belief-pin { position: relative; height: 550svh; border-top: 1.5px solid var(--ink); }
 .belief-stage { position: sticky; top: 0; height: 100svh; overflow: hidden; background: var(--lime); isolation: isolate; }
 .belief-stage canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; touch-action: pan-y; }
 .belief-slide { position: absolute; inset: 0; display: grid; align-content: center; justify-items: center; gap: clamp(12px, 2vw, 24px); padding: 0 var(--gutter); text-align: center; color: var(--lime); mix-blend-mode: difference; pointer-events: none; }

@@ -189,7 +189,7 @@ export default function BeliefStage({ beliefs }: { beliefs: [string, string][] }
   }, []);
 
   return (
-    <section ref={root} data-chapter="services" className="belief-pin" aria-label="What we believe">
+    <section ref={root} data-chapter="services" className="belief-pin" aria-label="What we believe" data-portal-off>
       <div className="belief-stage">
         <canvas data-grab aria-hidden="true" />
         {beliefs.map(([loud, quiet]) => (
