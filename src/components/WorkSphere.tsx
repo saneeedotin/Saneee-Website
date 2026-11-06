@@ -71,7 +71,8 @@ export default function WorkSphere() {
 
   return (
     <div className="work-sphere" data-portal-off>
-      {items && <InfiniteMenu items={items} theme="light" accentColor={INK} dim={0} grayscale={false} roundness={0.25} />}
+      {/* The tiles around the front one fade into the lime, so the name and line never sit on a dark tile. */}
+      {items && <InfiniteMenu items={items} theme="light" accentColor={INK} backgroundColor={LIME} dim={0.85} grayscale={false} roundness={0.25} zoom={1.35} />}
     </div>
   );
 }

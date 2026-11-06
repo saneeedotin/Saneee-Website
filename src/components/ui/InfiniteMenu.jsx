@@ -197,7 +197,9 @@ const InfiniteMenu = ({
     grayscale,
     dim: clamp(dim, 0, 1),
     intro,
-    theme: theme === 'light' ? 'light' : 'dark'
+    theme: theme === 'light' ? 'light' : 'dark',
+    // A #rrggbb background as 0–1 RGB, for the dimmed tiles to fade into.
+    tone: /^#[0-9a-f]{6}$/i.test(backgroundColor ?? '') ? [1, 3, 5].map(i => parseInt(backgroundColor.slice(i, i + 2), 16) / 255) : null
   };
   const settingsRef = useRef(settings);
   settingsRef.current = settings;
@@ -680,6 +682,8 @@ const InfiniteMenu = ({
         gl.uniform3f(uniforms.uPlaceholder, 0.13, 0.12, 0.15);
         gl.uniform3f(uniforms.uTone, 0.04, 0.035, 0.05);
       }
+      // saneee.in: with a background colour set, the dimmed tiles fade into it rather than to white or black.
+      if (s.tone) gl.uniform3f(uniforms.uTone, ...s.tone);
       gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D, atlasTexture);
       gl.bindVertexArray(vao);
