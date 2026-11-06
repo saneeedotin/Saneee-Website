@@ -11,12 +11,20 @@ const LIME = "#c7ff2e";
 
 /** A tile for the sphere: the client's mark in lime on ink, the way the Evidence cards set it. */
 async function tile(p: Project): Promise<string> {
+  try {
+    return await draw(p, p.logo);
+  } catch {
+    return draw(p, undefined); // The logo didn't load: fall back to the name.
+  }
+}
+
+async function draw(p: Project, logo: string | undefined): Promise<string> {
   const canvas = document.createElement("canvas");
   canvas.width = canvas.height = SIZE;
   const ctx = canvas.getContext("2d")!;
   ctx.fillStyle = INK;
   ctx.fillRect(0, 0, SIZE, SIZE);
-  if (!p.logo) {
+  if (!logo) {
     // No logo: the name as a wordmark, like ClientMark does.
     await document.fonts.ready;
     ctx.fillStyle = LIME;
@@ -26,9 +34,13 @@ async function tile(p: Project): Promise<string> {
     ctx.fillText(p.name, SIZE / 2, SIZE / 2, SIZE * 0.8);
     return canvas.toDataURL("image/png");
   }
+  // onload, not decode(): decode can wait indefinitely in a tab that isn't being shown.
   const img = new Image();
-  img.src = p.logo;
-  await img.decode();
+  await new Promise((resolve, reject) => {
+    img.onload = resolve;
+    img.onerror = reject;
+    img.src = logo;
+  });
   // The logo is a one-colour mask: tint it lime on its own canvas, then set it on the ink.
   const box = SIZE * 0.66;
   const scale = Math.min(box / img.naturalWidth, box / img.naturalHeight);
