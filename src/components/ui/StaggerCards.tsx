@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-export type StaggerItem = { title: string; line: string; image?: string };
+export type StaggerItem = { title: string; line: string; text?: string };
 
 /**
  * A fan of cards: the middle one lifted and inked, the rest scattered either side. Click a card, or the arrows,
@@ -55,9 +55,9 @@ export default function StaggerCards({ items, label }: { items: StaggerItem[]; l
             }}
           >
             <span className="stagger-cut" aria-hidden="true" />
-            {item.image && <img src={item.image} alt="" loading="lazy" />}
             <span className="stagger-title">{item.title}</span>
             <span className="stagger-line">{item.line}</span>
+            {item.text && <span className="stagger-text">{item.text}</span>}
             <span className="label stagger-n">{String(item.n + 1).padStart(2, "0")} / {String(items.length).padStart(2, "0")}</span>
           </button>
         );

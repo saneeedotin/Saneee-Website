@@ -34,7 +34,7 @@ export default function InsaneHome() {
       <section id="services" data-chapter="services" className="section">
         <p className="label">We make</p>
         <h2 className="display">Seven things, done properly.</h2>
-        <StaggerCards label="Our services" items={services.map((s) => ({ title: s.name, line: s.voice, image: s.image }))} />
+        <StaggerCards label="Our services" items={services.map((s) => ({ title: s.name, line: s.voice, text: s.text }))} />
         <Link className="button spaced" href="/insane/services">What&rsquo;s in each <span aria-hidden="true">→</span></Link>
       </section>
 

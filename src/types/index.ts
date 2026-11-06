@@ -4,8 +4,6 @@ export type Service = {
   text: string;
   /** Insane: the same thing in one line. */
   voice: string;
-  /** Insane: the picture on its card. */
-  image?: string;
 };
 
 export type Project = {
