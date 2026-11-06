@@ -2,6 +2,7 @@ import Link from "next/link";
 import { nextProject } from "@/data/projects";
 import type { Project } from "@/types";
 import ClientMark from "./ClientMark";
+import ProjectFacts from "./ProjectFacts";
 
 export default function InsaneCase({ project }: { project: Project }) {
   const next = nextProject(project.slug);
@@ -11,7 +12,7 @@ export default function InsaneCase({ project }: { project: Project }) {
       <header className="case-sign">
         <p className="label"><Link href="/insane/work">The evidence</Link> / {project.business}</p>
         <ClientMark project={project} className="case-mark" />
-        <h1>{project.name}</h1>
+        <h1 className="case-client">{project.name}</h1>
         <p className="voice">{project.line}</p>
         {project.live && <a className="button" href={project.live.url} target="_blank" rel="noopener">Go see it live <span aria-hidden="true">↗</span></a>}
       </header>
@@ -24,16 +25,7 @@ export default function InsaneCase({ project }: { project: Project }) {
 
       <div className="section case-body">
         <img className="shot" src={project.image} alt={`${project.name} website`} />
-        <dl className="facts">
-          <div><dt className="label">Business</dt><dd>{project.business}</dd></div>
-          {project.where && <div><dt className="label">Where</dt><dd>{project.where}</dd></div>}
-          {project.live && (
-            <div>
-              <dt className="label">Website</dt>
-              <dd><a href={project.live.url} target="_blank" rel="noopener">{project.live.label} <span aria-hidden="true">↗</span></a></dd>
-            </div>
-          )}
-        </dl>
+        <ProjectFacts project={project} />
       </div>
       <Link className="case-next" href={`/insane/work/${next.slug}`}>
         <span className="label">Next</span>

@@ -81,7 +81,8 @@ img { display: block; max-width: 100%; height: auto; }
 .insane .nav-solid { background: var(--lime); }
 @media (prefers-reduced-motion: reduce) { .nav { transition: none; } }
 .nav-logo { display: flex; align-items: center; min-height: 44px; }
-.nav-logo img { height: clamp(28px, 2.8vw, 40px); width: auto; }
+/* The arrow over the i takes the image's top third, so centring the image leaves the letters low. This centres the letters. */
+.nav-logo img { height: clamp(28px, 2.8vw, 40px); width: auto; translate: 0 -19%; }
 .nav-actions { display: flex; align-items: center; gap: 12px; }
 .switch { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1.5px solid currentColor; white-space: nowrap; font-family: var(--font-brand); }
 @media (max-width: 760px) { .switch { padding: 0 14px; } }
@@ -296,7 +297,9 @@ html { scrollbar-gutter: stable; } /* Locking scroll would otherwise drop the sc
 }
 
 .case-sign { display: grid; align-content: end; gap: 12px; min-height: 80svh; padding: clamp(110px, 14vw, 180px) var(--gutter) clamp(24px, 4vw, 48px); }
-.case-sign h1 { font-family: var(--font-brand); font-size: clamp(3rem, 11vw, 11rem); line-height: 1.02; letter-spacing: -0.015em; overflow-wrap: anywhere; }
+/* The client's name: small, since the mark above it already says who it is. */
+.case-client { font: inherit; }
+.case-sign .case-client { font-family: var(--font-brand); font-size: var(--text-h4); line-height: 1.25; }
 .case-sign .voice { font-size: var(--text-h2); }
 .case-sign .label { justify-self: start; }
 .case-sign .button { justify-self: start; margin-top: 12px; }

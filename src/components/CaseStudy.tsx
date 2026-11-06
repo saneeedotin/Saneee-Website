@@ -2,6 +2,7 @@ import Link from "next/link";
 import { nextProject } from "@/data/projects";
 import type { Project } from "@/types";
 import ClientMark from "./ClientMark";
+import ProjectFacts from "./ProjectFacts";
 
 export default function CaseStudy({ project }: { project: Project }) {
   const next = nextProject(project.slug);
@@ -9,18 +10,9 @@ export default function CaseStudy({ project }: { project: Project }) {
   return (
     <article id="work" data-chapter="work" className="section page-top">
       <p className="label"><Link href="/work">Work</Link> / {project.business}</p>
+      {/* The mark already says who it is, so the name sits small among the facts. */}
       <ClientMark project={project} className="case-mark" />
-      <h1 className="h1">{project.name}</h1>
-      <dl className="facts">
-        <div><dt className="label">Business</dt><dd>{project.business}</dd></div>
-        {project.where && <div><dt className="label">Where</dt><dd>{project.where}</dd></div>}
-        {project.live && (
-          <div>
-            <dt className="label">Website</dt>
-            <dd><a href={project.live.url} target="_blank" rel="noopener">{project.live.label} <span aria-hidden="true">↗</span></a></dd>
-          </div>
-        )}
-      </dl>
+      <ProjectFacts project={project} named />
 
       <div className="case-story">
         <section className="chapter"><h2 className="label">The brief</h2><p className="lead flush">{brief}</p></section>

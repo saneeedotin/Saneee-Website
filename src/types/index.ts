@@ -20,6 +20,13 @@ export type Project = {
   logo?: string;
   /** The thinking behind the project, for its case page. */
   story: { brief: string; approach: string; built: string[] };
+  // Facts for the case page; each shows only when set. Nothing sensitive, such as budgets.
+  /** What the studio did, e.g. ["Website", "Branding"]. */
+  services?: string[];
+  /** When it went live, e.g. "March 2026". */
+  delivered?: string;
+  /** How long it took, e.g. "5 weeks". */
+  timeline?: string;
 };
 
 export type Person = {
