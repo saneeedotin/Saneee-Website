@@ -1,3 +1,4 @@
+import ArrowFlight from "@/components/ArrowFlight";
 import ContactForm from "@/components/ContactForm";
 import Link from "next/link";
 import Evidence from "@/components/Evidence";
@@ -29,6 +30,7 @@ export default function InsaneHome() {
             <p className="voice">{quiet}</p>
           </div>
         ))}
+        <ArrowFlight />
       </section>
 
       <section id="services" data-chapter="services" className="section">

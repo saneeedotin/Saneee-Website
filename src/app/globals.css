@@ -246,8 +246,11 @@ html { scrollbar-gutter: stable; } /* Locking scroll would otherwise drop the sc
 
 /* Insane */
 .display { font-family: var(--font-brand); font-size: clamp(2.2rem, 8vw, 8.5rem); line-height: 1.04; letter-spacing: -0.015em; margin-top: 16px; }
-.beliefs { border-top: 1.5px solid var(--ink); }
-.belief { display: grid; align-content: end; gap: clamp(12px, 2vw, 24px); min-height: 75svh; padding: clamp(48px, 8vw, 96px) var(--gutter); border-bottom: 1.5px solid var(--ink); }
+.beliefs { position: relative; border-top: 1.5px solid var(--ink); }
+/* Centred, so the arrows (ArrowFlight.tsx) fly up through the middle of each statement. */
+.belief { display: grid; align-content: center; justify-items: center; text-align: center; gap: clamp(12px, 2vw, 24px); min-height: 75svh; padding: clamp(48px, 8vw, 96px) var(--gutter); border-bottom: 1.5px solid var(--ink); }
+.flight { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.flight canvas { position: sticky; top: 0; display: block; width: 100%; height: 100vh; }
 .belief .display { margin: 0; }
 .belief .voice { font-size: var(--text-h2); }
 .belief:nth-child(2) { background: var(--ink); color: var(--lime); }
