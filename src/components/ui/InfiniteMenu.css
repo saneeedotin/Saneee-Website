@@ -173,3 +173,14 @@
   text-shadow: none;
   opacity: 1;
 }
+
+/* Phones: the sphere fades to lime under the name, so tiles never run through the text. */
+.infinite-menu__info[data-layout='stacked']::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 170px;
+  background: linear-gradient(to bottom, transparent, var(--lime) 45%);
+}
