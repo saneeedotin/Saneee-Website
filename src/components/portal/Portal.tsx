@@ -9,7 +9,10 @@ import { currentChapter, otherPath, worldOf } from "./world";
 const INTERACTIVE = "a,button,input,textarea,select,label,summary,[data-portal-off]";
 const REST_MS = 1500;
 const HOLD_SECONDS = 0.95;
-const MOVE_CANCELS_HOLD = 12; // px; further than this is a drag or text selection, not a hold
+const MOVE_CANCELS_HOLD = 12; // px; further than this is a drag, a swipe or text selection, not a hold
+const PEEK_MS = 250; // a finger rests this long before the blob opens under it, so a quick swipe just scrolls
+const STILL_MS = 150; // a dragging finger has to settle this long before the hold to cross starts again
+const TOUCH_HOLD_SECONDS = 1.3; // then holding still this long crosses over
 
 export default function Portal() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -63,8 +66,10 @@ export default function Portal() {
     const pointer = { x: 0, y: 0, seen: false, overInteractive: false, lastMove: 0 };
     let open = 0;
     let hold = 0;
-    let pressing = false;
-    let touching = false;
+    let pressing = false; // mouse held down
+    let touching = false; // finger down in the hero, and not swiping
+    let touchAt = 0;
+    let stillSince = 0;
     let pressAt = { x: 0, y: 0 };
     let posterKey = "";
     let fontsReady = false;
@@ -101,16 +106,21 @@ export default function Portal() {
       lastFrame = now;
       const blend = (k: number) => 1 - Math.pow(1 - k, dt * 60);
 
+      // Touch: rest a finger to peek through, drag to move the hole, hold still longer to cross.
+      const peeking = touching && now - touchAt > PEEK_MS;
+      const touchHolding = peeking && now - stillSince > STILL_MS;
+
       const resting = now - pointer.lastMove > REST_MS;
       const mouseWantsOpen = pointer.seen && !pointer.overInteractive && (!resting || pressing);
-      const wantsOpen = crossingRef.current || touching || mouseWantsOpen;
+      const wantsOpen = crossingRef.current || peeking || mouseWantsOpen;
       open += ((wantsOpen ? 1 : 0) - open) * blend(wantsOpen ? 0.14 : 0.2);
 
       if (crossingRef.current) hold = 1;
       else if (pressing) hold = Math.min(1, hold + elapsed / HOLD_SECONDS);
+      else if (touchHolding) hold = Math.min(1, hold + elapsed / TOUCH_HOLD_SECONDS);
       else hold = Math.max(0, hold - elapsed / (hold > 0.6 ? 0.5 : 0.25));
 
-      if (pressing && hold >= 1 && !crossingRef.current) {
+      if ((pressing || touchHolding) && hold >= 1 && !crossingRef.current) {
         crossingRef.current = true;
         pressing = false;
         touching = false;
@@ -138,7 +148,8 @@ export default function Portal() {
       gl.uniform2fv(uni.P, new Float32Array(trail.flatMap((p) => [p.x, p.y])));
       gl.drawArrays(gl.TRIANGLES, 0, 3);
 
-      const idle = open < 0.005 && hold === 0 && !wantsOpen;
+      // A resting finger isn't open yet, but the loop has to run to notice when it is.
+      const idle = open < 0.005 && hold === 0 && !wantsOpen && !touching;
       raf = idle ? 0 : requestAnimationFrame(frame);
       if (idle) gl.clear(gl.COLOR_BUFFER_BIT);
     };
@@ -149,15 +160,41 @@ export default function Portal() {
       raf = requestAnimationFrame(frame);
     };
 
+    const moveFinger = (x: number, y: number) => {
+      if (!touching) return;
+      if (Math.hypot(x - pressAt.x, y - pressAt.y) > MOVE_CANCELS_HOLD) {
+        // Moving off before the blob opened is a swipe: leave it to the scroll.
+        if (performance.now() - touchAt < PEEK_MS) {
+          touching = false;
+          return;
+        }
+        pressAt = { x, y };
+        stillSince = performance.now();
+      }
+      pointer.x = x;
+      pointer.y = y;
+      wake();
+    };
+
     const onMove = (e: PointerEvent) => {
+      if (e.pointerType !== "mouse") return moveFinger(e.clientX, e.clientY);
       pointer.x = e.clientX;
       pointer.y = e.clientY;
-      if (e.pointerType === "mouse") {
-        pointer.seen = true;
-        pointer.lastMove = performance.now();
-        pointer.overInteractive = !!(e.target as Element)?.closest?.(INTERACTIVE);
-      }
+      pointer.seen = true;
+      pointer.lastMove = performance.now();
+      pointer.overInteractive = !!(e.target as Element)?.closest?.(INTERACTIVE);
       if (pressing && Math.hypot(e.clientX - pressAt.x, e.clientY - pressAt.y) > MOVE_CANCELS_HOLD) pressing = false;
+      wake();
+    };
+
+    // Once the page starts scrolling the pointer is cancelled, but touch events keep coming, so the blob stays on the finger.
+    const onTouchMove = (e: TouchEvent) => {
+      if (e.touches.length) moveFinger(e.touches[0].clientX, e.touches[0].clientY);
+    };
+
+    const onTouchEnd = (e: TouchEvent) => {
+      if (e.touches.length) return;
+      touching = false;
       wake();
     };
 
@@ -172,21 +209,23 @@ export default function Portal() {
       if (e.button !== 0 || crossingRef.current) return;
       const target = e.target as Element;
       if (target.closest?.(INTERACTIVE)) return;
-      // On touch the hole lives in the hero only, so everywhere else scrolls normally.
-      if (e.pointerType !== "mouse") {
-        if (!target.closest?.('[data-chapter="hero"]')) return;
-        touching = true;
-        pointer.x = e.clientX;
-        pointer.y = e.clientY;
-      }
-      pressing = true;
       pressAt = { x: e.clientX, y: e.clientY };
+      pointer.x = e.clientX;
+      pointer.y = e.clientY;
+      if (e.pointerType === "mouse") {
+        pressing = true;
+      } else {
+        // Anywhere on the page: a short hold peeks at this section in the other world, a long one crosses.
+        touching = true;
+        touchAt = stillSince = performance.now();
+      }
       wake();
     };
 
-    const onUp = () => {
+    const onUp = (e: PointerEvent) => {
       pressing = false;
-      touching = false;
+      // A scroll cancels the pointer mid-touch while the finger is still down; touchend lets go of the blob then.
+      if (e.type === "pointerup") touching = false;
       wake();
     };
 
@@ -200,6 +239,9 @@ export default function Portal() {
     addEventListener("pointerdown", onDown);
     addEventListener("pointerup", onUp);
     addEventListener("pointercancel", onUp);
+    addEventListener("touchmove", onTouchMove, { passive: true });
+    addEventListener("touchend", onTouchEnd);
+    addEventListener("touchcancel", onTouchEnd);
     addEventListener("resize", size);
     document.documentElement.addEventListener("mouseleave", onLeave);
 
@@ -219,6 +261,9 @@ export default function Portal() {
       removeEventListener("pointerdown", onDown);
       removeEventListener("pointerup", onUp);
       removeEventListener("pointercancel", onUp);
+      removeEventListener("touchmove", onTouchMove);
+      removeEventListener("touchend", onTouchEnd);
+      removeEventListener("touchcancel", onTouchEnd);
       removeEventListener("resize", size);
       document.documentElement.removeEventListener("mouseleave", onLeave);
     };

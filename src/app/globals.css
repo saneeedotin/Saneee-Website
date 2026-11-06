@@ -85,6 +85,15 @@ img { display: block; max-width: 100%; height: auto; }
 .nav-actions { display: flex; align-items: center; gap: 12px; }
 .switch { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1.5px solid currentColor; white-space: nowrap; font-family: var(--font-brand); }
 @media (max-width: 760px) { .switch { padding: 0 14px; } }
+.nav-start { display: flex; align-items: center; gap: 12px; }
+.nav-back { min-width: 44px; }
+/* Phones: just the arrow, and it stands in for the logo, which won't fit beside it. Home is in the menu. */
+@media (max-width: 760px) {
+  .nav-back { padding: 0; }
+  .nav-back-text { display: none; }
+  .nav-start:has(.nav-back) .nav-logo { display: none; }
+}
+@media (max-width: 380px) { .switch:not(.nav-back) { padding: 0 12px; } }
 .nav-logo { transition: opacity 0.3s, visibility 0.3s; }
 .nav-hero .nav-logo { opacity: 0; visibility: hidden; }
 .insane .nav.nav-hero { background: transparent; } /* Or the bar would hide the tagline sitting under it. */
@@ -116,7 +125,12 @@ html { scrollbar-gutter: stable; } /* Locking scroll would otherwise drop the sc
 .lede { position: absolute; z-index: 1; left: var(--gutter); top: 14px; max-width: calc(100% - 2 * var(--gutter) - 240px); font: italic 400 clamp(26px, 4vw, 64px)/1.05 var(--font-editorial); }
 /* Phones: just above the word. 0.71 is the brand face's cap height; matches posters.ts. */
 @media (max-width: 760px) { .lede { top: auto; bottom: calc(var(--gutter) + 0.71 * (100cqw - 2 * var(--gutter)) / var(--ratio) + 20px); max-width: none; } }
-@media (hover: none) { .hero { -webkit-user-select: none; user-select: none; } }
+/* Phones: a long press anywhere opens the portal, so it can't also select text or open the callout. Fields and links keep theirs. */
+@media (hover: none) {
+  body { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+  input, textarea { -webkit-user-select: text; user-select: text; }
+  a { -webkit-touch-callout: default; }
+}
 
 /* Hero morph. Height comes from CSS, not JS, so links to sections below it land in the right place. */
 .morph-canvas { display: none; }
@@ -196,7 +210,7 @@ html { scrollbar-gutter: stable; } /* Locking scroll would otherwise drop the sc
 .form-error { max-width: 50ch; color: var(--lime); overflow-wrap: anywhere; }
 .reach-list { display: grid; align-content: start; gap: 24px; font-size: var(--text-body-lg); }
 .reach-list li { display: grid; gap: 6px; overflow-wrap: anywhere; }
-.reach-list a { text-decoration: underline; text-underline-offset: 4px; }
+.reach-list a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: underline; text-underline-offset: 4px; }
 @media (max-width: 900px) { .contact { grid-template-columns: minmax(0, 1fr); } }
 
 .rows { margin-top: clamp(32px, 5vw, 72px); border-bottom: 1px solid #08080833; }
@@ -237,6 +251,13 @@ html { scrollbar-gutter: stable; } /* Locking scroll would otherwise drop the sc
 .belief:nth-child(2) { background: var(--ink); color: var(--lime); }
 .insane .posters > li { transition: background-color 0.2s, color 0.2s; }
 .insane .posters > li:hover { background: var(--ink); color: var(--lime); }
+
+/* Phones: a third of a screen is plenty of room around one line. */
+@media (max-width: 760px) {
+  .belief { min-height: 55svh; }
+  .posters > li { min-height: 180px; }
+  .lead { font-size: 1.375rem; line-height: 1.35; } /* Case study paragraphs; h3 size is too loud to read at length. */
+}
 
 .insane .button { background: var(--ink); color: var(--lime); }
 .insane .button-ghost:hover { background: var(--ink); color: var(--lime); }

@@ -32,8 +32,9 @@ export default function WorkFolders({ world }: { world: World }) {
         // The last file sits at the front of the folder, so the case study comes first to hand.
         // Plain sheets and the studio's own palette: client colours and screenshots live on the case page.
         const files: FolderFile[] = [
-          ...(p.live ? [{ name: "Live site", meta: p.live.label, href: p.live.url }] : []),
-          { name: "Case study", meta: "Read", href: `${base}/work/${p.slug}` },
+          // New tabs, so this one stays open behind them.
+          ...(p.live ? [{ name: "Live site", meta: p.live.label, href: p.live.url, target: "_blank" }] : []),
+          { name: "Case study", meta: "Read", href: `${base}/work/${p.slug}`, target: "_blank" },
         ];
         return (
           <li key={p.slug} ref={i === 0 ? cell : undefined}>
