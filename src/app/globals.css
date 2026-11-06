@@ -278,6 +278,9 @@ html { scrollbar-gutter: stable; } /* Locking scroll would otherwise drop the sc
 /* The Insane hero's throwable letters (PhysicalType.tsx): they move by transform only, so the layout never shifts. */
 .phys { display: inline-block; touch-action: manipulation; }
 
+/* The Insane work sphere (WorkSphere.tsx), edge to edge. */
+.work-sphere { position: relative; height: clamp(520px, 80svh, 820px); margin: clamp(24px, 4vw, 56px) calc(var(--gutter) * -1) 0; }
+
 /* Stagger cards (StaggerCards.tsx): a fan of services, the middle one lifted and inked. Edge to edge. */
 .stagger { position: relative; height: 600px; margin: clamp(32px, 5vw, 72px) calc(var(--gutter) * -1) 0; overflow: hidden; }
 .stagger-card { position: absolute; left: 50%; top: 50%; display: flex; flex-direction: column; align-items: flex-start; gap: 12px; padding: 26px; text-align: left; font: inherit; background: var(--lime); color: var(--ink); border: 2px solid var(--ink); clip-path: polygon(0 0, calc(100% - 50px) 0, 100% 50px, 100% 100%, 0 100%); transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.3s, color 0.3s; }

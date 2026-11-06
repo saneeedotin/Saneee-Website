@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Evidence from "@/components/Evidence";
-import WorkFolders from "@/components/WorkFolders";
+import WorkSphere from "@/components/WorkSphere";
 
 export const metadata: Metadata = {
   title: "Work",
@@ -12,8 +12,8 @@ export default function InsaneWork() {
     <>
       <section data-chapter="work" className="section page-top">
         <p className="label">The files</p>
-        <h1 className="display">Open a folder. Judge for yourself.</h1>
-        <WorkFolders world="insane" />
+        <h1 className="display">Spin it. Judge for yourself.</h1>
+        <WorkSphere />
       </section>
       <Evidence />
     </>
