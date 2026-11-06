@@ -1,6 +1,7 @@
 import ContactForm from "@/components/ContactForm";
 import Link from "next/link";
 import Evidence from "@/components/Evidence";
+import PhysicalType from "@/components/PhysicalType";
 import ReachList from "@/components/ReachList";
 import TeamBadges from "@/components/TeamBadges";
 import { services } from "@/data/services";
@@ -17,13 +18,13 @@ export default function InsaneHome() {
     <>
       <section id="hero" data-chapter="hero" className="hero">
         <p className="lede" style={{ "--ratio": 4.492 } as React.CSSProperties}>Sanely built. Insanely good.</p>
-        <h1 className="word" style={{ "--ratio": 4.492 } as React.CSSProperties}>INSANE</h1>
+        <PhysicalType as="h1" text="INSANE" split="letters" entrance="hop" className="word" style={{ "--ratio": 4.492 } as React.CSSProperties} />
       </section>
 
       <section data-chapter="services" className="beliefs" aria-label="What we believe">
         {BELIEFS.map(([loud, quiet]) => (
           <div key={loud} className="belief">
-            <p className="display">{loud}</p>
+            <PhysicalType as="p" text={loud} className="display" />
             <p className="voice">{quiet}</p>
           </div>
         ))}

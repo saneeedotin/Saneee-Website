@@ -209,6 +209,8 @@ export default function Portal() {
       if (e.button !== 0 || crossingRef.current) return;
       const target = e.target as Element;
       if (target.closest?.(INTERACTIVE)) return;
+      // A mouse press on physical type is a grab; on touch the long press still opens the portal.
+      if (e.pointerType === "mouse" && target.closest?.(".phys")) return;
       pressAt = { x: e.clientX, y: e.clientY };
       pointer.x = e.clientX;
       pointer.y = e.clientY;

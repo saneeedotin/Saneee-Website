@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import PhysicalType from "@/components/PhysicalType";
 import Link from "next/link";
 import TeamBadges from "@/components/TeamBadges";
 
@@ -19,7 +20,7 @@ export default function InsaneAbout() {
     <>
       <section data-chapter="about" className="section page-top fit">
         <p className="label">Who we are</p>
-        <h1 className="display">Four people. One studio. Zero templates.</h1>
+        <PhysicalType text="Four people. One studio. Zero templates." className="display" />
         <p className="body">A small studio in Mumbai that builds websites, software and systems for businesses that are done putting up with the generic stuff.</p>
       </section>
 
