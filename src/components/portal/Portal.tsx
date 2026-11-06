@@ -9,7 +9,10 @@ import { currentChapter, otherPath, worldOf } from "./world";
 const INTERACTIVE = "a,button,input,textarea,select,label,summary,[data-portal-off]";
 const REST_MS = 1500;
 const HOLD_SECONDS = 0.95;
-const MOVE_CANCELS_HOLD = 12; // px; further than this is a drag or text selection, not a hold
+const MOVE_CANCELS_HOLD = 12; // px; further than this is a drag or text selection, not a hold (or a tap)
+const TAP_MS = 350;
+const PARK_MS = 3000; // how long a let-go blob waits on phones before drifting again
+const TAP_REACH = 0.2; // of the short side; a little wider than the blob, which is about 0.18 across at rest
 
 export default function Portal() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -66,6 +69,8 @@ export default function Portal() {
     let pressing = false;
     let touching = false;
     let pressAt = { x: 0, y: 0 };
+    let tap: { x: number; y: number; at: number } | null = null;
+    let releasedAt = -Infinity;
     const touchOnly = matchMedia("(hover: none)").matches;
     let posterKey = "";
     let fontsReady = false;
@@ -105,7 +110,8 @@ export default function Portal() {
       // Phones have no cursor to follow: while the hero is on screen the hole drifts on its own, and a finger takes it over.
       const heroBox = touchOnly && !touching ? document.querySelector('[data-chapter="hero"]')?.getBoundingClientRect() : undefined;
       const drifting = !!heroBox && heroBox.bottom > canvas.clientHeight * 0.35;
-      if (heroBox && drifting) {
+      // Let go and it waits where the finger left it, so it can be tapped.
+      if (heroBox && drifting && now - releasedAt > PARK_MS) {
         const t = now / 1000;
         pointer.x = canvas.clientWidth * (0.5 + Math.sin(t * 0.61) * 0.3);
         pointer.y = heroBox.top + heroBox.height * (0.42 + Math.sin(t * 0.93 + 1) * 0.14);
@@ -120,12 +126,7 @@ export default function Portal() {
       else if (pressing) hold = Math.min(1, hold + elapsed / HOLD_SECONDS);
       else hold = Math.max(0, hold - elapsed / (hold > 0.6 ? 0.5 : 0.25));
 
-      if (pressing && hold >= 1 && !crossingRef.current) {
-        crossingRef.current = true;
-        pressing = false;
-        touching = false;
-        router.push(`${otherPath(pathRef.current)}#${currentChapter()}`);
-      }
+      if (pressing && hold >= 1 && !crossingRef.current) cross();
 
       const tx = pointer.x / canvas.clientWidth;
       const ty = 1 - pointer.y / canvas.clientHeight;
@@ -159,6 +160,15 @@ export default function Portal() {
       raf = requestAnimationFrame(frame);
     };
 
+    const cross = () => {
+      crossingRef.current = true;
+      pressing = false;
+      touching = false;
+      tap = null;
+      router.push(`${otherPath(pathRef.current)}#${currentChapter()}`);
+      wake();
+    };
+
     const onMove = (e: PointerEvent) => {
       pointer.x = e.clientX;
       pointer.y = e.clientY;
@@ -168,6 +178,26 @@ export default function Portal() {
         pointer.overInteractive = !!(e.target as Element)?.closest?.(INTERACTIVE);
       }
       if (pressing && Math.hypot(e.clientX - pressAt.x, e.clientY - pressAt.y) > MOVE_CANCELS_HOLD) pressing = false;
+      // A finger that set off on the blob and kept going is dragging it, not tapping it.
+      if (tap && Math.hypot(e.clientX - tap.x, e.clientY - tap.y) > MOVE_CANCELS_HOLD) {
+        tap = null;
+        touching = true;
+      }
+      wake();
+    };
+
+    // Once the page starts scrolling the pointer is cancelled, but touch events keep coming, so the blob stays on the finger.
+    const onTouchMove = (e: TouchEvent) => {
+      if (!touching || !e.touches.length) return;
+      pointer.x = e.touches[0].clientX;
+      pointer.y = e.touches[0].clientY;
+      wake();
+    };
+
+    const onTouchEnd = (e: TouchEvent) => {
+      if (e.touches.length) return;
+      if (touching) releasedAt = performance.now();
+      touching = false;
       wake();
     };
 
@@ -184,20 +214,36 @@ export default function Portal() {
       const target = e.target as Element;
       if (target.closest?.(INTERACTIVE)) return;
       // On touch the hole lives in the hero only, so everywhere else scrolls normally.
+      // No long press: a tap on the blob crosses over, a touch anywhere else brings the blob to the finger.
       if (e.pointerType !== "mouse") {
         if (!target.closest?.('[data-chapter="hero"]')) return;
-        touching = true;
-        pointer.x = e.clientX;
-        pointer.y = e.clientY;
+        const headX = trail[0].x * canvas.clientWidth;
+        const headY = (1 - trail[0].y) * canvas.clientHeight;
+        const reach = TAP_REACH * Math.min(canvas.clientWidth, canvas.clientHeight);
+        if (open > 0.5 && Math.hypot(e.clientX - headX, e.clientY - headY) < reach) {
+          tap = { x: e.clientX, y: e.clientY, at: performance.now() };
+        } else {
+          touching = true;
+          pointer.x = e.clientX;
+          pointer.y = e.clientY;
+        }
+        wake();
+        return;
       }
       pressing = true;
       pressAt = { x: e.clientX, y: e.clientY };
       wake();
     };
 
-    const onUp = () => {
+    const onUp = (e: PointerEvent) => {
       pressing = false;
-      touching = false;
+      if (tap && e.type === "pointerup" && performance.now() - tap.at < TAP_MS) cross();
+      tap = null;
+      // A scroll cancels the pointer mid-touch; the finger is still down, and touchend lets go of the blob.
+      if (e.type === "pointerup" && touching) {
+        touching = false;
+        releasedAt = performance.now();
+      }
       wake();
     };
 
@@ -211,6 +257,9 @@ export default function Portal() {
     addEventListener("pointerdown", onDown);
     addEventListener("pointerup", onUp);
     addEventListener("pointercancel", onUp);
+    addEventListener("touchmove", onTouchMove, { passive: true });
+    addEventListener("touchend", onTouchEnd);
+    addEventListener("touchcancel", onTouchEnd);
     addEventListener("resize", size);
     document.documentElement.addEventListener("mouseleave", onLeave);
 
@@ -230,6 +279,9 @@ export default function Portal() {
       removeEventListener("pointerdown", onDown);
       removeEventListener("pointerup", onUp);
       removeEventListener("pointercancel", onUp);
+      removeEventListener("touchmove", onTouchMove);
+      removeEventListener("touchend", onTouchEnd);
+      removeEventListener("touchcancel", onTouchEnd);
       removeEventListener("resize", size);
       document.documentElement.removeEventListener("mouseleave", onLeave);
     };

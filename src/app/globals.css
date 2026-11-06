@@ -196,7 +196,7 @@ html { scrollbar-gutter: stable; } /* Locking scroll would otherwise drop the sc
 .form-error { max-width: 50ch; color: var(--lime); overflow-wrap: anywhere; }
 .reach-list { display: grid; align-content: start; gap: 24px; font-size: var(--text-body-lg); }
 .reach-list li { display: grid; gap: 6px; overflow-wrap: anywhere; }
-.reach-list a { text-decoration: underline; text-underline-offset: 4px; }
+.reach-list a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: underline; text-underline-offset: 4px; }
 @media (max-width: 900px) { .contact { grid-template-columns: minmax(0, 1fr); } }
 
 .rows { margin-top: clamp(32px, 5vw, 72px); border-bottom: 1px solid #08080833; }
@@ -237,6 +237,13 @@ html { scrollbar-gutter: stable; } /* Locking scroll would otherwise drop the sc
 .belief:nth-child(2) { background: var(--ink); color: var(--lime); }
 .insane .posters > li { transition: background-color 0.2s, color 0.2s; }
 .insane .posters > li:hover { background: var(--ink); color: var(--lime); }
+
+/* Phones: a third of a screen is plenty of room around one line. */
+@media (max-width: 760px) {
+  .belief { min-height: 55svh; }
+  .posters > li { min-height: 180px; }
+  .lead { font-size: 1.375rem; line-height: 1.35; } /* Case study paragraphs; h3 size is too loud to read at length. */
+}
 
 .insane .button { background: var(--ink); color: var(--lime); }
 .insane .button-ghost:hover { background: var(--ink); color: var(--lime); }
