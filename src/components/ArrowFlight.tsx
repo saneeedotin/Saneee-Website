@@ -32,6 +32,10 @@ export default function ArrowFlight() {
       const key = new THREE.DirectionalLight(0xffffff, 3);
       key.position.set(3, 5, 7);
       scene.add(key);
+      // A lime rim, so an ink arrow still shows when it crosses into the ink panel.
+      const rim = new THREE.DirectionalLight(0xc7ff2e, 2.5);
+      rim.position.set(-5, -3, 2);
+      scene.add(rim);
 
       // The arrow in the logo's own coordinates, flipped (SVG y points down), centred and extruded.
       const shape = new THREE.Shape(LOGO_ARROW.map(([x, y]) => new THREE.Vector2(x - LOGO_ARROW[0][0], LOGO_ARROW[0][1] - y)));
@@ -46,7 +50,7 @@ export default function ArrowFlight() {
           const i = p * PER_PANEL + j;
           const mesh = new THREE.Mesh(geo, material);
           scene.add(mesh);
-          return { mesh, panel, j, x: 0.15 + 0.7 * ((j + rnd(i, 1) * 0.8) / PER_PANEL), spin: 0.6 + rnd(i, 2), tilt: rnd(i, 3) * Math.PI * 2, size: 0.8 + rnd(i, 4) * 0.6 };
+          return { mesh, panel, j, x: 0.15 + 0.7 * ((j + rnd(i, 1) * 0.8) / PER_PANEL), spin: 0.6 + rnd(i, 2), tilt: rnd(i, 3) * Math.PI * 2, size: 0.7 + rnd(i, 4) * 0.6 };
         });
       });
 
@@ -62,7 +66,7 @@ export default function ArrowFlight() {
       const draw = () => {
         const viewH = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.position.z;
         const viewW = viewH * camera.aspect;
-        const unit = Math.min(viewW, viewH) * 0.16;
+        const unit = Math.min(viewW, viewH) * 0.3;
         for (const a of arrows) {
           const r = a.panel.getBoundingClientRect();
           // 0 as the panel's top enters the bottom of the screen, 1 as its bottom leaves the top.
