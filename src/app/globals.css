@@ -116,7 +116,12 @@ html { scrollbar-gutter: stable; } /* Locking scroll would otherwise drop the sc
 .lede { position: absolute; z-index: 1; left: var(--gutter); top: 14px; max-width: calc(100% - 2 * var(--gutter) - 240px); font: italic 400 clamp(26px, 4vw, 64px)/1.05 var(--font-editorial); }
 /* Phones: just above the word. 0.71 is the brand face's cap height; matches posters.ts. */
 @media (max-width: 760px) { .lede { top: auto; bottom: calc(var(--gutter) + 0.71 * (100cqw - 2 * var(--gutter)) / var(--ratio) + 20px); max-width: none; } }
-@media (hover: none) { .hero { -webkit-user-select: none; user-select: none; } }
+/* Phones: a long press anywhere opens the portal, so it can't also select text or open the callout. Fields and links keep theirs. */
+@media (hover: none) {
+  body { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+  input, textarea { -webkit-user-select: text; user-select: text; }
+  a { -webkit-touch-callout: default; }
+}
 
 /* Hero morph. Height comes from CSS, not JS, so links to sections below it land in the right place. */
 .morph-canvas { display: none; }

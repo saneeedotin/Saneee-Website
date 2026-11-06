@@ -215,8 +215,7 @@ export default function Portal() {
       if (e.pointerType === "mouse") {
         pressing = true;
       } else {
-        // On touch the hole lives in the hero only, so everywhere else scrolls normally.
-        if (!target.closest?.('[data-chapter="hero"]')) return;
+        // Anywhere on the page: a short hold peeks at this section in the other world, a long one crosses.
         touching = true;
         touchAt = stillSince = performance.now();
       }
