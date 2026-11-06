@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { currentChapter, otherPath, worldOf } from "./portal/world";
+import { otherPath, rememberCrossing, worldOf } from "./portal/world";
 
 export default function WorldSwitch() {
   const pathname = usePathname();
@@ -16,7 +16,8 @@ export default function WorldSwitch() {
       href={href}
       onClick={(e) => {
         e.preventDefault();
-        router.push(`${href}#${currentChapter()}`);
+        rememberCrossing();
+        router.push(href);
       }}
     >
       Go {target} <span aria-hidden="true">→</span>

@@ -4,7 +4,7 @@ import gsap from "gsap";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
-import { otherPath, type World } from "./portal/world";
+import { otherPath, rememberCrossing, type World } from "./portal/world";
 
 // saneee.in, flipped, is in.saneee: say it aloud. Each world shows its own order; hover swaps them over.
 const HALVES: Record<World, [string, string]> = { sane: ["saneee", "in"], insane: ["in", "saneee"] };
@@ -99,7 +99,7 @@ export default function FooterWord({ world }: { world: World }) {
 
   return (
     <div className="footer-word">
-      <Link ref={link} className="fw" href={otherPath(pathname)} aria-label={world === "sane" ? "Go insane" : "Go sane"}>
+      <Link ref={link} className="fw" href={otherPath(pathname)} onClick={rememberCrossing} aria-label={world === "sane" ? "Go insane" : "Go sane"}>
         {[...first].map((l, i) => <span key={`a${i}`} data-half="a" aria-hidden="true">{l}</span>)}
         <span className="fw-dot" aria-hidden="true">.</span>
         {[...second].map((l, i) => <span key={`b${i}`} data-half="b" aria-hidden="true">{l}</span>)}

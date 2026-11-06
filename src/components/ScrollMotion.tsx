@@ -7,6 +7,7 @@ import Lenis from "lenis";
 import "lenis/dist/lenis.css";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
+import { crossingY, forgetCrossing } from "./portal/world";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -53,19 +54,45 @@ function animatePage({ stage }: { stage: boolean }) {
   }
 }
 
+// The smooth scroller, shared with the landing below.
+let lenis: Lenis | null = null;
+
 export default function ScrollMotion() {
   const pathname = usePathname();
 
+  // Every page change lands somewhere on purpose: the same place after crossing worlds, a linked section (#id),
+  // otherwise the top. Lenis keeps its own position, so it has to be told too, or it drags the old one back.
+  useEffect(() => {
+    const land = () => {
+      const crossed = crossingY(pathname);
+      const linked = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)));
+      const y = Math.max(0, crossed ?? (linked ? linked.getBoundingClientRect().top + scrollY : 0));
+      if (lenis) lenis.scrollTo(y, { immediate: true, force: true });
+      else scrollTo(0, y);
+    };
+    land();
+    // Again once fonts and scroll-linked layouts have settled the page's heights; then the saved place is spent.
+    let alive = true;
+    document.fonts.ready.then(() => requestAnimationFrame(() => {
+      if (!alive) return;
+      land();
+      forgetCrossing();
+    }));
+    return () => { alive = false; };
+  }, [pathname]);
+
   useEffect(() => {
     if (!matchMedia(MOTION).matches) return;
-    const lenis = new Lenis();
-    const tick = (time: number) => lenis.raf(time * 1000);
-    lenis.on("scroll", ScrollTrigger.update);
+    lenis = new Lenis();
+    const smooth = lenis;
+    const tick = (time: number) => smooth.raf(time * 1000);
+    smooth.on("scroll", ScrollTrigger.update);
     gsap.ticker.add(tick);
     gsap.ticker.lagSmoothing(0);
     return () => {
       gsap.ticker.remove(tick);
-      lenis.destroy();
+      smooth.destroy();
+      lenis = null;
     };
   }, []);
 

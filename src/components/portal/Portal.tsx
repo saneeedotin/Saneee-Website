@@ -4,7 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { paintPoster } from "./posters";
 import { FRAGMENT, POINTS, VERTEX } from "./shader";
-import { currentChapter, otherPath, worldOf } from "./world";
+import { currentChapter, otherPath, rememberCrossing, worldOf } from "./world";
 
 const INTERACTIVE = "a,button,input,textarea,select,label,summary,[data-portal-off]";
 const REST_MS = 1500;
@@ -124,7 +124,8 @@ export default function Portal() {
         crossingRef.current = true;
         pressing = false;
         touching = false;
-        router.push(`${otherPath(pathRef.current)}#${currentChapter()}`);
+        rememberCrossing();
+        router.push(otherPath(pathRef.current));
       }
 
       const tx = pointer.x / canvas.clientWidth;
