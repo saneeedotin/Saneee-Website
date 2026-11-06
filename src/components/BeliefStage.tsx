@@ -26,15 +26,15 @@ export default function BeliefStage({ beliefs }: { beliefs: [string, string][] }
       return Math.min(1, Math.max(0, -r.top / (r.height - innerHeight)));
     };
 
-    // The words: each statement owns a third of the scroll, crossfading at the seams.
-    const smooth = (x: number) => { const t = Math.min(1, Math.max(0, x)); return t * t * (3 - 2 * t); };
-    const placeText = (p: number) => slides.forEach((s, i) => {
-      const u = p * slides.length - i;
-      const o = (i === 0 ? 1 : smooth((u + 0.12) / 0.24)) * (i === slides.length - 1 ? 1 : 1 - smooth((u - 0.88) / 0.24));
-      s.style.opacity = String(o);
-      s.style.transform = `translateY(${(0.5 - Math.min(1, Math.max(0, u))) * 40}px)`;
-      s.style.visibility = o < 0.01 ? "hidden" : "visible"; // Explicit: the stylesheet hides all but the first.
-    });
+    // The words: each statement owns a third of the scroll. The swap itself plays in time (CSS), not with the
+    // scroll, so stopping between two never leaves them half-faded over each other.
+    const placeText = (p: number) => {
+      const now = Math.min(slides.length - 1, Math.floor(p * slides.length));
+      slides.forEach((s, i) => {
+        s.classList.toggle("is-on", i === now);
+        s.classList.toggle("is-past", i < now);
+      });
+    };
 
     let raf = 0;
     let draw = () => placeText(progress());
