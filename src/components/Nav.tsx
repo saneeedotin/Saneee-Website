@@ -1,25 +1,31 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 import WorldSwitch from "./WorldSwitch";
 import type { World } from "./portal/world";
 
 const LINKS: Record<World, { href: string; label: string }[]> = {
   sane: [
+    { href: "/", label: "Home" },
     { href: "/about", label: "About" },
     { href: "/services", label: "Services" },
     { href: "/work", label: "Work" },
     { href: "/contact", label: "Contact" },
   ],
   insane: [
+    { href: "/insane", label: "Home" },
     { href: "/insane/about", label: "Who we are" },
     { href: "/insane/services", label: "What we make" },
     { href: "/insane/work", label: "Our work" },
     { href: "/insane/contact", label: "Say hi" },
   ],
 };
+
+// The pages walked through in this tab, newest last. Module-level, so it survives the nav remounting when the portal crosses worlds.
+const trail: string[] = [];
+let goingBack = false;
 
 const OPEN_SECONDS = 0.75;
 const CLOSE_SECONDS = 0.45;
@@ -69,6 +75,20 @@ export default function Nav({ world }: { world: World }) {
   const anim = useRef({ raf: 0, radius: 0, from: 0, to: 0, start: 0, seconds: 1, closing: false });
   const home = world === "sane" ? "/" : "/insane";
   const pathname = usePathname();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!goingBack && trail.at(-1) !== pathname) trail.push(pathname);
+    goingBack = false;
+  }, [pathname]);
+
+  // Back to the previous page on this site; with none (a new tab, a shared link), up a level: /work/ems to /work to home.
+  const back = () => {
+    trail.pop();
+    const previous = trail.at(-1);
+    goingBack = !!previous;
+    router.push(previous ?? (pathname.replace(/\/[^/]+\/?$/, "") || "/"));
+  };
 
   // Out of the way going down, a solid bar coming back up, so it never sits on top of text.
   useEffect(() => {
@@ -142,10 +162,17 @@ export default function Nav({ world }: { world: World }) {
   return (
     <>
       <header ref={header} className="nav">
-        <Link className="nav-logo" href={home}>
-          {/* The Sane nav blends against what's behind it, so it starts from white. */}
-          <img src={world === "sane" ? "/img/logo-white.svg" : "/img/logo-black.svg"} alt="saneee.in, home" width={182} height={40} />
-        </Link>
+        <div className="nav-start">
+          {pathname !== home && (
+            <button className="switch nav-back" type="button" onClick={back} aria-label="Back">
+              <span aria-hidden="true">←</span><span className="nav-back-text" aria-hidden="true">Back</span>
+            </button>
+          )}
+          <Link className="nav-logo" href={home}>
+            {/* The Sane nav blends against what's behind it, so it starts from white. */}
+            <img src={world === "sane" ? "/img/logo-white.svg" : "/img/logo-black.svg"} alt="saneee.in, home" width={182} height={40} />
+          </Link>
+        </div>
         <div className="nav-actions">
           <button ref={opener} className="switch" type="button" aria-haspopup="dialog" onClick={open}>Menu</button>
           <WorldSwitch />

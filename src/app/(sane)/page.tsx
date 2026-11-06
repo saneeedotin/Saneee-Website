@@ -37,7 +37,7 @@ export default function SaneHome() {
           <ul className="projects">
             {projects.map((p) => (
               <li key={p.slug}>
-                <Link href={`/work/${p.slug}`}>
+                <Link href={`/work/${p.slug}`} target="_blank">
                   <h3 className="h3">{p.name}</h3>
                   <span>{[p.business, p.where].filter(Boolean).join(", ")}</span>
                   <span className="arrow" aria-hidden="true">→</span>

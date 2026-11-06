@@ -58,6 +58,8 @@ export type FolderFile = {
   image?: string
   /** Rendered as a link when the folder is open. */
   href?: string
+  /** Where the link opens, e.g. `_blank` for a new tab. */
+  target?: string
 }
 
 export type FolderMenuItem = {
@@ -826,7 +828,7 @@ export default function GlassFolder({
               return (
                 <div key={id} role="listitem" className="gf-sheet-slot">
                   {file.href ? (
-                    <a {...common} href={file.href} onClick={() => onFileSelect?.(file, start + v)}>
+                    <a {...common} href={file.href} target={file.target} rel={file.target === "_blank" ? "noopener" : undefined} onClick={() => onFileSelect?.(file, start + v)}>
                       {inner}
                     </a>
                   ) : (

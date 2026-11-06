@@ -85,6 +85,15 @@ img { display: block; max-width: 100%; height: auto; }
 .nav-actions { display: flex; align-items: center; gap: 12px; }
 .switch { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1.5px solid currentColor; white-space: nowrap; font-family: var(--font-brand); }
 @media (max-width: 760px) { .switch { padding: 0 14px; } }
+.nav-start { display: flex; align-items: center; gap: 12px; }
+.nav-back { min-width: 44px; }
+/* Phones: just the arrow, and it stands in for the logo, which won't fit beside it. Home is in the menu. */
+@media (max-width: 760px) {
+  .nav-back { padding: 0; }
+  .nav-back-text { display: none; }
+  .nav-start:has(.nav-back) .nav-logo { display: none; }
+}
+@media (max-width: 380px) { .switch:not(.nav-back) { padding: 0 12px; } }
 .nav-logo { transition: opacity 0.3s, visibility 0.3s; }
 .nav-hero .nav-logo { opacity: 0; visibility: hidden; }
 .insane .nav.nav-hero { background: transparent; } /* Or the bar would hide the tagline sitting under it. */

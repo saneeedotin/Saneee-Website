@@ -20,6 +20,7 @@ export default function Footer({ world }: { world: World }) {
   const base = world === "sane" ? "" : "/insane";
   const copy = COPY[world];
   const pages = [
+    { href: base || "/", label: "Home" },
     { href: `${base}/about`, label: "About" },
     { href: `${base}/services`, label: "Services" },
     { href: `${base}/work`, label: "Work" },

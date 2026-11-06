@@ -11,7 +11,7 @@ export default function Evidence({ heading: Heading = "h2" }: { heading?: "h1" |
       <ul className="marks">
         {projects.map((p, i) => (
           <li key={p.slug}>
-            <Link href={`/insane/work/${p.slug}`}>
+            <Link href={`/insane/work/${p.slug}`} target="_blank">
               <span className="label">{String(i + 1).padStart(2, "0")}</span>
               <ClientMark project={p} />
               <span className="marks-foot">

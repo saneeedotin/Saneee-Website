@@ -33,7 +33,9 @@ export const metadata: Metadata = {
   title: { default: "saneee.in · Designed to be distinguished.", template: "%s · saneee.in" },
   description,
   icons: {
+    // The SVG recolours itself with the browser's light or dark theme; the PNGs are for browsers without SVG icons.
     icon: [
+      { url: "/img/favicon.svg", type: "image/svg+xml", sizes: "any" },
       { url: "/img/favicon-light.png", media: "(prefers-color-scheme: light)" },
       { url: "/img/favicon.png", media: "(prefers-color-scheme: dark)" },
     ],
