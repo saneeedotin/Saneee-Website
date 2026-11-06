@@ -2,6 +2,7 @@ import ContactForm from "@/components/ContactForm";
 import Link from "next/link";
 import Evidence from "@/components/Evidence";
 import PhysicalType from "@/components/PhysicalType";
+import StaggerCards from "@/components/ui/StaggerCards";
 import ReachList from "@/components/ReachList";
 import TeamBadges from "@/components/TeamBadges";
 import { services } from "@/data/services";
@@ -33,14 +34,7 @@ export default function InsaneHome() {
       <section id="services" data-chapter="services" className="section">
         <p className="label">We make</p>
         <h2 className="display">Seven things, done properly.</h2>
-        <ul className="posters">
-          {services.map((s) => (
-            <li key={s.name}>
-              <h3 className="h3">{s.name}</h3>
-              <p className="voice">{s.voice}</p>
-            </li>
-          ))}
-        </ul>
+        <StaggerCards label="Our services" items={services.map((s) => ({ title: s.name, line: s.voice, image: s.image }))} />
         <Link className="button spaced" href="/insane/services">What&rsquo;s in each <span aria-hidden="true">→</span></Link>
       </section>
 
