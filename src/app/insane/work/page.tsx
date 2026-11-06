@@ -10,9 +10,9 @@ export const metadata: Metadata = {
 export default function InsaneWork() {
   return (
     <>
-      <section data-chapter="work" className="section page-top">
-        <p className="label">The files</p>
-        <h1 className="display">Spin it. Judge for yourself.</h1>
+      {/* Nothing but the projects on screen; the heading is still there for screen readers and search. */}
+      <section data-chapter="work" className="work-play">
+        <h1 className="vh">Our work. Spin it, judge for yourself.</h1>
         <WorkSphere />
       </section>
       <Evidence />

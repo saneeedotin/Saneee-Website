@@ -279,7 +279,8 @@ html { scrollbar-gutter: stable; } /* Locking scroll would otherwise drop the sc
 .phys { display: inline-block; touch-action: manipulation; }
 
 /* The Insane work sphere (WorkSphere.tsx), edge to edge. */
-.work-sphere { position: relative; height: clamp(520px, 80svh, 820px); margin: clamp(24px, 4vw, 56px) calc(var(--gutter) * -1) 0; }
+.work-play { position: relative; height: 100svh; min-height: 520px; }
+.work-sphere { position: relative; height: 100%; }
 
 /* Stagger cards (StaggerCards.tsx): a fan of services, the middle one lifted and inked. Edge to edge. */
 .stagger { position: relative; height: 600px; margin: clamp(32px, 5vw, 72px) calc(var(--gutter) * -1) 0; overflow: hidden; }
