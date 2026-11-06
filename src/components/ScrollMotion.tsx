@@ -16,16 +16,10 @@ const STAGE = "(min-width: 761px) and (min-height: 600px)";
 const EASE = "expo.out";
 
 function animatePage({ stage }: { stage: boolean }) {
-  // Headings rise in word by word. Belief lines are excluded: they fill with the scroll below.
-  gsap.utils.toArray<HTMLElement>(".h-editorial, .h1, main .display:not(.belief .display)").forEach((el) => {
+  // Headings rise in word by word. Belief lines are excluded: BeliefStage swaps them with the scroll.
+  gsap.utils.toArray<HTMLElement>(".h-editorial, .h1, main .display:not(.belief-slide .display)").forEach((el) => {
     const { words } = SplitText.create(el, { type: "words", aria: "none" });
     gsap.from(words, { yPercent: 60, opacity: 0, duration: 0.9, stagger: 0.04, ease: EASE, scrollTrigger: { trigger: el, start: "top 88%", once: true } });
-  });
-
-  gsap.utils.toArray<HTMLElement>(".belief").forEach((belief) => {
-    const { words } = SplitText.create(belief.querySelector(".display"), { type: "words", aria: "none" });
-    gsap.fromTo(words, { opacity: 0.12 }, { opacity: 1, stagger: 0.1, ease: "none", scrollTrigger: { trigger: belief, start: "top 75%", end: "center 45%", scrub: true } });
-    gsap.from(belief.querySelector(".voice"), { opacity: 0, y: 24, ease: "none", scrollTrigger: { trigger: belief, start: "center 55%", end: "center 40%", scrub: true } });
   });
 
   const lists = gsap.utils.toArray<HTMLElement>(".rows li, .projects a, .posters > li, .marks li, .facts div");

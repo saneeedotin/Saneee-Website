@@ -1,4 +1,4 @@
-import ArrowFlight from "@/components/ArrowFlight";
+import BeliefStage from "@/components/BeliefStage";
 import ContactForm from "@/components/ContactForm";
 import Link from "next/link";
 import Evidence from "@/components/Evidence";
@@ -9,7 +9,7 @@ import TeamBadges from "@/components/TeamBadges";
 import { services } from "@/data/services";
 
 // From the brand's own manifesto lines in logo/design.md.
-const BELIEFS = [
+const BELIEFS: [string, string][] = [
   ["We don’t do templates.", "We never will."],
   ["Your business isn’t generic.", "Your website shouldn’t be either."],
   ["Your website is your first impression.", "There’s no second chance for it."],
@@ -23,15 +23,7 @@ export default function InsaneHome() {
         <PhysicalType text="INSANE" className="word" style={{ "--ratio": 4.492 } as React.CSSProperties} />
       </section>
 
-      <section data-chapter="services" className="beliefs" aria-label="What we believe">
-        {BELIEFS.map(([loud, quiet]) => (
-          <div key={loud} className="belief">
-            <p className="display">{loud}</p>
-            <p className="voice">{quiet}</p>
-          </div>
-        ))}
-        <ArrowFlight />
-      </section>
+      <BeliefStage beliefs={BELIEFS} />
 
       <section id="services" data-chapter="services" className="section">
         <p className="label">We make</p>

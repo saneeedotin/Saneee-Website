@@ -246,20 +246,27 @@ html { scrollbar-gutter: stable; } /* Locking scroll would otherwise drop the sc
 
 /* Insane */
 .display { font-family: var(--font-brand); font-size: clamp(2.2rem, 8vw, 8.5rem); line-height: 1.04; letter-spacing: -0.015em; margin-top: 16px; }
-.beliefs { position: relative; border-top: 1.5px solid var(--ink); }
-/* Centred, so the arrows (ArrowFlight.tsx) fly up through the middle of each statement. */
-.belief { display: grid; align-content: center; justify-items: center; text-align: center; gap: clamp(12px, 2vw, 24px); min-height: 75svh; padding: clamp(48px, 8vw, 96px) var(--gutter); border-bottom: 1.5px solid var(--ink); }
-.flight { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
-.flight canvas { position: sticky; top: 0; display: block; width: 100%; height: 100vh; }
-.belief .display { margin: 0; }
-.belief .voice { font-size: var(--text-h2); }
-.belief:nth-child(2) { background: var(--ink); color: var(--lime); }
+/* Beliefs (BeliefStage.tsx): one pinned lime stage, a screen of scroll per statement, the arrow rising behind.
+   The words are lime with a difference blend: ink on the lime, lime where the ink arrow passes behind them. */
+.belief-pin { position: relative; height: 400svh; border-top: 1.5px solid var(--ink); }
+.belief-stage { position: sticky; top: 0; height: 100svh; overflow: hidden; background: var(--lime); isolation: isolate; }
+.belief-stage canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; touch-action: pan-y; }
+.belief-slide { position: absolute; inset: 0; display: grid; align-content: center; justify-items: center; gap: clamp(12px, 2vw, 24px); padding: 0 var(--gutter); text-align: center; color: var(--lime); mix-blend-mode: difference; pointer-events: none; }
+.belief-slide + .belief-slide { opacity: 0; visibility: hidden; } /* Until the script takes over. */
+.belief-slide .display { margin: 0; }
+.belief-slide .voice { font-size: var(--text-h2); }
+@media (prefers-reduced-motion: reduce) {
+  .belief-pin { height: auto; }
+  .belief-stage { position: static; height: auto; }
+  .belief-stage canvas { display: none; }
+  .belief-slide { position: static; min-height: 75svh; color: var(--ink); mix-blend-mode: normal; }
+  .belief-slide + .belief-slide { opacity: 1; visibility: visible; border-top: 1.5px solid var(--ink); }
+}
 .insane .posters > li { transition: background-color 0.2s, color 0.2s; }
 .insane .posters > li:hover { background: var(--ink); color: var(--lime); }
 
 /* Phones: a third of a screen is plenty of room around one line. */
 @media (max-width: 760px) {
-  .belief { min-height: 55svh; }
   .posters > li { min-height: 180px; }
   .lead { font-size: 1.375rem; line-height: 1.35; } /* Case study paragraphs; h3 size is too loud to read at length. */
 }
